@@ -36,8 +36,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
+import coil3.compose.AsyncImage
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.ui.theme.LocalCustomColorsPalette
 
@@ -51,6 +53,7 @@ fun PlayerViewScreen(
     var isPlaying by remember { mutableStateOf(false) }
     var isChangingState by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
+    val artwork = viewModel.artworkUriFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(controller) {
         controller?.let {
@@ -99,17 +102,25 @@ fun PlayerViewScreen(
                     elevation = 6.dp,
                     shape = previewShape,
                     ambientColor = Color.DarkGray,
-                    spotColor = Color.DarkGray
+                    spotColor = Color.DarkGray,
                 )
                 .clip(previewShape)
                 .background(LocalCustomColorsPalette.current.previewBackground),
         ) {
-            Icon(
-                imageVector = Icons.Filled.Audiotrack,
-                contentDescription = "Preview",
-                tint = Color.LightGray,
-                modifier = Modifier.size(96.dp)
-            )
+            if (artwork.value == null) {
+                Icon(
+                    imageVector = Icons.Filled.Audiotrack,
+                    contentDescription = "Preview",
+                    tint = Color.LightGray,
+                    modifier = Modifier.size(96.dp),
+                )
+            } else {
+                AsyncImage(
+                    model = artwork.value,
+                    contentDescription = "Preview",
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))

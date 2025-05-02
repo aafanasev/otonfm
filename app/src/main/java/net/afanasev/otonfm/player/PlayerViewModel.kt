@@ -53,7 +53,10 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     fun fetchArtwork() {
         viewModelScope.launch {
-            _artworkUriFlow.value = statusFetcher.fetchArtworkUri()
+            _artworkUriFlow.value = statusFetcher.fetchArtworkUri()?.takeIf {
+                // default image
+                it != "https://images.radio.co/station_logos/s696f24a77.20250411103941.jpg"
+            }
         }
     }
 

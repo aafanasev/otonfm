@@ -29,25 +29,25 @@ fun PlayerViewScreen(
     val controller = viewModel.controller
 
     var isPlaying by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
+    var isChangingState by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
 
     LaunchedEffect(controller) {
-        controller?.addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                println("asdsd state: $playbackState")
-            }
+        controller?.let {
+            isPlaying = it.isPlaying
+            title = it.mediaMetadata.title.orEmpty()
 
-            override fun onIsPlayingChanged(playing: Boolean) {
-                isPlaying = playing
-                isLoading = false
-            }
+            it.addListener(object : Player.Listener {
+                override fun onIsPlayingChanged(playing: Boolean) {
+                    isPlaying = playing
+                    isChangingState = false
+                }
 
-            override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
-                println("asdasd metadata: $mediaMetadata")
-                title = (mediaMetadata.title ?: "").toString()
-            }
-        })
+                override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+                    title = mediaMetadata.title.orEmpty()
+                }
+            })
+        }
     }
 
     Column(
@@ -72,16 +72,24 @@ fun PlayerViewScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            enabled = !isLoading,
+            enabled = !isChangingState,
             onClick = {
-                isLoading = true
+                isChangingState = true
                 viewModel.playPause()
             },
         ) {
-            Text(text = if (isPlaying) "Pause" else "Play")
+            Image(
+                painter = painterResource(
+                    id = if (isPlaying) {
+                        R.drawable.baseline_pause_24
+                    } else {
+                        R.drawable.baseline_play_arrow_24
+                    }
+                ),
+                contentDescription = if (isPlaying) "Pause" else "Play"
+            )
         }
-
     }
-
-
 }
+
+private fun CharSequence?.orEmpty(): String = this?.toString() ?: ""

@@ -1,0 +1,45 @@
+package net.afanasev.otonfm.player
+
+import android.app.Application
+import android.content.ComponentName
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import kotlinx.coroutines.guava.await
+import kotlinx.coroutines.launch
+import net.afanasev.otonfm.services.PlaybackService
+
+class PlayerViewModel(application: Application) : AndroidViewModel(application) {
+
+    var controller by mutableStateOf<MediaController?>(null)
+        private set
+
+    init {
+        viewModelScope.launch {
+            val token =
+                SessionToken(application, ComponentName(application, PlaybackService::class.java))
+            controller = MediaController.Builder(application, token).buildAsync().await()
+        }
+    }
+
+    fun playPause() {
+        controller?.let {
+            if (it.isPlaying) {
+                it.pause()
+            } else {
+                if (it.currentMediaItem == null) {
+                    val mediaItem = MediaItem.fromUri("https://s4.radio.co/s696f24a77/listen")
+                    it.setMediaItem(mediaItem)
+                    it.prepare()
+                }
+                it.play()
+            }
+        }
+    }
+
+}

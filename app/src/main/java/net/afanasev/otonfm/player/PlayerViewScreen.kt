@@ -4,8 +4,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,11 +24,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import net.afanasev.otonfm.R
+import java.nio.file.WatchEvent
 
 @Composable
 fun PlayerViewScreen(
@@ -51,19 +64,23 @@ fun PlayerViewScreen(
     }
 
     Column(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "App logo"
+            contentDescription = "App logo",
+            modifier = Modifier.fillMaxWidth(0.8f)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // preview
+//        Image(
+//            painter = painterResource(id = R.drawable.baseline_audiotrack_24),
+//            contentDescription = "Preview"
+//        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -71,22 +88,30 @@ fun PlayerViewScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
+        IconButton(
             enabled = !isChangingState,
             onClick = {
                 isChangingState = true
                 viewModel.playPause()
             },
-        ) {
-            Image(
-                painter = painterResource(
-                    id = if (isPlaying) {
-                        R.drawable.baseline_pause_24
-                    } else {
-                        R.drawable.baseline_play_arrow_24
-                    }
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = Color(0xFFCD0200),
+                disabledContainerColor = Color(0xFF990200),
+            ),
+            modifier = Modifier
+                .size(96.dp)
+                .shadow(
+                    elevation = 6.dp,
+                    shape = CircleShape,
+                    ambientColor = Color.Black,
+                    spotColor = Color.Black
                 ),
-                contentDescription = if (isPlaying) "Pause" else "Play"
+        ) {
+            Icon(
+                if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                if (isPlaying) "Pause" else "Play",
+                tint = Color.White,
+                modifier = Modifier.size(54.dp),
             )
         }
     }

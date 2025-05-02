@@ -41,11 +41,9 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             if (it.isPlaying) {
                 it.pause()
             } else {
-                if (it.currentMediaItem == null) {
-                    val mediaItem = MediaItem.fromUri("https://s4.radio.co/s696f24a77/listen")
-                    it.setMediaItem(mediaItem)
-                    it.prepare()
-                }
+                val mediaItem = MediaItem.fromUri("https://s4.radio.co/s696f24a77/listen")
+                it.setMediaItem(mediaItem)
+                it.prepare()
                 it.play()
             }
         }

@@ -10,14 +10,23 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
+import net.afanasev.otonfm.data.StatusFetcher
 import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val statusFetcher = StatusFetcher()
+    private val _artworkUriFlow = MutableStateFlow<String?>(null)
+
     var controller by mutableStateOf<MediaController?>(null)
         private set
+
+    val artworkUriFlow: StateFlow<String?>
+        get() = _artworkUriFlow
 
     init {
         viewModelScope.launch {
@@ -39,6 +48,12 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
                 }
                 it.play()
             }
+        }
+    }
+
+    fun fetchArtwork() {
+        viewModelScope.launch {
+            _artworkUriFlow.value = statusFetcher.fetchArtworkUri()
         }
     }
 

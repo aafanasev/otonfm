@@ -57,6 +57,10 @@ fun PlayerViewScreen(
             isPlaying = it.isPlaying
             title = it.mediaMetadata.title.orEmpty()
 
+            if (isPlaying) {
+                viewModel.fetchArtwork()
+            }
+
             it.addListener(object : Player.Listener {
                 override fun onIsPlayingChanged(playing: Boolean) {
                     isPlaying = playing
@@ -65,6 +69,7 @@ fun PlayerViewScreen(
 
                 override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                     title = mediaMetadata.title.orEmpty()
+                    viewModel.fetchArtwork()
                 }
             })
         }

@@ -1,6 +1,5 @@
 package net.afanasev.otonfm.player
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,14 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import coil3.compose.AsyncImage
-import net.afanasev.otonfm.R
+import net.afanasev.otonfm.player.components.Logo
 import net.afanasev.otonfm.ui.theme.LocalCustomColorsPalette
 
 @Composable
@@ -84,11 +82,7 @@ fun PlayerViewScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "App logo",
-            modifier = Modifier.fillMaxWidth(0.6f)
-        )
+        Logo(modifier = Modifier.fillMaxWidth(0.6f))
 
         Spacer(modifier = Modifier.height(36.dp))
 

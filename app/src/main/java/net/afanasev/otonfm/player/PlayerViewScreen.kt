@@ -10,17 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Audiotrack
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,13 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import coil3.compose.AsyncImage
 import net.afanasev.otonfm.player.components.Logo
+import net.afanasev.otonfm.player.components.PlayButton
 import net.afanasev.otonfm.player.components.Title
 import net.afanasev.otonfm.ui.theme.LocalCustomColorsPalette
 
@@ -127,31 +120,12 @@ fun PlayerViewScreen(
 
         Spacer(modifier = Modifier.height(36.dp))
 
-        IconButton(
-            enabled = !isChangingState,
-            onClick = {
-                isChangingState = true
-                viewModel.playPause()
-            },
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color(0xFFCD0200),
-                disabledContainerColor = Color(0xFF990200),
-            ),
-            modifier = Modifier
-                .size(96.dp)
-                .shadow(
-                    elevation = 6.dp,
-                    shape = CircleShape,
-                    ambientColor = Color.Black,
-                    spotColor = Color.Black
-                ),
+        PlayButton(
+            isPlaying = isPlaying,
+            isEnabled = !isChangingState,
         ) {
-            Icon(
-                if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                if (isPlaying) "Pause" else "Play",
-                tint = Color.White,
-                modifier = Modifier.size(54.dp),
-            )
+            isChangingState = true
+            viewModel.playPause()
         }
     }
 }

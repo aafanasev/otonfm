@@ -39,6 +39,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import coil3.compose.AsyncImage
 import net.afanasev.otonfm.player.components.Logo
+import net.afanasev.otonfm.player.components.Title
 import net.afanasev.otonfm.ui.theme.LocalCustomColorsPalette
 
 @Composable
@@ -119,12 +120,8 @@ fun PlayerViewScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
+        Title(
             text = title,
-            textAlign = TextAlign.Center,
-            minLines = 2,
-            maxLines = 2,
-            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.fillMaxWidth(0.8f),
         )
 

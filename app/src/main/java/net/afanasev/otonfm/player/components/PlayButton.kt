@@ -26,7 +26,7 @@ fun PlayButton(
         onClick = onClick,
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = Color(0xFFCD0200),
-            disabledContainerColor = Color(0xFF990200),
+            disabledContainerColor = Color(0xFF660200),
         ),
         modifier = Modifier
             .size(96.dp)

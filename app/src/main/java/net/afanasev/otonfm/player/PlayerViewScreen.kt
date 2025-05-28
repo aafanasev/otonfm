@@ -30,8 +30,7 @@ fun PlayerViewScreen(
 ) {
     val artwork = viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
-    val isPlaying by viewModel.isPlaying.collectAsState()
-    val isChangingState by viewModel.isChangingState.collectAsState()
+    val buttonState by viewModel.buttonState.collectAsState()
 
     val configuration = LocalConfiguration.current
     val onPlayButtonClick = { viewModel.playPause() }
@@ -66,8 +65,7 @@ fun PlayerViewScreen(
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 PlayButton(
-                    isPlaying = isPlaying,
-                    isEnabled = !isChangingState,
+                    buttonState = buttonState,
                     onClick = onPlayButtonClick,
                 )
             }
@@ -91,8 +89,7 @@ fun PlayerViewScreen(
             )
             Spacer(modifier = Modifier.height(36.dp))
             PlayButton(
-                isPlaying = isPlaying,
-                isEnabled = !isChangingState,
+                buttonState = buttonState,
                 onClick = onPlayButtonClick,
             )
         }

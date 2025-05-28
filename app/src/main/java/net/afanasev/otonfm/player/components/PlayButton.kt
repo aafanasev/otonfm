@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -12,17 +13,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import net.afanasev.otonfm.player.PlayerViewModel
 
 @Composable
 fun PlayButton(
-    isPlaying: Boolean,
-    isEnabled: Boolean,
+    buttonState: PlayerViewModel.ButtonState,
     onClick: () -> Unit,
 ) {
     IconButton(
-        enabled = isEnabled,
+        enabled = buttonState != PlayerViewModel.ButtonState.LOADING,
         onClick = onClick,
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = Color(0xFFCD0200),
@@ -37,21 +39,43 @@ fun PlayButton(
                 spotColor = Color.Black
             ),
     ) {
-        Icon(
-            if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-            if (isPlaying) "Pause" else "Play",
-            tint = Color.White,
-            modifier = Modifier.size(54.dp),
-        )
+        if (buttonState == PlayerViewModel.ButtonState.LOADING) {
+            CircularProgressIndicator(
+                color = Color.White,
+                modifier = Modifier.size(54.dp),
+            )
+        } else {
+            val icon: ImageVector
+            val desc: String
+            when (buttonState) {
+                PlayerViewModel.ButtonState.PAUSED -> {
+                    icon = Icons.Filled.PlayArrow
+                    desc = "Play"
+                }
+
+                PlayerViewModel.ButtonState.PLAYING -> {
+                    icon = Icons.Filled.Pause
+                    desc = "Pause"
+                }
+
+                PlayerViewModel.ButtonState.LOADING -> throw IllegalStateException()
+            }
+
+            Icon(
+                imageVector = icon,
+                contentDescription = desc,
+                tint = Color.White,
+                modifier = Modifier.size(54.dp),
+            )
+        }
     }
 }
 
 @Preview
 @Composable
-fun PlayButtonDisabledPreview() {
+fun PlayButtonLoadingPreview() {
     PlayButton(
-        isPlaying = false,
-        isEnabled = false,
+        buttonState = PlayerViewModel.ButtonState.LOADING,
     ) { }
 }
 
@@ -59,8 +83,7 @@ fun PlayButtonDisabledPreview() {
 @Composable
 fun PlayButtonPlayingPreview() {
     PlayButton(
-        isPlaying = true,
-        isEnabled = true,
+        buttonState = PlayerViewModel.ButtonState.PLAYING,
     ) { }
 }
 
@@ -68,7 +91,6 @@ fun PlayButtonPlayingPreview() {
 @Composable
 fun PlayButtonPausedPreview() {
     PlayButton(
-        isPlaying = false,
-        isEnabled = true,
+        buttonState = PlayerViewModel.ButtonState.PAUSED,
     ) { }
 }

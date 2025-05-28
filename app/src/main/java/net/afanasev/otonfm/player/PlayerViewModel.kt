@@ -25,11 +25,8 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _title = MutableStateFlow<String>("")
     val title: StateFlow<String> = _title.asStateFlow()
 
-    private val _isPlaying = MutableStateFlow<Boolean>(false)
-    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
-
-    private val _isChangingState = MutableStateFlow<Boolean>(false)
-    val isChangingState: StateFlow<Boolean> = _isChangingState.asStateFlow()
+    private val _buttonState = MutableStateFlow<ButtonState>(ButtonState.PAUSED)
+    val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
 
     private val statusFetcher = StatusFetcher()
     private var mediaController: MediaController? = null
@@ -42,15 +39,16 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             mediaController =
                 MediaController.Builder(application, token).buildAsync().await().also {
                     if (it.isPlaying) {
-                        _isPlaying.value = true
+                        _buttonState.value = ButtonState.PLAYING
                         _title.value = it.mediaMetadata.title.orEmpty()
                         fetchArtwork()
                     }
 
                     it.addListener(object : Player.Listener {
                         override fun onIsPlayingChanged(playing: Boolean) {
-                            _isPlaying.value = playing
-                            _isChangingState.value = false
+                            _buttonState.value =
+                                if (playing) ButtonState.PLAYING else ButtonState.PAUSED
+
                         }
 
                         override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -63,7 +61,9 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun playPause() {
-        _isChangingState.value = true
+        if (_buttonState.value == ButtonState.PAUSED) {
+            _buttonState.value = ButtonState.LOADING
+        }
 
         mediaController?.let {
             if (it.isPlaying) {
@@ -82,6 +82,13 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             _artworkUri.value = statusFetcher.fetchArtworkUri()
         }
     }
+
+    enum class ButtonState {
+        PAUSED,
+        LOADING,
+        PLAYING,
+    }
+
 }
 
 private fun CharSequence?.orEmpty(): String = this?.toString() ?: ""

@@ -12,9 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import net.afanasev.otonfm.data.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.ui.theme.LocalCustomColorsPalette
 
@@ -41,7 +44,10 @@ fun Artwork(
             .background(LocalCustomColorsPalette.current.previewBackground),
     ) {
         AsyncImage(
-            model = artworkUri,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(artworkUri)
+                .crossfade(true)
+                .build(),
             contentDescription = "Preview",
             modifier = Modifier.fillMaxSize(),
         )

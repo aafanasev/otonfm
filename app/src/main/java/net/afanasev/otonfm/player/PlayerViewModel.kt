@@ -14,13 +14,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
+import net.afanasev.otonfm.data.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.data.StatusFetcher
 import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _artworkUri = MutableStateFlow<String?>(null)
-    val artworkUri: StateFlow<String?> = _artworkUri.asStateFlow()
+    private val _artworkUri = MutableStateFlow<String>(DEFAULT_ARTWORK_URI)
+    val artworkUri: StateFlow<String> = _artworkUri.asStateFlow()
 
     private val _title = MutableStateFlow<String>("")
     val title: StateFlow<String> = _title.asStateFlow()

@@ -28,13 +28,13 @@ class StatusFetcher {
         }
     }
 
-    suspend fun fetchArtworkUri(): String? {
+    suspend fun fetchArtworkUri(): String {
         val status: StatusModel? = try {
             httpClient.get(STATUS_URL + System.currentTimeMillis()).body()
         } catch (_: Exception) {
             null
         }
-        return status?.currentTrack?.artworkUri
+        return status?.currentTrack?.artworkUri ?: DEFAULT_ARTWORK_URI
     }
 
 }

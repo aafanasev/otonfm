@@ -1,6 +1,7 @@
 package net.afanasev.otonfm.player.components
 
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,14 +15,16 @@ fun Title(
     text: String,
     modifier: Modifier,
 ) {
-    Text(
-        text = text,
-        textAlign = TextAlign.Center,
-        minLines = 2,
-        maxLines = 2,
-        style = MaterialTheme.typography.titleLarge,
-        modifier = modifier,
-    )
+    SelectionContainer {
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            minLines = 2,
+            maxLines = 2,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = modifier,
+        )
+    }
 }
 
 @Preview

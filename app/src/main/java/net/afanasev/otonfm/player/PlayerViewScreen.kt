@@ -27,6 +27,7 @@ import net.afanasev.otonfm.player.components.Title
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
     modifier: Modifier = Modifier,
+    onLongPress: ()->Unit,
 ) {
     val artwork = viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
@@ -90,7 +91,7 @@ fun PlayerViewScreen(
             Spacer(modifier = Modifier.height(36.dp))
             PlayButton(
                 buttonState = buttonState,
-                onClick = onPlayButtonClick,
+                onClick = onLongPress,
             )
         }
     }

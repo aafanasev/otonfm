@@ -1,5 +1,7 @@
 package net.afanasev.otonfm.ui.theme
 
+import androidx.annotation.StringDef
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -33,11 +35,26 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(Theme.DARK, Theme.LIGHT, Theme.SYSTEM)
+annotation class Theme {
+    companion object {
+        const val DARK = "dark"
+        const val LIGHT = "light"
+        const val SYSTEM = "system"
+    }
+}
+
 @Composable
 fun OtonFmTheme(
-    darkTheme: Boolean,
+    @Theme theme: String,
     content: @Composable () -> Unit
 ) {
+    val darkTheme = when (theme) {
+        Theme.DARK -> true
+        Theme.LIGHT -> false
+        else -> isSystemInDarkTheme()
+    }
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val customColorsPalette = if (darkTheme) DarkCustomColorsPalette else LightCustomColorsPalette
 

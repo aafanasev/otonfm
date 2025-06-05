@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                         composable<MainRoutes.Player> {
                             PlayerViewScreen(
                                 viewModel(),
-                                onPlayButtonLongClick = {
+                                onArtworkLongClick = {
                                     navController.navigate(MainRoutes.ThemeChooser)
                                 }
                             )

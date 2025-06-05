@@ -26,7 +26,7 @@ import net.afanasev.otonfm.screens.player.components.Title
 @Composable
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
-    onPlayButtonLongClick: () -> Unit,
+    onArtworkLongClick: () -> Unit,
 ) {
     val artwork = viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
@@ -49,6 +49,7 @@ fun PlayerViewScreen(
             ) {
                 Artwork(
                     artworkUri = artwork.value,
+                    onLongClick = onArtworkLongClick,
                     modifier = Modifier.fillMaxHeight(0.8f),
                 )
             }
@@ -67,7 +68,6 @@ fun PlayerViewScreen(
                 PlayButton(
                     buttonState = buttonState,
                     onClick = onPlayButtonClick,
-                    onLongClick = onPlayButtonLongClick,
                 )
             }
         }
@@ -81,6 +81,7 @@ fun PlayerViewScreen(
             Spacer(modifier = Modifier.height(36.dp))
             Artwork(
                 artworkUri = artwork.value,
+                onLongClick = onArtworkLongClick,
                 modifier = Modifier.fillMaxWidth(0.8f),
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -92,7 +93,6 @@ fun PlayerViewScreen(
             PlayButton(
                 buttonState = buttonState,
                 onClick = onPlayButtonClick,
-                onLongClick = onPlayButtonLongClick,
             )
         }
     }

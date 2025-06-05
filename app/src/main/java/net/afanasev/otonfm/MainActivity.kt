@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
                         dialog<MainRoutes.ThemeChooser> {
                             ThemeChooserScreen(onThemeSelected = {
                                 scope.launch { dataStore.saveTheme(it) }
+                                navController.popBackStack()
                             })
                         }
                     }

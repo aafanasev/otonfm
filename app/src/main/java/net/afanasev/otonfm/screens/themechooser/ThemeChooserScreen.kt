@@ -17,10 +17,7 @@ import net.afanasev.otonfm.ui.theme.Theme
 
 @Composable
 fun ThemeChooserScreen(onThemeSelected: (String) -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(0.8f),
-    ) {
+    Card {
         Column(modifier = Modifier.padding(20.dp)) {
             val items = listOf(
                 Theme.SYSTEM to R.string.theme_system,
@@ -33,8 +30,8 @@ fun ThemeChooserScreen(onThemeSelected: (String) -> Unit) {
                     stringResource(stringResId),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
-                        .clickable(onClick = { onThemeSelected(value) }),
+                        .clickable(onClick = { onThemeSelected(value) })
+                        .padding(10.dp),
                 )
 
                 if (index < items.size - 1) {

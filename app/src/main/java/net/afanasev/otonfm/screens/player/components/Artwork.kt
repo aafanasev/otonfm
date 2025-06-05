@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import net.afanasev.otonfm.data.DEFAULT_ARTWORK_URI
+import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.ui.theme.LocalCustomColorsPalette
 
 @Composable

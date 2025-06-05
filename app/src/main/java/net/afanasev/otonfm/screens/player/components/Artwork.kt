@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.player.components
+package net.afanasev.otonfm.screens.player.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

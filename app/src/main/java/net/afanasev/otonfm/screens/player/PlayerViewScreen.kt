@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.player
+package net.afanasev.otonfm.screens.player
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -18,16 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import net.afanasev.otonfm.player.components.Artwork
-import net.afanasev.otonfm.player.components.Logo
-import net.afanasev.otonfm.player.components.PlayButton
-import net.afanasev.otonfm.player.components.Title
+import net.afanasev.otonfm.screens.player.components.Artwork
+import net.afanasev.otonfm.screens.player.components.Logo
+import net.afanasev.otonfm.screens.player.components.PlayButton
+import net.afanasev.otonfm.screens.player.components.Title
 
 @Composable
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
-    modifier: Modifier = Modifier,
-    onLongPress: ()->Unit,
+    onPlayButtonLongClick: () -> Unit,
 ) {
     val artwork = viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
@@ -38,7 +37,7 @@ fun PlayerViewScreen(
 
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Row(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -68,12 +67,13 @@ fun PlayerViewScreen(
                 PlayButton(
                     buttonState = buttonState,
                     onClick = onPlayButtonClick,
+                    onLongClick = onPlayButtonLongClick,
                 )
             }
         }
     } else {
         Column(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -91,7 +91,8 @@ fun PlayerViewScreen(
             Spacer(modifier = Modifier.height(36.dp))
             PlayButton(
                 buttonState = buttonState,
-                onClick = onLongPress,
+                onClick = onPlayButtonClick,
+                onLongClick = onPlayButtonLongClick,
             )
         }
     }

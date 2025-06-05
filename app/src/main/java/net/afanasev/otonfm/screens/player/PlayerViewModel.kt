@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.player
+package net.afanasev.otonfm.screens.player
 
 import android.app.Application
 import android.content.ComponentName

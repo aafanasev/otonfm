@@ -1,5 +1,6 @@
-package net.afanasev.otonfm.player.components
+package net.afanasev.otonfm.screens.player.components
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -14,14 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import net.afanasev.otonfm.player.PlayerViewModel
+import net.afanasev.otonfm.screens.player.PlayerViewModel
 
 @Composable
 fun PlayButton(
     buttonState: PlayerViewModel.ButtonState,
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
 ) {
     IconButton(
         enabled = buttonState != PlayerViewModel.ButtonState.LOADING,
@@ -31,6 +34,9 @@ fun PlayButton(
             disabledContainerColor = Color(0xFF660200),
         ),
         modifier = Modifier
+            .pointerInput(Unit) {
+                detectTapGestures(onLongPress = { onLongClick() })
+            }
             .size(96.dp)
             .shadow(
                 elevation = 6.dp,
@@ -76,7 +82,9 @@ fun PlayButton(
 fun PlayButtonLoadingPreview() {
     PlayButton(
         buttonState = PlayerViewModel.ButtonState.LOADING,
-    ) { }
+        onClick = {},
+        onLongClick = {},
+    )
 }
 
 @Preview
@@ -84,7 +92,9 @@ fun PlayButtonLoadingPreview() {
 fun PlayButtonPlayingPreview() {
     PlayButton(
         buttonState = PlayerViewModel.ButtonState.PLAYING,
-    ) { }
+        onClick = {},
+        onLongClick = {},
+    )
 }
 
 @Preview
@@ -92,5 +102,7 @@ fun PlayButtonPlayingPreview() {
 fun PlayButtonPausedPreview() {
     PlayButton(
         buttonState = PlayerViewModel.ButtonState.PAUSED,
-    ) { }
+        onClick = {},
+        onLongClick = {},
+    )
 }

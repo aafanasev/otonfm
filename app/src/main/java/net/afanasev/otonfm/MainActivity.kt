@@ -8,16 +8,17 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
+import net.afanasev.otonfm.data.prefs.DataStoreManager
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
 import net.afanasev.otonfm.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.theme.OtonfmTheme
@@ -26,12 +27,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val dataStore = DataStoreManager(applicationContext)
+
         enableEdgeToEdge()
         setContent {
-            var darkTheme by remember { mutableStateOf("dark") }
+            val scope = rememberCoroutineScope()
+            val theme by dataStore.theme.collectAsState("system")
 
             OtonfmTheme(
-                darkTheme = when (darkTheme) {
+                darkTheme = when (theme) {
                     "light" -> false
                     "dark" -> true
                     else -> isSystemInDarkTheme()
@@ -55,7 +59,7 @@ class MainActivity : ComponentActivity() {
                         }
                         dialog<MainRoutes.ThemeChooser> {
                             ThemeChooserScreen(onThemeSelected = {
-                                darkTheme = it
+                                scope.launch { dataStore.saveTheme(it) }
                             })
                         }
                     }

@@ -10,9 +10,18 @@ import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.R
 
 @Composable
-fun Logo(modifier: Modifier) {
+fun Logo(
+    isDarkMode: Boolean,
+    modifier: Modifier,
+) {
     Image(
-        painter = painterResource(id = R.drawable.logo),
+        painter = painterResource(
+            id = if (isDarkMode) {
+                R.drawable.logo_dark
+            } else {
+                R.drawable.logo_light
+            }
+        ),
         contentDescription = "App logo",
         modifier = modifier,
     )
@@ -20,6 +29,18 @@ fun Logo(modifier: Modifier) {
 
 @Preview
 @Composable
-fun LogoPreview() {
-    Logo(Modifier.width(60.dp))
+fun LogoPreviewLight() {
+    Logo(
+        isDarkMode = false,
+        Modifier.width(60.dp),
+    )
+}
+
+@Preview
+@Composable
+fun LogoPreviewDark() {
+    Logo(
+        isDarkMode = true,
+        Modifier.width(60.dp),
+    )
 }

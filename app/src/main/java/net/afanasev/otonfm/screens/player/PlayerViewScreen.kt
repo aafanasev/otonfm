@@ -26,6 +26,7 @@ import net.afanasev.otonfm.screens.player.components.Title
 @Composable
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
+    isDarkMode: Boolean,
     onArtworkLongClick: () -> Unit,
 ) {
     val artwork = viewModel.artworkUri.collectAsState()
@@ -58,7 +59,10 @@ fun PlayerViewScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Logo(modifier = Modifier.fillMaxWidth(0.6f))
+                Logo(
+                    isDarkMode = isDarkMode,
+                    modifier = Modifier.fillMaxWidth(0.6f),
+                )
                 Spacer(modifier = Modifier.height(24.dp))
                 Title(
                     text = title,
@@ -77,7 +81,10 @@ fun PlayerViewScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Logo(modifier = Modifier.fillMaxWidth(0.6f))
+            Logo(
+                isDarkMode = isDarkMode,
+                modifier = Modifier.fillMaxWidth(0.6f),
+            )
             Spacer(modifier = Modifier.height(36.dp))
             Artwork(
                 artworkUri = artwork.value,

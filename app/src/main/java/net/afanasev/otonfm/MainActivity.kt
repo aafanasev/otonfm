@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -21,6 +22,7 @@ import net.afanasev.otonfm.data.prefs.DataStoreManager
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
 import net.afanasev.otonfm.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
+import net.afanasev.otonfm.ui.theme.Theme
 
 class MainActivity : ComponentActivity() {
 
@@ -32,8 +34,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             val scope = rememberCoroutineScope()
             val theme by dataStore.theme.collectAsState("system")
+            val isDarkMode = when (theme) {
+                Theme.DARK -> true
+                Theme.LIGHT -> false
+                else -> isSystemInDarkTheme()
+            }
 
-            OtonFmTheme(theme) {
+            OtonFmTheme(isDarkMode) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
 
@@ -45,6 +52,7 @@ class MainActivity : ComponentActivity() {
                         composable<MainRoutes.Player> {
                             PlayerViewScreen(
                                 viewModel(),
+                                isDarkMode = isDarkMode,
                                 onArtworkLongClick = {
                                     navController.navigate(MainRoutes.ThemeChooser)
                                 }

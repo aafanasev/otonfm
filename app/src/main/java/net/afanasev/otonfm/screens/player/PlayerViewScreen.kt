@@ -1,6 +1,7 @@
 package net.afanasev.otonfm.screens.player
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -29,7 +31,7 @@ import net.afanasev.otonfm.screens.player.components.Artwork
 import net.afanasev.otonfm.screens.player.components.Logo
 import net.afanasev.otonfm.screens.player.components.PlayButton
 import net.afanasev.otonfm.screens.player.components.Title
-import net.afanasev.otonfm.ui.theme.Theme
+import net.afanasev.otonfm.ui.theme.BACKGROUND_GRADIENTS
 
 @Composable
 fun PlayerViewScreen(
@@ -47,7 +49,15 @@ fun PlayerViewScreen(
 
     if (useArtworkAsBackground) {
         if (artwork.value == DEFAULT_ARTWORK_URI) {
-            // TODO: add gradient
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            BACKGROUND_GRADIENTS.random()
+                        )
+                    ),
+            )
         } else {
             AsyncImage(
                 model = artwork.value,

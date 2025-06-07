@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.data
+package net.afanasev.otonfm.data.status
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

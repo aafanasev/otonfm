@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.player.components
+package net.afanasev.otonfm.screens.player.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import net.afanasev.otonfm.player.PlayerViewModel
+import net.afanasev.otonfm.screens.player.PlayerViewModel
 
 @Composable
 fun PlayButton(
@@ -76,7 +76,8 @@ fun PlayButton(
 fun PlayButtonLoadingPreview() {
     PlayButton(
         buttonState = PlayerViewModel.ButtonState.LOADING,
-    ) { }
+        onClick = {},
+    )
 }
 
 @Preview
@@ -84,7 +85,8 @@ fun PlayButtonLoadingPreview() {
 fun PlayButtonPlayingPreview() {
     PlayButton(
         buttonState = PlayerViewModel.ButtonState.PLAYING,
-    ) { }
+        onClick = {},
+    )
 }
 
 @Preview
@@ -92,5 +94,6 @@ fun PlayButtonPlayingPreview() {
 fun PlayButtonPausedPreview() {
     PlayButton(
         buttonState = PlayerViewModel.ButtonState.PAUSED,
-    ) { }
+        onClick = {},
+    )
 }

@@ -1,17 +1,12 @@
 package net.afanasev.otonfm.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.annotation.StringDef
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -39,24 +34,23 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(Theme.DARK, Theme.LIGHT, Theme.SYSTEM)
+annotation class Theme {
+    companion object {
+        const val DARK = "dark"
+        const val LIGHT = "light"
+        const val SYSTEM = "system"
+    }
+}
+
 @Composable
-fun OtonfmTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+fun OtonFmTheme(
+    isDarkMode: Boolean,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
-    val customColorsPalette = if (darkTheme) DarkCustomColorsPalette else LightCustomColorsPalette
+    val colorScheme = if (isDarkMode) DarkColorScheme else LightColorScheme
+    val customColorsPalette = if (isDarkMode) DarkCustomColorsPalette else LightCustomColorsPalette
 
     CompositionLocalProvider(LocalCustomColorsPalette provides customColorsPalette) {
         MaterialTheme(

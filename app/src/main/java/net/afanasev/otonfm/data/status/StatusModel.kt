@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.data
+package net.afanasev.otonfm.data.status
 
 import android.annotation.SuppressLint
 import kotlinx.serialization.SerialName

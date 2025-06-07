@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.player
+package net.afanasev.otonfm.screens.player
 
 import android.app.Application
 import android.content.ComponentName
@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
-import net.afanasev.otonfm.data.DEFAULT_ARTWORK_URI
-import net.afanasev.otonfm.data.StatusFetcher
+import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
+import net.afanasev.otonfm.data.status.StatusFetcher
 import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {

@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.player.components
+package net.afanasev.otonfm.screens.player.components
 
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.SelectionContainer

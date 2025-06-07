@@ -41,6 +41,7 @@ annotation class Theme {
         const val DARK = "dark"
         const val LIGHT = "light"
         const val SYSTEM = "system"
+        const val ARTWORK = "artwork"
     }
 }
 

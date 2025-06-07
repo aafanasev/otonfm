@@ -3,4 +3,5 @@
     <string name="theme_system">System theme</string>
     <string name="theme_dark">Dark theme</string>
     <string name="theme_light">Light theme</string>
+    <string name="theme_artwork">Artwork</string>
 </resources>

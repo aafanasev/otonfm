@@ -3,4 +3,5 @@
     <string name="theme_system">Системная тема</string>
     <string name="theme_dark">Темная тема</string>
     <string name="theme_light">Светлая тема</string>
+    <string name="theme_artwork">Обложка</string>
 </resources>

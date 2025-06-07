@@ -35,6 +35,7 @@ class MainActivity : ComponentActivity() {
             val scope = rememberCoroutineScope()
             val theme by dataStore.theme.collectAsState("system")
             val isDarkMode = when (theme) {
+                Theme.ARTWORK -> true
                 Theme.DARK -> true
                 Theme.LIGHT -> false
                 else -> isSystemInDarkTheme()
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
                             PlayerViewScreen(
                                 viewModel(),
                                 isDarkMode = isDarkMode,
+                                useArtworkAsBackground = theme == Theme.ARTWORK,
                                 onArtworkLongClick = {
                                     navController.navigate(MainRoutes.ThemeChooser)
                                 }

@@ -17,7 +17,7 @@ class DataStoreManager(private val context: Context) {
     }
 
     val theme: Flow<String> =
-        context.dataStore.data.map { prefs -> prefs[KEY_THEME] ?: Theme.SYSTEM }
+        context.dataStore.data.map { prefs -> prefs[KEY_THEME] ?: Theme.ARTWORK }
 
     suspend fun saveTheme(@Theme theme: String) {
         context.dataStore.edit { prefs ->

@@ -21,9 +21,9 @@ fun ThemeChooserScreen(onThemeSelected: (String) -> Unit) {
         Column(modifier = Modifier.padding(20.dp)) {
             val items = listOf(
                 Theme.ARTWORK to R.string.theme_artwork,
-                Theme.SYSTEM to R.string.theme_system,
                 Theme.DARK to R.string.theme_dark,
                 Theme.LIGHT to R.string.theme_light,
+                Theme.SYSTEM to R.string.theme_system,
             )
 
             items.forEachIndexed { index, (value, stringResId) ->

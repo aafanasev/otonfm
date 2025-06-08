@@ -1,7 +1,6 @@
 package net.afanasev.otonfm.screens.player
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,21 +16,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.screens.player.components.Artwork
+import net.afanasev.otonfm.screens.player.components.Background
 import net.afanasev.otonfm.screens.player.components.Logo
 import net.afanasev.otonfm.screens.player.components.PlayButton
 import net.afanasev.otonfm.screens.player.components.Title
-import net.afanasev.otonfm.ui.theme.BACKGROUND_GRADIENTS
 
 @Composable
 fun PlayerViewScreen(
@@ -48,30 +39,10 @@ fun PlayerViewScreen(
     val onPlayButtonClick = { viewModel.playPause() }
 
     if (useArtworkAsBackground) {
-        if (artwork.value == DEFAULT_ARTWORK_URI) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            BACKGROUND_GRADIENTS.random()
-                        )
-                    ),
-            )
-        } else {
-            AsyncImage(
-                model = artwork.value,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(
-                    Color.Black.copy(alpha = 0.3f),
-                    BlendMode.Darken,
-                ),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .blur(20.dp),
-            )
-        }
+        Background(
+            artwork.value,
+            modifier = Modifier.fillMaxSize(),
+        )
     }
 
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {

@@ -1,6 +1,7 @@
 package net.afanasev.otonfm.screens.player.components
 
 import androidx.compose.animation.Animatable
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,48 +33,53 @@ fun Background(
     artworkUri: String,
     modifier: Modifier,
 ) {
-    if (artworkUri == DEFAULT_ARTWORK_URI) {
-        val size = BACKGROUND_GRADIENTS.size
-        var current by remember { mutableIntStateOf(Random.nextInt(size)) }
-        val topColor = remember { Animatable(BACKGROUND_GRADIENTS[current][0]) }
-        val bottomColor = remember { Animatable(BACKGROUND_GRADIENTS[current][1]) }
+    Crossfade(
+        targetState = artworkUri == DEFAULT_ARTWORK_URI,
+        animationSpec = tween(1_000),
+    ) { showGradient ->
+        if (showGradient) {
+            val size = BACKGROUND_GRADIENTS.size
+            var current by remember { mutableIntStateOf(Random.nextInt(size)) }
+            val topColor = remember { Animatable(BACKGROUND_GRADIENTS[current][0]) }
+            val bottomColor = remember { Animatable(BACKGROUND_GRADIENTS[current][1]) }
 
-        LaunchedEffect(Unit) {
-            while (true) {
-                delay(10_000)
-                current = (current + 1) % size
+            LaunchedEffect(Unit) {
+                while (true) {
+                    delay(10_000)
+                    current = (current + 1) % size
+                }
             }
-        }
 
-        LaunchedEffect(current) {
-            val next = BACKGROUND_GRADIENTS[current]
-            topColor.animateTo(next[0], animationSpec = tween(durationMillis = 3_000))
-            bottomColor.animateTo(next[1], animationSpec = tween(durationMillis = 3_000))
-        }
+            LaunchedEffect(current) {
+                val next = BACKGROUND_GRADIENTS[current]
+                topColor.animateTo(next[0], animationSpec = tween(durationMillis = 3_000))
+                bottomColor.animateTo(next[1], animationSpec = tween(durationMillis = 3_000))
+            }
 
-        Box(
-            modifier = modifier.background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        topColor.value,
-                        bottomColor.value,
+            Box(
+                modifier = modifier.background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            topColor.value,
+                            bottomColor.value,
+                        )
                     )
-                )
-            ),
-        )
-    } else {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(artworkUri)
-                .crossfade(true)
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            colorFilter = ColorFilter.tint(
-                Color.Black.copy(alpha = 0.3f),
-                BlendMode.Darken,
-            ),
-            modifier = modifier.blur(20.dp),
-        )
+                ),
+            )
+        } else {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(artworkUri)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                colorFilter = ColorFilter.tint(
+                    Color.Black.copy(alpha = 0.3f),
+                    BlendMode.Darken,
+                ),
+                modifier = modifier.blur(20.dp),
+            )
+        }
     }
 }

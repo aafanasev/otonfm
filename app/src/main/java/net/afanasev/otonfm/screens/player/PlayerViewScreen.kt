@@ -33,7 +33,7 @@ fun PlayerViewScreen(
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
 ) {
-    val artwork = viewModel.artworkUri.collectAsState()
+    val artwork by viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
     val buttonState by viewModel.buttonState.collectAsState()
 
@@ -43,7 +43,7 @@ fun PlayerViewScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         if (useArtworkAsBackground) {
             Background(
-                artwork.value,
+                artwork,
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -61,7 +61,7 @@ fun PlayerViewScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Artwork(
-                        artworkUri = artwork.value,
+                        artworkUri = artwork,
                         modifier = Modifier.fillMaxHeight(0.8f),
                     )
                 }
@@ -98,7 +98,7 @@ fun PlayerViewScreen(
                 )
                 Spacer(modifier = Modifier.height(36.dp))
                 Artwork(
-                    artworkUri = artwork.value,
+                    artworkUri = artwork,
                     modifier = Modifier.fillMaxWidth(0.8f),
                 )
                 Spacer(modifier = Modifier.height(24.dp))

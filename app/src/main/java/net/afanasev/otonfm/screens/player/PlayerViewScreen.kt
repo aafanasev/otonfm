@@ -118,7 +118,8 @@ fun PlayerViewScreen(
             navController,
             isDarkMode,
             modifier = Modifier
-                .align(Alignment.TopEnd),
+                .align(Alignment.TopEnd)
+                .padding(6.dp),
         )
     }
 }

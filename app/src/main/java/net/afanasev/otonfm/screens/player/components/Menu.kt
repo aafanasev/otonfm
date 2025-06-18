@@ -3,6 +3,8 @@ package net.afanasev.otonfm.screens.player.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.AlternateEmail
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -44,12 +46,26 @@ fun Menu(
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.menu_theme)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Palette,
+                        contentDescription = null,
+                        tint = if (isDarkMode) Color.White else Color.Black
+                    )
+                },
                 onClick = {
                     expanded = false
                     navController.navigate(MainRoutes.ThemeChooser)
                 })
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.menu_contacts)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.AlternateEmail,
+                        contentDescription = null,
+                        tint = if (isDarkMode) Color.White else Color.Black
+                    )
+                },
                 onClick = {
                     expanded = false
                     navController.navigate(MainRoutes.Contacts)

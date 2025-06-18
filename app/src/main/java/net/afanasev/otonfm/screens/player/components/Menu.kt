@@ -1,14 +1,24 @@
 package net.afanasev.otonfm.screens.player.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import net.afanasev.otonfm.MainRoutes
+import net.afanasev.otonfm.R
 
 @Composable
 fun Menu(
@@ -16,16 +26,34 @@ fun Menu(
     isDarkMode: Boolean,
     modifier: Modifier,
 ) {
-    IconButton(
-        onClick = {
-            navController.navigate(MainRoutes.Contacts)
-        },
-        modifier = modifier,
-    ) {
-        Icon(
-            imageVector = Icons.Filled.MoreVert,
-            contentDescription = "Menu",
-            tint = if (isDarkMode) Color.White else Color.Black,
-        )
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier) {
+        IconButton(
+            onClick = { expanded = !expanded },
+        ) {
+            Icon(
+                imageVector = Icons.Filled.MoreVert,
+                contentDescription = "Menu",
+                tint = if (isDarkMode) Color.White else Color.Black,
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.menu_theme)) },
+                onClick = {
+                    expanded = false
+                    navController.navigate(MainRoutes.ThemeChooser)
+                })
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.menu_contacts)) },
+                onClick = {
+                    expanded = false
+                    navController.navigate(MainRoutes.Contacts)
+                })
+        }
     }
 }

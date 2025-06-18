@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Oton.FM</string>
+    <string name="app_name" translatable="false">Oton.FM</string>
 
-    <string name="settings_theme">Тема</string>
-    <string name="settings_contacts">Контакты</string>
+    <string name="menu_theme">Оформление</string>
+    <string name="menu_contacts">Контакты</string>
 
     <string name="theme_system">Системная тема</string>
     <string name="theme_dark">Темная тема</string>

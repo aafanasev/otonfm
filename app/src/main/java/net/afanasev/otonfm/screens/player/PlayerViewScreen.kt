@@ -117,7 +117,8 @@ fun PlayerViewScreen(
         Menu(
             navController,
             isDarkMode,
-            modifier = Modifier.align(Alignment.TopEnd),
+            modifier = Modifier
+                .align(Alignment.TopEnd),
         )
     }
 }

@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.prefs.DataStoreManager
 import net.afanasev.otonfm.screens.contacts.ContactsScreen
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
-import net.afanasev.otonfm.screens.settings.SettingsScreen
 import net.afanasev.otonfm.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
 import net.afanasev.otonfm.ui.theme.Theme
@@ -59,9 +58,6 @@ class MainActivity : ComponentActivity() {
                                 isDarkMode = isDarkMode,
                                 useArtworkAsBackground = theme == Theme.ARTWORK,
                             )
-                        }
-                        dialog<MainRoutes.Settings> {
-                            SettingsScreen(navController)
                         }
                         dialog<MainRoutes.ThemeChooser> {
                             ThemeChooserScreen(onThemeSelected = {

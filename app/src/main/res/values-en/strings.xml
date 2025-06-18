@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="settings_theme">Theme</string>
-    <string name="settings_contacts">Contacts</string>
+    <string name="menu_theme">Theme</string>
+    <string name="menu_contacts">Contacts</string>
 
     <string name="theme_system">System theme</string>
     <string name="theme_dark">Dark theme</string>

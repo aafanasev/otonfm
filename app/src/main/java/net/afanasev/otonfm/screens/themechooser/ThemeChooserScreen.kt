@@ -1,6 +1,5 @@
 package net.afanasev.otonfm.screens.themechooser
 
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import net.afanasev.otonfm.R
@@ -18,15 +17,11 @@ fun ThemeChooserScreen(onThemeSelected: (String) -> Unit) {
             Theme.SYSTEM to R.string.theme_system,
         )
 
-        items.forEachIndexed { index, (value, stringResId) ->
+        items.forEach { (value, stringResId) ->
             DialogItem(
                 stringResId,
                 onClick = { onThemeSelected(value) },
             )
-
-            if (index < items.size - 1) {
-                HorizontalDivider()
-            }
         }
     }
 }

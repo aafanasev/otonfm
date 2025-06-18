@@ -3,7 +3,6 @@ package net.afanasev.otonfm.screens.contacts
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
@@ -26,8 +25,6 @@ fun ContactsScreen() {
             },
         )
 
-        HorizontalDivider()
-
         DialogItem(
             R.string.contacts_email,
             onClick = {
@@ -49,8 +46,6 @@ fun ContactsScreen() {
             },
         )
 
-        HorizontalDivider()
-
         DialogItem(
             R.string.contacts_telegram,
             onClick = {
@@ -59,8 +54,6 @@ fun ContactsScreen() {
             },
         )
 
-        HorizontalDivider()
-
         DialogItem(
             R.string.contacts_instagram,
             onClick = {
@@ -68,8 +61,6 @@ fun ContactsScreen() {
                 context.startActivity(Intent(Intent.ACTION_VIEW, uri))
             },
         )
-
-        HorizontalDivider()
 
         DialogItem(
             R.string.contacts_github,

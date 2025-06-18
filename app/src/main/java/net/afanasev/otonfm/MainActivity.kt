@@ -55,11 +55,9 @@ class MainActivity : ComponentActivity() {
                         composable<MainRoutes.Player> {
                             PlayerViewScreen(
                                 viewModel(),
+                                navController,
                                 isDarkMode = isDarkMode,
                                 useArtworkAsBackground = theme == Theme.ARTWORK,
-                                onArtworkLongClick = {
-                                    navController.navigate(MainRoutes.Settings)
-                                }
                             )
                         }
                         dialog<MainRoutes.Settings> {

@@ -18,18 +18,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import net.afanasev.otonfm.screens.player.components.Artwork
 import net.afanasev.otonfm.screens.player.components.Background
 import net.afanasev.otonfm.screens.player.components.Logo
+import net.afanasev.otonfm.screens.player.components.Menu
 import net.afanasev.otonfm.screens.player.components.PlayButton
 import net.afanasev.otonfm.screens.player.components.Title
 
 @Composable
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
+    navController: NavController,
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
-    onArtworkLongClick: () -> Unit,
 ) {
     val artwork = viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
@@ -38,33 +40,55 @@ fun PlayerViewScreen(
     val configuration = LocalConfiguration.current
     val onPlayButtonClick = { viewModel.playPause() }
 
-    if (useArtworkAsBackground) {
-        Background(
-            artwork.value,
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (useArtworkAsBackground) {
+            Background(
+                artwork.value,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
 
-    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(2f)
-                    .padding(20.dp),
-                contentAlignment = Alignment.Center,
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Artwork(
-                    artworkUri = artwork.value,
-                    onLongClick = onArtworkLongClick,
-                    modifier = Modifier.fillMaxHeight(0.8f),
-                )
+                Box(
+                    modifier = Modifier
+                        .weight(2f)
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Artwork(
+                        artworkUri = artwork.value,
+                        modifier = Modifier.fillMaxHeight(0.8f),
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(3f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Logo(
+                        isDarkMode = isDarkMode,
+                        modifier = Modifier.fillMaxWidth(0.6f),
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Title(
+                        text = title,
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    PlayButton(
+                        buttonState = buttonState,
+                        onClick = onPlayButtonClick,
+                    )
+                }
             }
+        } else {
             Column(
-                modifier = Modifier.weight(3f),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -72,44 +96,28 @@ fun PlayerViewScreen(
                     isDarkMode = isDarkMode,
                     modifier = Modifier.fillMaxWidth(0.6f),
                 )
+                Spacer(modifier = Modifier.height(36.dp))
+                Artwork(
+                    artworkUri = artwork.value,
+                    modifier = Modifier.fillMaxWidth(0.8f),
+                )
                 Spacer(modifier = Modifier.height(24.dp))
                 Title(
                     text = title,
                     modifier = Modifier.fillMaxWidth(0.8f),
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(36.dp))
                 PlayButton(
                     buttonState = buttonState,
                     onClick = onPlayButtonClick,
                 )
             }
         }
-    } else {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Logo(
-                isDarkMode = isDarkMode,
-                modifier = Modifier.fillMaxWidth(0.6f),
-            )
-            Spacer(modifier = Modifier.height(36.dp))
-            Artwork(
-                artworkUri = artwork.value,
-                onLongClick = onArtworkLongClick,
-                modifier = Modifier.fillMaxWidth(0.8f),
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            Title(
-                text = title,
-                modifier = Modifier.fillMaxWidth(0.8f),
-            )
-            Spacer(modifier = Modifier.height(36.dp))
-            PlayButton(
-                buttonState = buttonState,
-                onClick = onPlayButtonClick,
-            )
-        }
+
+        Menu(
+            navController,
+            isDarkMode,
+            modifier = Modifier.align(Alignment.TopEnd),
+        )
     }
 }

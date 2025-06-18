@@ -11,6 +11,7 @@
 
     <string name="contacts_website">Сайт</string>
     <string name="contacts_email">Почта</string>
+    <string name="contacts_email_no_client">Почтовый клиент не найден</string>
     <string name="contacts_telegram">Телеграм</string>
     <string name="contacts_instagram">Инстаграм</string>
     <string name="contacts_github">GitHub</string>

@@ -2,6 +2,7 @@ package net.afanasev.otonfm.screens.contacts
 
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -35,7 +36,8 @@ fun ContactsScreen() {
 
                 if (intent.resolveActivity(context.packageManager) == null) {
                     Log.e(TAG, "No email client found")
-                    // TODO: show a toast
+                    val noEmailApp = R.string.contacts_email_no_client
+                    Toast.makeText(context, noEmailApp, Toast.LENGTH_LONG).show()
                 } else {
                     context.startActivity(
                         Intent.createChooser(

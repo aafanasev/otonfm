@@ -10,6 +10,7 @@
 
     <string name="contacts_website">Website</string>
     <string name="contacts_email">E-mail</string>
+    <string name="contacts_email_no_client">No email client found</string>
     <string name="contacts_telegram">Telegram</string>
     <string name="contacts_instagram">Instagram</string>
     <string name="contacts_github">GitHub</string>

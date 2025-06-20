@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "506038865559",
+    "project_id": "oton-fm",
+    "storage_bucket": "oton-fm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506038865559:android:8f43bd24786272476023d2",
+        "android_client_info": {
+          "package_name": "net.afanasev.otonfm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-MfZF7yA_4nIvAFMx1i2p4vOQ3ewzEek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

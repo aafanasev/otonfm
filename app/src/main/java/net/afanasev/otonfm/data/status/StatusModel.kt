@@ -11,12 +11,14 @@ const val DEFAULT_ARTWORK_URI =
 @Serializable
 internal data class StatusModel(
     @SerialName("current_track")
-    val currentTrack: CurrentTrack?,
+    val currentTrack: CurrentTrack,
 )
 
 @SuppressLint("UnsafeOptInUsageError")
 @Serializable
 internal data class CurrentTrack(
+    @SerialName("title")
+    val title: String,
     @SerialName("artwork_url_large")
-    val artworkUri: String?,
+    val artworkUri: String,
 )

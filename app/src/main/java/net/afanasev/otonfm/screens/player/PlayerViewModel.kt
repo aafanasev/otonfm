@@ -41,8 +41,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
                 MediaController.Builder(application, token).buildAsync().await().also {
                     if (it.isPlaying) {
                         _buttonState.value = ButtonState.PLAYING
-                        _title.value = it.mediaMetadata.title.orEmpty()
-                        fetchArtwork()
+                        setMetadata(it.mediaMetadata)
                     }
 
                     it.addListener(object : Player.Listener {
@@ -53,8 +52,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
                         }
 
                         override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
-                            _title.value = mediaMetadata.title.orEmpty()
-                            fetchArtwork()
+                            setMetadata(mediaMetadata)
                         }
                     })
                 }
@@ -78,9 +76,12 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    private fun fetchArtwork() {
+    private fun setMetadata(mediaMetadata: MediaMetadata) {
+        val currentTitle = mediaMetadata.title?.toString() ?: return
+
+        _title.value = currentTitle
         viewModelScope.launch {
-            _artworkUri.value = statusFetcher.fetchArtworkUri()
+            _artworkUri.value = statusFetcher.fetchArtworkUri(currentTitle)
         }
     }
 
@@ -89,7 +90,4 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         LOADING,
         PLAYING,
     }
-
 }
-
-private fun CharSequence?.orEmpty(): String = this?.toString() ?: ""

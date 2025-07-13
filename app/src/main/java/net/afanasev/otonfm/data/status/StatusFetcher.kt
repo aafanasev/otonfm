@@ -15,7 +15,7 @@ private const val TAG = "StatusFetcher"
 private const val STATUS_URL = "https://public.radio.co/stations/s696f24a77/status?v="
 private const val TIMEOUT_MS = 6_000L
 private const val RETRY_COUNT = 3
-private const val RETRY_MS = 1_000L
+private const val RETRY_MS = 2_000L
 
 class StatusFetcher {
 

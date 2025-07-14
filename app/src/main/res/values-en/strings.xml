@@ -8,6 +8,7 @@
     <string name="theme_light">Light theme</string>
     <string name="theme_artwork">Artwork</string>
 
+    <string name="contacts_feedback">Feedback</string>
     <string name="contacts_website">Website</string>
     <string name="contacts_email">E-mail</string>
     <string name="contacts_email_no_client">No email client found</string>

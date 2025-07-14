@@ -16,6 +16,17 @@ fun ContactsScreen() {
 
     Dialog {
         DialogItem(
+            R.string.contacts_feedback,
+            onClick = {
+                Logger.onContactSelect("feedback")
+
+                val uri =
+                    "https://docs.google.com/forms/d/e/1FAIpQLSf2afJD2QBT6NG-kGFzoFcmsNh-kvdbBsFA7_gTGdAZUrzfOw/viewform?usp=header".toUri()
+                context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+            },
+        )
+
+        DialogItem(
             R.string.contacts_website,
             onClick = {
                 Logger.onContactSelect("website")

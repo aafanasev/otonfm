@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import net.afanasev.otonfm.log.Logger
 import net.afanasev.otonfm.screens.player.components.Artwork
 import net.afanasev.otonfm.screens.player.components.Background
 import net.afanasev.otonfm.screens.player.components.Logo
@@ -38,7 +39,10 @@ fun PlayerViewScreen(
     val buttonState by viewModel.buttonState.collectAsState()
 
     val configuration = LocalConfiguration.current
-    val onPlayButtonClick = { viewModel.playPause() }
+    val onPlayButtonClick = {
+        Logger.onPlayButtonClick(buttonState)
+        viewModel.playPause()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (useArtworkAsBackground) {

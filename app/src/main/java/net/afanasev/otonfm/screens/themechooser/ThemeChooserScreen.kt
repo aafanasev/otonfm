@@ -3,6 +3,7 @@ package net.afanasev.otonfm.screens.themechooser
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import net.afanasev.otonfm.R
+import net.afanasev.otonfm.log.Logger
 import net.afanasev.otonfm.ui.components.Dialog
 import net.afanasev.otonfm.ui.components.DialogItem
 import net.afanasev.otonfm.ui.theme.Theme
@@ -20,7 +21,10 @@ fun ThemeChooserScreen(onThemeSelected: (String) -> Unit) {
         items.forEach { (value, stringResId) ->
             DialogItem(
                 stringResId,
-                onClick = { onThemeSelected(value) },
+                onClick = {
+                    Logger.onThemeSelect(value)
+                    onThemeSelected(value)
+                },
             )
         }
     }

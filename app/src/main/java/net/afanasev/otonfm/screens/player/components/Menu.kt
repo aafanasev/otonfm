@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import net.afanasev.otonfm.MainRoutes
 import net.afanasev.otonfm.R
+import net.afanasev.otonfm.log.Logger
 
 @Composable
 fun Menu(
@@ -32,7 +33,10 @@ fun Menu(
 
     Box(modifier = modifier) {
         IconButton(
-            onClick = { expanded = !expanded },
+            onClick = {
+                Logger.onMenuClick()
+                expanded = !expanded
+            },
         ) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
@@ -54,6 +58,7 @@ fun Menu(
                     )
                 },
                 onClick = {
+                    Logger.onMenuThemeClick()
                     expanded = false
                     navController.navigate(MainRoutes.ThemeChooser)
                 })
@@ -67,6 +72,7 @@ fun Menu(
                     )
                 },
                 onClick = {
+                    Logger.onMenuContactsClick()
                     expanded = false
                     navController.navigate(MainRoutes.Contacts)
                 })

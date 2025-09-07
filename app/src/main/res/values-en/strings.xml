@@ -16,4 +16,13 @@
     <string name="contacts_telegram">Telegram</string>
     <string name="contacts_instagram">Instagram</string>
     <string name="contacts_github">GitHub</string>
+
+    <string name="sleep_timer_off">Off</string>
+    <string name="sleep_timer_10min">10 minutes</string>
+    <string name="sleep_timer_15min">15 minutes</string>
+    <string name="sleep_timer_20min">20 minutes</string>
+    <string name="sleep_timer_30min">30 minutes</string>
+    <string name="sleep_timer_45min">45 minutes</string>
+    <string name="sleep_timer_60min">1 hour</string>
+
 </resources>

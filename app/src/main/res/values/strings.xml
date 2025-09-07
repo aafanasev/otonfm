@@ -18,4 +18,12 @@
     <string name="contacts_instagram">Инстаграм</string>
     <string name="contacts_github">GitHub</string>
 
+    <string name="sleep_timer_off">Выключить</string>
+    <string name="sleep_timer_10min">10 минут</string>
+    <string name="sleep_timer_15min">15 минут</string>
+    <string name="sleep_timer_20min">20 минут</string>
+    <string name="sleep_timer_30min">30 минут</string>
+    <string name="sleep_timer_45min">45 минут</string>
+    <string name="sleep_timer_60min">1 час</string>
+
 </resources>

@@ -28,6 +28,10 @@ object Logger {
         analytics.logEvent("menu_theme_click", null)
     }
 
+    fun onMenuSleepTimeClick() {
+        analytics.logEvent("menu_sleep_timer_click", null)
+    }
+
     fun onThemeSelect(@Theme theme: String) {
         analytics.logEvent("theme_select", Bundle().apply {
             putString("theme", theme)

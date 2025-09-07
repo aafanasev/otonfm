@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.AlternateEmail
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -61,6 +62,20 @@ fun Menu(
                     Logger.onMenuThemeClick()
                     expanded = false
                     navController.navigate(MainRoutes.ThemeChooser)
+                })
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.menu_sleep_timer)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Timer,
+                        contentDescription = null,
+                        tint = if (isDarkMode) Color.White else Color.Black
+                    )
+                },
+                onClick = {
+                    Logger.onMenuSleepTimeClick()
+                    expanded = false
+                    navController.navigate(MainRoutes.SleepTimer)
                 })
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.menu_contacts)) },

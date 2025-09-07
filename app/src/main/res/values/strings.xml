@@ -2,6 +2,7 @@
     <string name="app_name" translatable="false">Oton.FM</string>
 
     <string name="menu_theme">Оформление</string>
+    <string name="menu_sleep_timer">Таймер</string>
     <string name="menu_contacts">Контакты</string>
 
     <string name="theme_system">Системная тема</string>

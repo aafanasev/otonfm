@@ -11,4 +11,7 @@ sealed interface MainRoutes {
 
     @Serializable
     object Contacts : MainRoutes
+
+    @Serializable
+    object SleepTimer : MainRoutes
 }

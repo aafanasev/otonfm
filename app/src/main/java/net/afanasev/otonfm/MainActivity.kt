@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.prefs.DataStoreManager
 import net.afanasev.otonfm.screens.contacts.ContactsScreen
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
+import net.afanasev.otonfm.screens.sleeptimer.SleepTimerScreen
 import net.afanasev.otonfm.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
 import net.afanasev.otonfm.ui.theme.Theme
@@ -67,6 +68,9 @@ class MainActivity : ComponentActivity() {
                         }
                         dialog<MainRoutes.Contacts> {
                             ContactsScreen()
+                        }
+                        dialog<MainRoutes.SleepTimer> {
+                            SleepTimerScreen()
                         }
                     }
                 }

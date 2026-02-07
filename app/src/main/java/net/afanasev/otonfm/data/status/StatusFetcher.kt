@@ -12,7 +12,7 @@ import kotlinx.serialization.json.Json
 import net.afanasev.otonfm.log.Logger
 
 private const val STATUS_URL = "https://public.radio.co/stations/s696f24a77/status?v="
-private const val NEXT_TRACK_URL = "https://public.radio.co/api/v2/s696f24a77/track/next?v="
+private const val NEXT_TRACK_URL = "https://public.radio.co/stations/s696f24a77/next?v="
 private const val TIMEOUT_MS = 6_000L
 private const val RETRY_MAX_COUNT = 3
 private const val RETRY_DELAY_MS = 2_000L
@@ -47,21 +47,21 @@ class StatusFetcher {
         return DEFAULT_ARTWORK_URI
     }
 
-    suspend fun fetchNextTrack(): String? {
-        return try {
-            val response: NextTrackModel = httpClient.get(NEXT_TRACK_URL + System.currentTimeMillis()).body()
-            response.title
-        } catch (e: Exception) {
-            Logger.logNextTrackException(e)
-            null
-        }
-    }
-
     private suspend fun loadStatus(): StatusModel? {
         return try {
             httpClient.get(STATUS_URL + System.currentTimeMillis()).body()
         } catch (e: Exception) {
             Logger.logStatusException(e)
+            null
+        }
+    }
+
+    suspend fun fetchNextTrack(): String? {
+        return try {
+            val response: NextTrackModel = httpClient.get(NEXT_TRACK_URL + System.currentTimeMillis()).body()
+            response.nextTrack.title
+        } catch (e: Exception) {
+            Logger.logNextTrackException(e)
             null
         }
     }

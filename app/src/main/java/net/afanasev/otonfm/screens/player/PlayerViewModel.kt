@@ -81,15 +81,14 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun setMetadata(mediaMetadata: MediaMetadata) {
         val currentTitle = mediaMetadata.title?.toString() ?: return
-
         _title.value = currentTitle
+
         viewModelScope.launch {
             _artworkUri.value = statusFetcher.fetchArtworkUri(currentTitle)
         }
 
-        // Fetch next track in parallel
         viewModelScope.launch {
-            _nextTrackTitle.value = statusFetcher.fetchNextTrack() ?: ""
+            _nextTrackTitle.value = statusFetcher.fetchNextTrack().orEmpty()
         }
     }
 

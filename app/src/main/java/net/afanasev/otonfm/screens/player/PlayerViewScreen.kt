@@ -24,6 +24,7 @@ import net.afanasev.otonfm.screens.player.components.Artwork
 import net.afanasev.otonfm.screens.player.components.Background
 import net.afanasev.otonfm.screens.player.components.Logo
 import net.afanasev.otonfm.screens.player.components.Menu
+import net.afanasev.otonfm.screens.player.components.NextTrack
 import net.afanasev.otonfm.screens.player.components.PlayButton
 import net.afanasev.otonfm.screens.player.components.Title
 
@@ -36,6 +37,7 @@ fun PlayerViewScreen(
 ) {
     val artwork by viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
+    val nextTrackTitle by viewModel.nextTrackTitle.collectAsState()
     val buttonState by viewModel.buttonState.collectAsState()
 
     val configuration = LocalConfiguration.current
@@ -83,6 +85,11 @@ fun PlayerViewScreen(
                         text = title,
                         modifier = Modifier.fillMaxWidth(0.8f),
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    NextTrack(
+                        text = nextTrackTitle,
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                    )
                     Spacer(modifier = Modifier.height(24.dp))
                     PlayButton(
                         buttonState = buttonState,
@@ -108,6 +115,11 @@ fun PlayerViewScreen(
                 Spacer(modifier = Modifier.height(24.dp))
                 Title(
                     text = title,
+                    modifier = Modifier.fillMaxWidth(0.8f),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                NextTrack(
+                    text = nextTrackTitle,
                     modifier = Modifier.fillMaxWidth(0.8f),
                 )
                 Spacer(modifier = Modifier.height(36.dp))

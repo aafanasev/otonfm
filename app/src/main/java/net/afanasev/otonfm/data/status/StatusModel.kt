@@ -22,3 +22,12 @@ internal data class CurrentTrack(
     @SerialName("artwork_url_large")
     val artworkUri: String,
 )
+
+@SuppressLint("UnsafeOptInUsageError")
+@Serializable
+internal data class NextTrackModel(
+    @SerialName("title")
+    val title: String,
+    @SerialName("artwork_url_large")
+    val artworkUri: String,
+)

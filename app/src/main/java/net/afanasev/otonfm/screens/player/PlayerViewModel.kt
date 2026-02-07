@@ -26,6 +26,9 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _title = MutableStateFlow<String>("")
     val title: StateFlow<String> = _title.asStateFlow()
 
+    private val _nextTrackTitle = MutableStateFlow<String>("")
+    val nextTrackTitle: StateFlow<String> = _nextTrackTitle.asStateFlow()
+
     private val _buttonState = MutableStateFlow<ButtonState>(ButtonState.PAUSED)
     val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
 
@@ -82,6 +85,11 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         _title.value = currentTitle
         viewModelScope.launch {
             _artworkUri.value = statusFetcher.fetchArtworkUri(currentTitle)
+        }
+
+        // Fetch next track in parallel
+        viewModelScope.launch {
+            _nextTrackTitle.value = statusFetcher.fetchNextTrack() ?: ""
         }
     }
 

@@ -26,6 +26,9 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _title = MutableStateFlow<String>("")
     val title: StateFlow<String> = _title.asStateFlow()
 
+    private val _nextTrackTitle = MutableStateFlow<String>("")
+    val nextTrackTitle: StateFlow<String> = _nextTrackTitle.asStateFlow()
+
     private val _buttonState = MutableStateFlow<ButtonState>(ButtonState.PAUSED)
     val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
 
@@ -78,10 +81,14 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun setMetadata(mediaMetadata: MediaMetadata) {
         val currentTitle = mediaMetadata.title?.toString() ?: return
-
         _title.value = currentTitle
+
         viewModelScope.launch {
             _artworkUri.value = statusFetcher.fetchArtworkUri(currentTitle)
+        }
+
+        viewModelScope.launch {
+            _nextTrackTitle.value = statusFetcher.fetchNextTrack().orEmpty()
         }
     }
 

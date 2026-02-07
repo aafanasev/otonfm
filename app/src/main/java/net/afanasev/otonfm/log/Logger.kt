@@ -78,6 +78,15 @@ object Logger {
         })
     }
 
+    fun logNextTrackException(e: Exception) {
+        Log.e(TAG, "Cannot load next track", e)
+
+        analytics.logEvent("next_track_exception", Bundle().apply {
+            putString("type", e.javaClass.simpleName)
+            putString("msg", e.message)
+        })
+    }
+
     //endregion
 
 }

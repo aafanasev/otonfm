@@ -17,4 +17,6 @@
     <string name="contacts_instagram">Инстаграм</string>
     <string name="contacts_github">GitHub</string>
 
+    <string name="player_next_track_prefix">Сотору: %1$s</string>
+
 </resources>

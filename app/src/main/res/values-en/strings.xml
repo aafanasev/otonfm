@@ -15,4 +15,7 @@
     <string name="contacts_telegram">Telegram</string>
     <string name="contacts_instagram">Instagram</string>
     <string name="contacts_github">GitHub</string>
+
+    <string name="player_next_track_prefix">Next: %1$s</string>
+
 </resources>

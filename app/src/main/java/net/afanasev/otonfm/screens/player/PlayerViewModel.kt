@@ -24,7 +24,7 @@ import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _adminStatus = MutableStateFlow<AdminStatusModel?>(null)
+    private val _adminStatus = MutableStateFlow<AdminStatusModel?>(AdminStatusModel())
     val adminStatus: StateFlow<AdminStatusModel?> = _adminStatus.asStateFlow()
 
     private val _artworkUri = MutableStateFlow<String>(DEFAULT_ARTWORK_URI)

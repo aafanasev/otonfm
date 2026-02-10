@@ -1,35 +1,31 @@
 package net.afanasev.otonfm.data.adminstatus
 
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import net.afanasev.otonfm.log.Logger
 
-private const val PATH = "admin_status/current"
+private const val COLLECTION = "admin_status"
+private const val DOCUMENT = "current"
 
 class AdminStatusFetcher {
 
-    private val reference = Firebase.database.getReference(PATH)
+    private val docRef = Firebase.firestore.collection(COLLECTION).document(DOCUMENT)
 
     fun observe(): Flow<AdminStatusModel?> = callbackFlow {
-        val listener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val model = snapshot.getValue(AdminStatusModel::class.java)
-                trySend(model)
+        val registration = docRef.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Logger.logAdminStatusError(error.message ?: "Unknown Firestore error")
+                trySend(null)
+                return@addSnapshotListener
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                Logger.logAdminStatusError(error.message)
-                trySend(null)
-            }
+            val model = snapshot?.toObject(AdminStatusModel::class.java)
+            trySend(model)
         }
 
-        reference.addValueEventListener(listener)
-        awaitClose { reference.removeEventListener(listener) }
+        awaitClose { registration.remove() }
     }
 }

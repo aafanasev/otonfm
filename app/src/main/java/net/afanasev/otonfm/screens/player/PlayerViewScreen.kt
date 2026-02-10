@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,6 +21,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import net.afanasev.otonfm.log.Logger
+import net.afanasev.otonfm.screens.player.components.AdminMessageBar
 import net.afanasev.otonfm.screens.player.components.Artwork
 import net.afanasev.otonfm.screens.player.components.Background
 import net.afanasev.otonfm.screens.player.components.Logo
@@ -35,6 +37,7 @@ fun PlayerViewScreen(
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
 ) {
+    val adminMessage by viewModel.adminMessage.collectAsState()
     val artwork by viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
     val nextTrackTitle by viewModel.nextTrackTitle.collectAsState()
@@ -130,12 +133,31 @@ fun PlayerViewScreen(
             }
         }
 
-        Menu(
-            navController,
-            isDarkMode,
+        Row(
             modifier = Modifier
-                .align(Alignment.TopEnd)
+                .align(Alignment.TopStart)
+                .fillMaxWidth()
                 .padding(6.dp),
-        )
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Spacer(modifier = Modifier.size(48.dp))
+
+            val msg = adminMessage
+            if (msg != null && msg.isActive) {
+                AdminMessageBar(
+                    adminMessage = msg,
+                    isDarkMode = isDarkMode,
+                    modifier = Modifier.weight(1f),
+                )
+            } else {
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            Menu(
+                navController,
+                isDarkMode,
+                modifier = Modifier,
+            )
+        }
     }
 }

@@ -1,6 +1,6 @@
-package net.afanasev.otonfm.data.adminmessage
+package net.afanasev.otonfm.data.adminstatus
 
-data class AdminMessageModel(
+data class AdminStatusModel(
     var text: String = "",
     var type: String = "normal",
     var isActive: Boolean = false,

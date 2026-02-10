@@ -9,22 +9,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import net.afanasev.otonfm.data.adminmessage.AdminMessageModel
+import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
 
 @Composable
-fun AdminMessageBar(
-    adminMessage: AdminMessageModel,
+fun AdminStatusBar(
+    adminStatus: AdminStatusModel,
     isDarkMode: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -34,14 +36,14 @@ fun AdminMessageBar(
     Row(
         modifier = modifier
             .clickable {
-                Toast.makeText(context, adminMessage.text, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, adminStatus.text, Toast.LENGTH_LONG).show()
             }
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (adminMessage.isUrgent) {
+        if (adminStatus.isUrgent) {
             Icon(
-                imageVector = Icons.Filled.Warning,
+                imageVector = Icons.Filled.Campaign,
                 contentDescription = "Urgent",
                 tint = contentColor,
                 modifier = Modifier.size(16.dp),
@@ -50,7 +52,7 @@ fun AdminMessageBar(
         }
 
         Text(
-            text = adminMessage.text,
+            text = adminStatus.text,
             color = contentColor,
             fontSize = 13.sp,
             maxLines = 1,
@@ -58,4 +60,31 @@ fun AdminMessageBar(
             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
         )
     }
+}
+
+@Preview
+@Composable
+fun AdminStatusBarPreviewLight() {
+    AdminStatusBar(
+        adminStatus = AdminStatusModel(text = "Welcome to Oton FM! Enjoy the music."),
+        isDarkMode = false,
+    )
+}
+
+@Preview(backgroundColor = 0xFF000000, showBackground = true)
+@Composable
+fun AdminStatusBarPreviewDark() {
+    AdminStatusBar(
+        adminStatus = AdminStatusModel(text = "Welcome to Oton FM! Enjoy the music."),
+        isDarkMode = true,
+    )
+}
+
+@Preview
+@Composable
+fun AdminStatusBarPreviewUrgent() {
+    AdminStatusBar(
+        adminStatus = AdminStatusModel(text = "Scheduled maintenance tonight at 23:00 UTC", type = "urgent"),
+        isDarkMode = false,
+    )
 }

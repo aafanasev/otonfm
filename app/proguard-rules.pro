@@ -21,4 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 # Firebase RTDB uses reflection for deserialization
--keepclassmembers class net.afanasev.otonfm.data.adminmessage.AdminMessageModel { *; }
+-keepclassmembers class net.afanasev.otonfm.data.adminstatus.AdminStatusModel { *; }

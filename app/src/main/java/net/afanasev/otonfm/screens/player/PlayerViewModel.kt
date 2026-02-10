@@ -16,16 +16,16 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
-import net.afanasev.otonfm.data.adminmessage.AdminMessageFetcher
-import net.afanasev.otonfm.data.adminmessage.AdminMessageModel
+import net.afanasev.otonfm.data.adminstatus.AdminStatusFetcher
+import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
 import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.data.status.StatusFetcher
 import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _adminMessage = MutableStateFlow<AdminMessageModel?>(null)
-    val adminMessage: StateFlow<AdminMessageModel?> = _adminMessage.asStateFlow()
+    private val _adminStatus = MutableStateFlow<AdminStatusModel?>(null)
+    val adminStatus: StateFlow<AdminStatusModel?> = _adminStatus.asStateFlow()
 
     private val _artworkUri = MutableStateFlow<String>(DEFAULT_ARTWORK_URI)
     val artworkUri: StateFlow<String> = _artworkUri.asStateFlow()
@@ -39,13 +39,13 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _buttonState = MutableStateFlow<ButtonState>(ButtonState.PAUSED)
     val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
 
-    private val adminMessageFetcher = AdminMessageFetcher()
+    private val adminStatusFetcher = AdminStatusFetcher()
     private val statusFetcher = StatusFetcher()
     private var mediaController: MediaController? = null
 
     init {
-        adminMessageFetcher.observe()
-            .onEach { _adminMessage.value = it }
+        adminStatusFetcher.observe()
+            .onEach { _adminStatus.value = it }
             .launchIn(viewModelScope)
 
         viewModelScope.launch {

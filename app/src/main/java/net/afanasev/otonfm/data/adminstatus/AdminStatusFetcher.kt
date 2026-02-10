@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.data.adminmessage
+package net.afanasev.otonfm.data.adminstatus
 
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -12,19 +12,19 @@ import net.afanasev.otonfm.log.Logger
 
 private const val PATH = "admin_status/current"
 
-class AdminMessageFetcher {
+class AdminStatusFetcher {
 
     private val reference = Firebase.database.getReference(PATH)
 
-    fun observe(): Flow<AdminMessageModel?> = callbackFlow {
+    fun observe(): Flow<AdminStatusModel?> = callbackFlow {
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val model = snapshot.getValue(AdminMessageModel::class.java)
+                val model = snapshot.getValue(AdminStatusModel::class.java)
                 trySend(model)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Logger.logAdminMessageError(error.message)
+                Logger.logAdminStatusError(error.message)
                 trySend(null)
             }
         }

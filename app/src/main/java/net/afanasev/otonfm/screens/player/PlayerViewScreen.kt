@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import net.afanasev.otonfm.log.Logger
-import net.afanasev.otonfm.screens.player.components.AdminMessageBar
+import net.afanasev.otonfm.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.screens.player.components.Artwork
 import net.afanasev.otonfm.screens.player.components.Background
 import net.afanasev.otonfm.screens.player.components.Logo
@@ -37,7 +37,7 @@ fun PlayerViewScreen(
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
 ) {
-    val adminMessage by viewModel.adminMessage.collectAsState()
+    val adminStatus by viewModel.adminStatus.collectAsState()
     val artwork by viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
     val nextTrackTitle by viewModel.nextTrackTitle.collectAsState()
@@ -142,10 +142,10 @@ fun PlayerViewScreen(
         ) {
             Spacer(modifier = Modifier.size(48.dp))
 
-            val msg = adminMessage
-            if (msg != null && msg.isActive) {
-                AdminMessageBar(
-                    adminMessage = msg,
+            val status = adminStatus
+            if (status != null && status.isActive) {
+                AdminStatusBar(
+                    adminStatus = status,
                     isDarkMode = isDarkMode,
                     modifier = Modifier.weight(1f),
                 )

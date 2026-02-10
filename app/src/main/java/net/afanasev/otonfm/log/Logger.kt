@@ -87,9 +87,9 @@ object Logger {
         })
     }
 
-    fun logAdminMessageError(message: String) {
-        Log.e(TAG, "Admin message error: $message")
-        analytics.logEvent("admin_message_error", Bundle().apply {
+    fun logAdminStatusError(message: String) {
+        Log.e(TAG, "Admin status error: $message")
+        analytics.logEvent("admin_status_error", Bundle().apply {
             putString("msg", message)
         })
     }

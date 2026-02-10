@@ -27,5 +27,5 @@ internal data class TrackModel(
     @SerialName("title")
     val title: String,
     @SerialName("artwork_url_large")
-    val artworkUri: String,
+    val artworkUri: String?,
 )

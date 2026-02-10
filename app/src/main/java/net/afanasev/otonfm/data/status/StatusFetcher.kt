@@ -37,7 +37,7 @@ class StatusFetcher {
         repeat(RETRY_MAX_COUNT) { attemptIdx ->
             loadStatus()?.let {
                 if (it.currentTrack.title == expectedTitle) {
-                    return it.currentTrack.artworkUri
+                    return it.currentTrack.artworkUri ?: DEFAULT_ARTWORK_URI
                 }
             }
             Logger.logArtworkMismatch(attemptIdx + 1, RETRY_MAX_COUNT, RETRY_DELAY_MS)

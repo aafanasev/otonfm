@@ -57,31 +57,90 @@ fun PlayerViewScreen(
             )
         }
 
-        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(
-                    modifier = Modifier
-                        .weight(2f)
-                        .padding(20.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Artwork(
-                        artworkUri = artwork,
-                        modifier = Modifier.fillMaxHeight(0.8f),
+                Spacer(modifier = Modifier.size(48.dp))
+
+                val status = adminStatus
+                if (status != null && status.isActive) {
+                    AdminStatusBar(
+                        adminStatus = status,
+                        isDarkMode = isDarkMode,
+                        modifier = Modifier.weight(1f),
                     )
+                } else {
+                    Spacer(modifier = Modifier.weight(1f))
                 }
+
+                Menu(
+                    navController,
+                    isDarkMode,
+                    modifier = Modifier,
+                )
+            }
+
+            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(2f)
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Artwork(
+                            artworkUri = artwork,
+                            modifier = Modifier.fillMaxHeight(0.8f),
+                        )
+                    }
+                    Column(
+                        modifier = Modifier.weight(3f),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Logo(
+                            isDarkMode = isDarkMode,
+                            modifier = Modifier.fillMaxWidth(0.6f),
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Title(
+                            text = title,
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        NextTrack(
+                            text = nextTrackTitle,
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        PlayButton(
+                            buttonState = buttonState,
+                            onClick = onPlayButtonClick,
+                        )
+                    }
+                }
+            } else {
                 Column(
-                    modifier = Modifier.weight(3f),
+                    modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Logo(
                         isDarkMode = isDarkMode,
                         modifier = Modifier.fillMaxWidth(0.6f),
+                    )
+                    Spacer(modifier = Modifier.height(36.dp))
+                    Artwork(
+                        artworkUri = artwork,
+                        modifier = Modifier.fillMaxWidth(0.8f),
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Title(
@@ -93,71 +152,13 @@ fun PlayerViewScreen(
                         text = nextTrackTitle,
                         modifier = Modifier.fillMaxWidth(0.8f),
                     )
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(36.dp))
                     PlayButton(
                         buttonState = buttonState,
                         onClick = onPlayButtonClick,
                     )
                 }
             }
-        } else {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Logo(
-                    isDarkMode = isDarkMode,
-                    modifier = Modifier.fillMaxWidth(0.6f),
-                )
-                Spacer(modifier = Modifier.height(36.dp))
-                Artwork(
-                    artworkUri = artwork,
-                    modifier = Modifier.fillMaxWidth(0.8f),
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Title(
-                    text = title,
-                    modifier = Modifier.fillMaxWidth(0.8f),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                NextTrack(
-                    text = nextTrackTitle,
-                    modifier = Modifier.fillMaxWidth(0.8f),
-                )
-                Spacer(modifier = Modifier.height(36.dp))
-                PlayButton(
-                    buttonState = buttonState,
-                    onClick = onPlayButtonClick,
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .fillMaxWidth()
-                .padding(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Spacer(modifier = Modifier.size(48.dp))
-
-            val status = adminStatus
-            if (status != null && status.isActive) {
-                AdminStatusBar(
-                    adminStatus = status,
-                    isDarkMode = isDarkMode,
-                    modifier = Modifier.weight(1f),
-                )
-            } else {
-                Spacer(modifier = Modifier.weight(1f))
-            }
-
-            Menu(
-                navController,
-                isDarkMode,
-                modifier = Modifier,
-            )
         }
     }
 }

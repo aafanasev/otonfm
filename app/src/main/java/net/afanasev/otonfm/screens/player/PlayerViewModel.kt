@@ -12,13 +12,20 @@ import androidx.media3.session.SessionToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
+import net.afanasev.otonfm.data.adminstatus.AdminStatusFetcher
+import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
 import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.data.status.StatusFetcher
 import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val _adminStatus = MutableStateFlow<AdminStatusModel?>(AdminStatusModel())
+    val adminStatus: StateFlow<AdminStatusModel?> = _adminStatus.asStateFlow()
 
     private val _artworkUri = MutableStateFlow<String>(DEFAULT_ARTWORK_URI)
     val artworkUri: StateFlow<String> = _artworkUri.asStateFlow()
@@ -32,10 +39,15 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _buttonState = MutableStateFlow<ButtonState>(ButtonState.PAUSED)
     val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
 
+    private val adminStatusFetcher = AdminStatusFetcher()
     private val statusFetcher = StatusFetcher()
     private var mediaController: MediaController? = null
 
     init {
+        adminStatusFetcher.observe()
+            .onEach { _adminStatus.value = it }
+            .launchIn(viewModelScope)
+
         viewModelScope.launch {
             val token =
                 SessionToken(application, ComponentName(application, PlaybackService::class.java))

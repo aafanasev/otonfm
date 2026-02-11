@@ -87,6 +87,13 @@ object Logger {
         })
     }
 
+    fun logAdminStatusError(message: String) {
+        Log.e(TAG, "Admin status error: $message")
+        analytics.logEvent("admin_status_error", Bundle().apply {
+            putString("msg", message)
+        })
+    }
+
     //endregion
 
 }

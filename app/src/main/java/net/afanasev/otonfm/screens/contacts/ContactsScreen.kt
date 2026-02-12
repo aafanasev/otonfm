@@ -2,20 +2,23 @@ package net.afanasev.otonfm.screens.contacts
 
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.log.Logger
-import net.afanasev.otonfm.ui.components.Dialog
-import net.afanasev.otonfm.ui.components.DialogItem
+import net.afanasev.otonfm.ui.components.TextRowItem
 
 @Composable
 fun ContactsScreen() {
     val context = LocalContext.current
 
-    Dialog {
-        DialogItem(
+    Column(modifier = Modifier.padding(vertical = 12.dp)) {
+        TextRowItem(
             R.string.contacts_feedback,
             onClick = {
                 Logger.onContactSelect("feedback")
@@ -26,7 +29,7 @@ fun ContactsScreen() {
             },
         )
 
-        DialogItem(
+        TextRowItem(
             R.string.contacts_website,
             onClick = {
                 Logger.onContactSelect("website")
@@ -36,7 +39,7 @@ fun ContactsScreen() {
             },
         )
 
-        DialogItem(
+        TextRowItem(
             R.string.contacts_email,
             onClick = {
                 Logger.onContactSelect("email")
@@ -59,7 +62,7 @@ fun ContactsScreen() {
             },
         )
 
-        DialogItem(
+        TextRowItem(
             R.string.contacts_telegram,
             onClick = {
                 Logger.onContactSelect("telegram")
@@ -69,7 +72,7 @@ fun ContactsScreen() {
             },
         )
 
-        DialogItem(
+        TextRowItem(
             R.string.contacts_instagram,
             onClick = {
                 Logger.onContactSelect("instagram")
@@ -79,7 +82,7 @@ fun ContactsScreen() {
             },
         )
 
-        DialogItem(
+        TextRowItem(
             R.string.contacts_github,
             onClick = {
                 Logger.onContactSelect("github")

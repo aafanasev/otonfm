@@ -2,19 +2,22 @@ package net.afanasev.otonfm.screens.contacts
 
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.log.Logger
-import net.afanasev.otonfm.ui.components.Dialog
 import net.afanasev.otonfm.ui.components.DialogItem
 
 @Composable
 fun ContactsScreen() {
     val context = LocalContext.current
 
-    Dialog {
+    Column(modifier = Modifier.padding(vertical = 12.dp)) {
         DialogItem(
             R.string.contacts_feedback,
             onClick = {

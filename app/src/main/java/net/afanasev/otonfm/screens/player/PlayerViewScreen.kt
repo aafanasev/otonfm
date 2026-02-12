@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation3.runtime.NavKey
 import net.afanasev.otonfm.log.Logger
 import net.afanasev.otonfm.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.screens.player.components.Artwork
@@ -33,7 +33,7 @@ import net.afanasev.otonfm.screens.player.components.Title
 @Composable
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
-    navController: NavController,
+    onNavigate: (NavKey) -> Unit,
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
 ) {
@@ -78,7 +78,7 @@ fun PlayerViewScreen(
                 }
 
                 Menu(
-                    navController,
+                    onNavigate,
                     isDarkMode,
                     modifier = Modifier,
                 )

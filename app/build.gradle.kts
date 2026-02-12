@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "net.afanasev.otonfm"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "net.afanasev.otonfm"
@@ -48,8 +48,10 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)

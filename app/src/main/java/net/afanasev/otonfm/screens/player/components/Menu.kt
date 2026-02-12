@@ -18,14 +18,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import androidx.navigation3.runtime.NavKey
 import net.afanasev.otonfm.MainRoutes
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.log.Logger
 
 @Composable
 fun Menu(
-    navController: NavController,
+    onNavigate: (NavKey) -> Unit,
     isDarkMode: Boolean,
     modifier: Modifier,
 ) {
@@ -60,7 +60,7 @@ fun Menu(
                 onClick = {
                     Logger.onMenuThemeClick()
                     expanded = false
-                    navController.navigate(MainRoutes.ThemeChooser)
+                    onNavigate(MainRoutes.ThemeChooser)
                 })
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.menu_contacts)) },
@@ -74,7 +74,7 @@ fun Menu(
                 onClick = {
                     Logger.onMenuContactsClick()
                     expanded = false
-                    navController.navigate(MainRoutes.Contacts)
+                    onNavigate(MainRoutes.Contacts)
                 })
         }
     }

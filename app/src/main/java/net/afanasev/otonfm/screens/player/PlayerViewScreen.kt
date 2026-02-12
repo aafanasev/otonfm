@@ -19,13 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavKey
 import net.afanasev.otonfm.log.Logger
 import net.afanasev.otonfm.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.screens.player.components.Artwork
 import net.afanasev.otonfm.screens.player.components.Background
 import net.afanasev.otonfm.screens.player.components.Logo
-import net.afanasev.otonfm.screens.player.components.Menu
+import net.afanasev.otonfm.screens.player.components.MenuButton
 import net.afanasev.otonfm.screens.player.components.NextTrack
 import net.afanasev.otonfm.screens.player.components.PlayButton
 import net.afanasev.otonfm.screens.player.components.Title
@@ -33,7 +32,7 @@ import net.afanasev.otonfm.screens.player.components.Title
 @Composable
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
-    onNavigate: (NavKey) -> Unit,
+    onMenuClick: () -> Unit,
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
 ) {
@@ -77,9 +76,9 @@ fun PlayerViewScreen(
                     Spacer(modifier = Modifier.weight(1f))
                 }
 
-                Menu(
-                    onNavigate,
-                    isDarkMode,
+                MenuButton(
+                    onNavigate = onMenuClick,
+                    isDarkMode = isDarkMode,
                     modifier = Modifier,
                 )
             }

@@ -8,7 +8,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.log.Logger
-import net.afanasev.otonfm.ui.components.DialogItem
+import net.afanasev.otonfm.ui.components.TextRowItem
 import net.afanasev.otonfm.ui.theme.Theme
 
 @Composable
@@ -22,7 +22,7 @@ fun ThemeChooserScreen(onThemeSelected: (String) -> Unit) {
         )
 
         items.forEach { (value, stringResId) ->
-            DialogItem(
+            TextRowItem(
                 stringResId,
                 onClick = {
                     Logger.onThemeSelect(value)

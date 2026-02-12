@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.navigation
+package net.afanasev.otonfm.ui.navigation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet

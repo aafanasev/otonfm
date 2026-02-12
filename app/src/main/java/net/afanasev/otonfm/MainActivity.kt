@@ -2,12 +2,12 @@ package net.afanasev.otonfm
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,10 +21,11 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.prefs.DataStoreManager
-import net.afanasev.otonfm.navigation.BottomSheetSceneStrategy
 import net.afanasev.otonfm.screens.contacts.ContactsScreen
+import net.afanasev.otonfm.screens.menu.MenuScreen
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
 import net.afanasev.otonfm.screens.themechooser.ThemeChooserScreen
+import net.afanasev.otonfm.ui.navigation.BottomSheetSceneStrategy
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
 import net.afanasev.otonfm.ui.theme.Theme
 
@@ -60,10 +61,18 @@ class MainActivity : ComponentActivity() {
                             entry<MainRoutes.Player> {
                                 PlayerViewScreen(
                                     viewModel(),
-                                    onNavigate = { backStack.add(it) },
+                                    onMenuClick = { backStack.add(MainRoutes.Menu) },
                                     isDarkMode = isDarkMode,
                                     useArtworkAsBackground = theme == Theme.ARTWORK,
                                 )
+                            }
+                            entry<MainRoutes.Menu>(
+                                metadata = BottomSheetSceneStrategy.bottomSheet()
+                            ) {
+                                MenuScreen(onItemSelected = { route ->
+                                    backStack.removeLastOrNull()
+                                    backStack.add(route)
+                                })
                             }
                             entry<MainRoutes.ThemeChooser>(
                                 metadata = BottomSheetSceneStrategy.bottomSheet()

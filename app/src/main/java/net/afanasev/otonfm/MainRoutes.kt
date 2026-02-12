@@ -8,6 +8,9 @@ sealed interface MainRoutes {
     object Player : MainRoutes, NavKey
 
     @Serializable
+    object Menu : MainRoutes, NavKey
+
+    @Serializable
     object ThemeChooser : MainRoutes, NavKey
 
     @Serializable

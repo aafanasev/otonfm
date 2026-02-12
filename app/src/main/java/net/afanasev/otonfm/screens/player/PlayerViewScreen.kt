@@ -27,12 +27,15 @@ import net.afanasev.otonfm.screens.player.components.Logo
 import net.afanasev.otonfm.screens.player.components.MenuButton
 import net.afanasev.otonfm.screens.player.components.NextTrack
 import net.afanasev.otonfm.screens.player.components.PlayButton
+import net.afanasev.otonfm.screens.player.components.ChatButton
 import net.afanasev.otonfm.screens.player.components.Title
 
 @Composable
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
     onMenuClick: () -> Unit,
+    onChatClick: () -> Unit,
+    latestChatMessage: String?,
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
 ) {
@@ -82,6 +85,16 @@ fun PlayerViewScreen(
                     modifier = Modifier,
                 )
             }
+
+            ChatButton(
+                latestMessage = latestChatMessage,
+                isDarkMode = isDarkMode,
+                onClick = {
+                    Logger.onChatButtonClick()
+                    onChatClick()
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
 
             if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Row(

@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -21,9 +23,12 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.prefs.DataStoreManager
+import net.afanasev.otonfm.screens.chat.ChatScreen
+import net.afanasev.otonfm.screens.chat.ChatViewModel
 import net.afanasev.otonfm.screens.contacts.ContactsScreen
 import net.afanasev.otonfm.screens.menu.MenuScreen
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
+import net.afanasev.otonfm.screens.registration.RegistrationScreen
 import net.afanasev.otonfm.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.navigation.BottomSheetSceneStrategy
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
@@ -51,6 +56,22 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val backStack = rememberNavBackStack(MainRoutes.Player)
                     val bottomSheetStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
+                    val chatViewModel: ChatViewModel = viewModel()
+                    val authState by chatViewModel.authState.collectAsState()
+                    val latestMessage by chatViewModel.latestMessagePreview.collectAsState()
+                    val context = LocalContext.current
+
+                    LaunchedEffect(Unit) {
+                        chatViewModel.navigateAfterSignIn.collect { state ->
+                            when (state) {
+                                is ChatViewModel.AuthState.NeedsRegistration ->
+                                    backStack.add(MainRoutes.Registration)
+                                is ChatViewModel.AuthState.Authenticated ->
+                                    backStack.add(MainRoutes.Chat)
+                                else -> {}
+                            }
+                        }
+                    }
 
                     NavDisplay(
                         backStack = backStack,
@@ -62,6 +83,21 @@ class MainActivity : ComponentActivity() {
                                 PlayerViewScreen(
                                     viewModel(),
                                     onMenuClick = { backStack.add(MainRoutes.Menu) },
+                                    onChatClick = {
+                                        when (authState) {
+                                            is ChatViewModel.AuthState.NotAuthenticated -> {
+                                                chatViewModel.signIn(context)
+                                            }
+                                            is ChatViewModel.AuthState.NeedsRegistration -> {
+                                                backStack.add(MainRoutes.Registration)
+                                            }
+                                            is ChatViewModel.AuthState.Authenticated -> {
+                                                backStack.add(MainRoutes.Chat)
+                                            }
+                                            is ChatViewModel.AuthState.Loading -> { /* no-op */ }
+                                        }
+                                    },
+                                    latestChatMessage = latestMessage,
                                     isDarkMode = isDarkMode,
                                     useArtworkAsBackground = theme == Theme.ARTWORK,
                                 )
@@ -86,6 +122,20 @@ class MainActivity : ComponentActivity() {
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
                                 ContactsScreen()
+                            }
+                            entry<MainRoutes.Registration> {
+                                RegistrationScreen(
+                                    onRegister = { displayName, countryFlag ->
+                                        chatViewModel.register(displayName, countryFlag)
+                                        backStack.removeLastOrNull()
+                                        backStack.add(MainRoutes.Chat)
+                                    },
+                                )
+                            }
+                            entry<MainRoutes.Chat>(
+                                metadata = BottomSheetSceneStrategy.bottomSheet()
+                            ) {
+                                ChatScreen(chatViewModel)
                             }
                         }
                     )

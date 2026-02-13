@@ -86,16 +86,6 @@ fun PlayerViewScreen(
                 )
             }
 
-            ChatButton(
-                latestMessage = latestChatMessage,
-                isDarkMode = isDarkMode,
-                onClick = {
-                    Logger.onChatButtonClick()
-                    onChatClick()
-                },
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-            )
-
             if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Row(
                     modifier = Modifier
@@ -175,6 +165,16 @@ fun PlayerViewScreen(
                     )
                 }
             }
+
+            ChatButton(
+                latestMessage = latestChatMessage,
+                isDarkMode = isDarkMode,
+                onClick = {
+                    Logger.onChatButtonClick()
+                    onChatClick()
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
         }
     }
 }

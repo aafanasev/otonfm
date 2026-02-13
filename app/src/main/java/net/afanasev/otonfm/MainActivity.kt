@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.prefs.DataStoreManager
 import net.afanasev.otonfm.screens.chat.ChatScreen
 import net.afanasev.otonfm.screens.chat.ChatViewModel
+import net.afanasev.otonfm.screens.chat.UserViewModel
 import net.afanasev.otonfm.screens.contacts.ContactsScreen
 import net.afanasev.otonfm.screens.menu.MenuScreen
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
@@ -56,17 +57,16 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val backStack = rememberNavBackStack(MainRoutes.Player)
                     val bottomSheetStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
-                    val chatViewModel: ChatViewModel = viewModel()
-                    val authState by chatViewModel.authState.collectAsState()
-                    val latestMessage by chatViewModel.latestMessagePreview.collectAsState()
+                    val userViewModel: UserViewModel = viewModel()
+                    val authState by userViewModel.authState.collectAsState()
                     val context = LocalContext.current
 
                     LaunchedEffect(Unit) {
-                        chatViewModel.navigateAfterSignIn.collect { state ->
+                        userViewModel.navigateAfterSignIn.collect { state ->
                             when (state) {
-                                is ChatViewModel.AuthState.NeedsRegistration ->
+                                is UserViewModel.AuthState.NeedsRegistration ->
                                     backStack.add(MainRoutes.Registration)
-                                is ChatViewModel.AuthState.Authenticated ->
+                                is UserViewModel.AuthState.Authenticated ->
                                     backStack.add(MainRoutes.Chat)
                                 else -> {}
                             }
@@ -85,19 +85,18 @@ class MainActivity : ComponentActivity() {
                                     onMenuClick = { backStack.add(MainRoutes.Menu) },
                                     onChatClick = {
                                         when (authState) {
-                                            is ChatViewModel.AuthState.NotAuthenticated -> {
-                                                chatViewModel.signIn(context)
+                                            is UserViewModel.AuthState.NotAuthenticated -> {
+                                                userViewModel.signIn(context)
                                             }
-                                            is ChatViewModel.AuthState.NeedsRegistration -> {
+                                            is UserViewModel.AuthState.NeedsRegistration -> {
                                                 backStack.add(MainRoutes.Registration)
                                             }
-                                            is ChatViewModel.AuthState.Authenticated -> {
+                                            is UserViewModel.AuthState.Authenticated -> {
                                                 backStack.add(MainRoutes.Chat)
                                             }
-                                            is ChatViewModel.AuthState.Loading -> { /* no-op */ }
+                                            is UserViewModel.AuthState.Loading -> { /* no-op */ }
                                         }
                                     },
-                                    latestChatMessage = latestMessage,
                                     isDarkMode = isDarkMode,
                                     useArtworkAsBackground = theme == Theme.ARTWORK,
                                 )
@@ -126,7 +125,7 @@ class MainActivity : ComponentActivity() {
                             entry<MainRoutes.Registration> {
                                 RegistrationScreen(
                                     onRegister = { displayName, countryFlag ->
-                                        chatViewModel.register(displayName, countryFlag)
+                                        userViewModel.register(displayName, countryFlag)
                                         backStack.removeLastOrNull()
                                         backStack.add(MainRoutes.Chat)
                                     },
@@ -135,7 +134,12 @@ class MainActivity : ComponentActivity() {
                             entry<MainRoutes.Chat>(
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
-                                ChatScreen(chatViewModel)
+                                val chatViewModel: ChatViewModel = viewModel()
+                                val uid = userViewModel.currentUid
+                                val user = userViewModel.currentUser
+                                if (uid != null && user != null) {
+                                    ChatScreen(chatViewModel, uid, user)
+                                }
                             }
                         }
                     )

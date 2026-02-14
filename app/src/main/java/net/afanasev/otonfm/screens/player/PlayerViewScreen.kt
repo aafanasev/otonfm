@@ -171,7 +171,9 @@ fun PlayerViewScreen(
                     Logger.onChatButtonClick()
                     onChatClick()
                 },
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp),
             )
         }
     }

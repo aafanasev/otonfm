@@ -19,4 +19,16 @@
 
     <string name="player_next_track_prefix">Сотору: %1$s</string>
 
+    <string name="chat_button_label">Чат</string>
+    <string name="chat_send">Отправить</string>
+    <string name="chat_input_hint">Написать сообщение…</string>
+    <string name="chat_sign_in_error">Не удалось войти. Попробуйте ещё раз.</string>
+    <string name="chat_send_error">Не удалось отправить сообщение</string>
+    <string name="chat_title">Чат</string>
+
+    <string name="registration_title">Профиль</string>
+    <string name="registration_name_hint">Ваше имя</string>
+    <string name="registration_pick_flag">Выберите флаг</string>
+    <string name="registration_submit">Готово</string>
+
 </resources>

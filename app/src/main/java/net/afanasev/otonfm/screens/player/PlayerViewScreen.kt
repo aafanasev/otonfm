@@ -27,12 +27,14 @@ import net.afanasev.otonfm.screens.player.components.Logo
 import net.afanasev.otonfm.screens.player.components.MenuButton
 import net.afanasev.otonfm.screens.player.components.NextTrack
 import net.afanasev.otonfm.screens.player.components.PlayButton
+import net.afanasev.otonfm.screens.player.components.ChatButton
 import net.afanasev.otonfm.screens.player.components.Title
 
 @Composable
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
     onMenuClick: () -> Unit,
+    onChatClick: () -> Unit,
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
 ) {
@@ -162,6 +164,17 @@ fun PlayerViewScreen(
                     )
                 }
             }
+
+            ChatButton(
+                isDarkMode = isDarkMode,
+                onClick = {
+                    Logger.onChatButtonClick()
+                    onChatClick()
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp),
+            )
         }
     }
 }

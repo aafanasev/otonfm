@@ -1,5 +1,6 @@
 package net.afanasev.otonfm.screens.player.components
 
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,16 +15,13 @@ fun NextTrack(
     text: String,
     modifier: Modifier,
 ) {
-    if (text.isNotEmpty()) {
-        Text(
-            text = stringResource(R.string.player_next_track_prefix, text),
-            textAlign = TextAlign.Center,
-            minLines = 1,
-            maxLines = 2,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = modifier,
-        )
-    }
+    Text(
+        text = if (text.isNotEmpty()) stringResource(R.string.player_next_track_prefix, text) else " ",
+        textAlign = TextAlign.Center,
+        maxLines = 1,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = if (text.isNotEmpty()) modifier.basicMarquee() else modifier,
+    )
 }
 
 @Preview

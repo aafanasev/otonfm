@@ -10,14 +10,19 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.adminstatus.AdminStatusFetcher
 import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
+import net.afanasev.otonfm.data.chat.ChatRepository
+import net.afanasev.otonfm.data.chat.MessageType
 import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.data.status.StatusFetcher
 import net.afanasev.otonfm.services.PlaybackService
@@ -40,8 +45,22 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
 
     private val adminStatusFetcher = AdminStatusFetcher()
+    private val chatRepository = ChatRepository()
     private val statusFetcher = StatusFetcher()
     private var mediaController: MediaController? = null
+
+    val latestChatMessage: StateFlow<String?> = chatRepository.observeLatestMessage()
+        .map { message ->
+            message?.let {
+                when (MessageType.fromValue(it.type)) {
+                    MessageType.USER_MESSAGE, MessageType.SONG_REQUEST ->
+                        "${it.authorFlag} ${it.authorName}: ${it.text}"
+                    MessageType.ADMIN_ANNOUNCEMENT, MessageType.SYSTEM ->
+                        it.text
+                }
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     init {
         adminStatusFetcher.observe()

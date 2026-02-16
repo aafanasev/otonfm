@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -29,7 +28,6 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.prefs.DataStoreManager
 import net.afanasev.otonfm.screens.chat.ChatScreen
 import net.afanasev.otonfm.screens.chat.ChatViewModel
-import net.afanasev.otonfm.screens.chat.UserViewModel
 import net.afanasev.otonfm.screens.contacts.ContactsScreen
 import net.afanasev.otonfm.screens.menu.MenuScreen
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
@@ -71,21 +69,6 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val backStack = rememberNavBackStack(MainRoutes.Player)
                     val bottomSheetStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
-                    val userViewModel: UserViewModel = viewModel()
-                    val authState by userViewModel.authState.collectAsState()
-                    val context = LocalContext.current
-
-                    LaunchedEffect(Unit) {
-                        userViewModel.navigateAfterSignIn.collect { state ->
-                            when (state) {
-                                is UserViewModel.AuthState.NeedsRegistration ->
-                                    backStack.add(MainRoutes.Registration)
-                                is UserViewModel.AuthState.Authenticated ->
-                                    backStack.add(MainRoutes.Chat)
-                                else -> {}
-                            }
-                        }
-                    }
 
                     NavDisplay(
                         backStack = backStack,
@@ -97,20 +80,7 @@ class MainActivity : ComponentActivity() {
                                 PlayerViewScreen(
                                     viewModel(),
                                     onMenuClick = { backStack.add(MainRoutes.Menu) },
-                                    onChatClick = {
-                                        when (authState) {
-                                            is UserViewModel.AuthState.NotAuthenticated -> {
-                                                userViewModel.signIn(context)
-                                            }
-                                            is UserViewModel.AuthState.NeedsRegistration -> {
-                                                backStack.add(MainRoutes.Registration)
-                                            }
-                                            is UserViewModel.AuthState.Authenticated -> {
-                                                backStack.add(MainRoutes.Chat)
-                                            }
-                                            is UserViewModel.AuthState.Loading -> { /* no-op */ }
-                                        }
-                                    },
+                                    onChatClick = { backStack.add(MainRoutes.Chat) },
                                     isDarkMode = isDarkMode,
                                     useArtworkAsBackground = theme == Theme.ARTWORK,
                                 )
@@ -136,24 +106,33 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 ContactsScreen()
                             }
-                            entry<MainRoutes.Registration> {
-                                RegistrationScreen(
-                                    onRegister = { displayName, countryFlag ->
-                                        userViewModel.register(displayName, countryFlag)
-                                        backStack.removeLastOrNull()
-                                        backStack.add(MainRoutes.Chat)
-                                    },
-                                )
-                            }
                             entry<MainRoutes.Chat>(
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
                                 val chatViewModel: ChatViewModel = viewModel()
-                                val uid = userViewModel.currentUid
-                                val user = userViewModel.currentUser
-                                if (uid != null && user != null) {
-                                    ChatScreen(chatViewModel, uid, user)
+
+                                LaunchedEffect(Unit) {
+                                    chatViewModel.navigateAfterSignIn.collect { state ->
+                                        when (state) {
+                                            is ChatViewModel.AuthState.NeedsRegistration ->
+                                                backStack.add(MainRoutes.Registration)
+                                            is ChatViewModel.AuthState.Authenticated ->
+                                                {} // already on chat, pending message auto-sent
+                                            else -> {}
+                                        }
+                                    }
                                 }
+
+                                ChatScreen(chatViewModel)
+                            }
+                            entry<MainRoutes.Registration> {
+                                val chatViewModel: ChatViewModel = viewModel()
+                                RegistrationScreen(
+                                    onRegister = { displayName, countryFlag ->
+                                        chatViewModel.register(displayName, countryFlag)
+                                        backStack.removeLastOrNull()
+                                    },
+                                )
                             }
                         }
                     )

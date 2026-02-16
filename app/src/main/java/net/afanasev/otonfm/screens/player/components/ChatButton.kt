@@ -1,6 +1,7 @@
 package net.afanasev.otonfm.screens.player.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,6 +30,7 @@ import net.afanasev.otonfm.R
 fun ChatButton(
     isDarkMode: Boolean,
     onClick: () -> Unit,
+    latestMessageText: String?,
     modifier: Modifier = Modifier,
 ) {
     val contentColor = if (isDarkMode) Color.White else Color.Black
@@ -51,9 +54,16 @@ fun ChatButton(
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
-            text = stringResource(R.string.chat_button_label),
+            text = latestMessageText ?: stringResource(R.string.chat_button_label),
             color = contentColor,
             fontSize = 13.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = if (latestMessageText != null) {
+                Modifier.basicMarquee(iterations = Int.MAX_VALUE)
+            } else {
+                Modifier
+            },
         )
     }
 }
@@ -61,11 +71,11 @@ fun ChatButton(
 @Preview
 @Composable
 private fun ChatButtonPreview() {
-    ChatButton(isDarkMode = false, onClick = {})
+    ChatButton(isDarkMode = false, onClick = {}, latestMessageText = null)
 }
 
 @Preview(backgroundColor = 0xFF000000, showBackground = true)
 @Composable
 private fun ChatButtonDarkPreview() {
-    ChatButton(isDarkMode = true, onClick = {})
+    ChatButton(isDarkMode = true, onClick = {}, latestMessageText = "🇷🇺 Иван: Привет!")
 }

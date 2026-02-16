@@ -11,15 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.R
-import net.afanasev.otonfm.data.auth.UserModel
 import net.afanasev.otonfm.screens.chat.components.ChatContent
 
 @Composable
-fun ChatScreen(
-    chatViewModel: ChatViewModel,
-    uid: String,
-    user: UserModel,
-) {
+fun ChatScreen(chatViewModel: ChatViewModel) {
     val messages by chatViewModel.messages.collectAsState()
     val inputText by chatViewModel.inputText.collectAsState()
 
@@ -33,7 +28,7 @@ fun ChatScreen(
         messages = messages,
         inputText = inputText,
         onTextChange = chatViewModel::updateInputText,
-        onSend = { chatViewModel.sendMessage(uid, user) },
+        onSend = { chatViewModel.sendMessage() },
         modifier = Modifier.fillMaxHeight(0.6f),
     )
 }

@@ -11,14 +11,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import net.afanasev.otonfm.ui.components.FlagIcon
 
 private val FLAGS = listOf(
     "\uD83C\uDDF7\uD83C\uDDFA", // Russia
@@ -49,6 +48,7 @@ private val FLAGS = listOf(
     "\uD83C\uDDE6\uD83C\uDDFF", // Azerbaijan
     "\uD83C\uDDE6\uD83C\uDDF2", // Armenia
     "\uD83C\uDDE7\uD83C\uDDFE", // Belarus
+    "yakutia", // Sakha Republic (Yakutia)
 )
 
 @Composable
@@ -82,10 +82,7 @@ fun FlagPicker(
                     .clickable { onFlagSelected(flag) }
                     .padding(4.dp),
             ) {
-                Text(
-                    text = flag,
-                    fontSize = 28.sp,
-                )
+                FlagIcon(flag, 32.dp)
             }
         }
     }

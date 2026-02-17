@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.afanasev.otonfm.data.chat.MessageModel
 import net.afanasev.otonfm.data.chat.MessageType
+import net.afanasev.otonfm.ui.components.FlagIcon
 
 private val AdminNameColor = Color(0xFFCD0200)
 
@@ -52,7 +53,7 @@ private fun UserMessageRow(message: MessageModel, modifier: Modifier = Modifier)
             .padding(horizontal = 12.dp, vertical = 3.dp),
         verticalAlignment = Alignment.Top,
     ) {
-        Text(text = message.authorFlag, fontSize = 14.sp)
+        FlagIcon(message.authorFlag, 18.dp)
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = buildAnnotatedString {
@@ -80,7 +81,7 @@ private fun SongRequestRow(message: MessageModel, modifier: Modifier = Modifier)
             .padding(horizontal = 12.dp, vertical = 3.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = message.authorFlag, fontSize = 14.sp)
+            FlagIcon(message.authorFlag, 18.dp)
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = message.authorName,

@@ -26,6 +26,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.prefs.DataStoreManager
+import net.afanasev.otonfm.screens.auth.AuthViewModel
 import net.afanasev.otonfm.screens.chat.ChatScreen
 import net.afanasev.otonfm.screens.chat.ChatViewModel
 import net.afanasev.otonfm.screens.contacts.ContactsScreen
@@ -69,6 +70,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val backStack = rememberNavBackStack(MainRoutes.Player)
                     val bottomSheetStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
+                    val authViewModel: AuthViewModel = viewModel()
 
                     NavDisplay(
                         backStack = backStack,
@@ -112,24 +114,17 @@ class MainActivity : ComponentActivity() {
                                 val chatViewModel: ChatViewModel = viewModel()
 
                                 LaunchedEffect(Unit) {
-                                    chatViewModel.navigateAfterSignIn.collect { state ->
-                                        when (state) {
-                                            is ChatViewModel.AuthState.NeedsRegistration ->
-                                                backStack.add(MainRoutes.Registration)
-                                            is ChatViewModel.AuthState.Authenticated ->
-                                                {} // already on chat, pending message auto-sent
-                                            else -> {}
-                                        }
+                                    authViewModel.navigateToRegistration.collect {
+                                        backStack.add(MainRoutes.Registration)
                                     }
                                 }
 
-                                ChatScreen(chatViewModel)
+                                ChatScreen(chatViewModel, authViewModel)
                             }
                             entry<MainRoutes.Registration> {
-                                val chatViewModel: ChatViewModel = viewModel()
                                 RegistrationScreen(
                                     onRegister = { displayName, countryFlag ->
-                                        chatViewModel.register(displayName, countryFlag)
+                                        authViewModel.register(displayName, countryFlag)
                                         backStack.removeLastOrNull()
                                     },
                                 )

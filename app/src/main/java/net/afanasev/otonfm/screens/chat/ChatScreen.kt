@@ -8,15 +8,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.R
+import net.afanasev.otonfm.screens.auth.AuthViewModel
+import net.afanasev.otonfm.screens.auth.AuthViewModel.AuthState
 import net.afanasev.otonfm.screens.chat.components.ChatContent
 
 @Composable
-fun ChatScreen(chatViewModel: ChatViewModel) {
+fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
     val messages by chatViewModel.messages.collectAsState()
     val inputText by chatViewModel.inputText.collectAsState()
+    val authState by authViewModel.authState.collectAsState()
+    val context = LocalContext.current
 
     Text(
         text = stringResource(R.string.chat_title),
@@ -28,7 +33,17 @@ fun ChatScreen(chatViewModel: ChatViewModel) {
         messages = messages,
         inputText = inputText,
         onTextChange = chatViewModel::updateInputText,
-        onSend = { chatViewModel.sendMessage() },
+        onSend = {
+            when (val state = authState) {
+                is AuthState.Authenticated ->
+                    chatViewModel.sendMessage(state.uid, state.user)
+                is AuthState.NotAuthenticated ->
+                    authViewModel.signIn(context)
+                is AuthState.NeedsRegistration ->
+                    authViewModel.requestRegistration()
+                is AuthState.Loading -> {}
+            }
+        },
         modifier = Modifier.fillMaxHeight(0.6f),
     )
 }

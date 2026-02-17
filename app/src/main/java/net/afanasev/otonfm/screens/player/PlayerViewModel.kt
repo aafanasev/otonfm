@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.adminstatus.AdminStatusFetcher
 import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
 import net.afanasev.otonfm.data.chat.ChatRepository
-import net.afanasev.otonfm.data.chat.MessageType
 import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.data.status.StatusFetcher
 import net.afanasev.otonfm.services.PlaybackService
@@ -50,16 +49,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private var mediaController: MediaController? = null
 
     val latestChatMessage: StateFlow<String?> = chatRepository.observeLatestMessage()
-        .map { message ->
-            message?.let {
-                when (MessageType.fromValue(it.type)) {
-                    MessageType.USER_MESSAGE, MessageType.SONG_REQUEST ->
-                        "${it.authorFlag} ${it.authorName}: ${it.text}"
-                    MessageType.ADMIN_ANNOUNCEMENT, MessageType.SYSTEM ->
-                        it.text
-                }
-            }
-        }
+        .map { it?.text }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     init {

@@ -57,11 +57,11 @@ class ChatRepository {
         awaitClose { registration.remove() }
     }
 
-    suspend fun sendMessage(text: String, authorUid: String, user: UserModel) {
+    suspend fun sendMessage(text: String, authorId: String, user: UserModel) {
         val data = hashMapOf(
             "type" to MessageType.USER_MESSAGE.value,
             "text" to text,
-            "authorUid" to authorUid,
+            "authorId" to authorId,
             "authorName" to user.displayName,
             "authorFlag" to user.countryFlag,
             "isAuthorAdmin" to user.isAdmin,
@@ -69,7 +69,7 @@ class ChatRepository {
         )
         collection.add(data).await()
 
-        Firebase.firestore.collection("users").document(authorUid)
+        Firebase.firestore.collection("users").document(authorId)
             .update("lastMessageAt", Timestamp.now())
     }
 }

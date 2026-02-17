@@ -1,20 +1,22 @@
 package net.afanasev.otonfm.screens.chat
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import net.afanasev.otonfm.R
 import net.afanasev.otonfm.screens.auth.AuthViewModel
 import net.afanasev.otonfm.screens.auth.AuthViewModel.AuthState
-import net.afanasev.otonfm.screens.chat.components.ChatContent
+import net.afanasev.otonfm.screens.chat.components.ChatInputBar
+import net.afanasev.otonfm.screens.chat.components.MessageRow
 
 @Composable
 fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
@@ -22,28 +24,41 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
     val inputText by chatViewModel.inputText.collectAsState()
     val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
+    val listState = rememberLazyListState()
 
-    Text(
-        text = stringResource(R.string.chat_title),
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-    )
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty()) {
+            listState.animateScrollToItem(0)
+        }
+    }
 
-    ChatContent(
-        messages = messages,
-        inputText = inputText,
-        onTextChange = chatViewModel::updateInputText,
-        onSend = {
-            when (val state = authState) {
-                is AuthState.Authenticated ->
-                    chatViewModel.sendMessage(state.uid, state.user)
-                is AuthState.NotAuthenticated ->
-                    authViewModel.signIn(context)
-                is AuthState.NeedsRegistration ->
-                    authViewModel.requestRegistration()
-                is AuthState.Loading -> {}
+    Column(modifier = Modifier.fillMaxHeight(0.75f).imePadding()) {
+        LazyColumn(
+            state = listState,
+            reverseLayout = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+        ) {
+            items(messages.asReversed(), key = { it.id }) { message ->
+                MessageRow(message = message)
             }
-        },
-        modifier = Modifier.fillMaxHeight(0.6f),
-    )
+        }
+
+        ChatInputBar(
+            text = inputText,
+            onTextChange = chatViewModel::updateInputText,
+            onSend = {
+                when (val state = authState) {
+                    is AuthState.Authenticated ->
+                        chatViewModel.sendMessage(state.uid, state.user)
+                    is AuthState.NotAuthenticated ->
+                        authViewModel.signIn(context)
+                    is AuthState.NeedsRegistration ->
+                        authViewModel.requestRegistration()
+                    is AuthState.Loading -> {}
+                }
+            },
+        )
+    }
 }

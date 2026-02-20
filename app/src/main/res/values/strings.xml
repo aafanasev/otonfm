@@ -3,6 +3,7 @@
 
     <string name="menu_theme">Оформление</string>
     <string name="menu_contacts">Контакты</string>
+    <string name="menu_sign_out">Выйти</string>
 
     <string name="theme_system">Системная тема</string>
     <string name="theme_dark">Темная тема</string>

@@ -90,10 +90,18 @@ class MainActivity : ComponentActivity() {
                             entry<MainRoutes.Menu>(
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
-                                MenuScreen(onItemSelected = { route ->
-                                    backStack.removeLastOrNull()
-                                    backStack.add(route)
-                                })
+                                val authState by authViewModel.authState.collectAsState()
+                                MenuScreen(
+                                    isSignedIn = authState is AuthViewModel.AuthState.Authenticated,
+                                    onItemSelected = { route ->
+                                        backStack.removeLastOrNull()
+                                        backStack.add(route)
+                                    },
+                                    onSignOut = {
+                                        authViewModel.signOut()
+                                        backStack.removeLastOrNull()
+                                    },
+                                )
                             }
                             entry<MainRoutes.ThemeChooser>(
                                 metadata = BottomSheetSceneStrategy.bottomSheet()

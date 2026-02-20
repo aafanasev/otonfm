@@ -94,6 +94,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun signOut() {
+        authRepository.signOut()
+    }
+
     fun register(displayName: String, countryFlag: String) {
         val uid = authRepository.currentUser?.uid ?: return
         viewModelScope.launch {

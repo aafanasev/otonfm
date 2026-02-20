@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.R
 
 @Composable
-fun RegistrationScreen(
+fun ProfileSetupScreen(
     onRegister: (displayName: String, countryFlag: String) -> Unit,
 ) {
     var displayName by rememberSaveable { mutableStateOf("") }

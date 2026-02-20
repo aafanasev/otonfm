@@ -32,7 +32,7 @@ import net.afanasev.otonfm.screens.chat.ChatViewModel
 import net.afanasev.otonfm.screens.contacts.ContactsScreen
 import net.afanasev.otonfm.screens.menu.MenuScreen
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
-import net.afanasev.otonfm.screens.registration.RegistrationScreen
+import net.afanasev.otonfm.screens.registration.ProfileSetupScreen
 import net.afanasev.otonfm.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.navigation.BottomSheetSceneStrategy
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
@@ -108,6 +108,14 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 ContactsScreen()
                             }
+                            entry<MainRoutes.ProfileSetup> {
+                                ProfileSetupScreen(
+                                    onRegister = { displayName, countryFlag ->
+                                        authViewModel.register(displayName, countryFlag)
+                                        backStack.removeLastOrNull()
+                                    },
+                                )
+                            }
                             entry<MainRoutes.Chat>(
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
@@ -115,19 +123,11 @@ class MainActivity : ComponentActivity() {
 
                                 LaunchedEffect(Unit) {
                                     authViewModel.navigateToRegistration.collect {
-                                        backStack.add(MainRoutes.Registration)
+                                        backStack.add(MainRoutes.ProfileSetup)
                                     }
                                 }
 
                                 ChatScreen(chatViewModel, authViewModel)
-                            }
-                            entry<MainRoutes.Registration> {
-                                RegistrationScreen(
-                                    onRegister = { displayName, countryFlag ->
-                                        authViewModel.register(displayName, countryFlag)
-                                        backStack.removeLastOrNull()
-                                    },
-                                )
                             }
                         }
                     )

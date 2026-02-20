@@ -17,8 +17,9 @@ sealed interface MainRoutes {
     object Contacts : MainRoutes, NavKey
 
     @Serializable
-    object Chat : MainRoutes, NavKey
+    object ProfileSetup : MainRoutes, NavKey
 
     @Serializable
-    object Registration : MainRoutes, NavKey
+    object Chat : MainRoutes, NavKey
+
 }

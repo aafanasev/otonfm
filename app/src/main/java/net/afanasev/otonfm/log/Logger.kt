@@ -96,4 +96,27 @@ object Logger {
 
     //endregion
 
+    //region Chat
+
+    fun onChatButtonClick() {
+        analytics.logEvent("chat_btn_click", null)
+    }
+
+    fun onChatSignIn() {
+        analytics.logEvent("chat_sign_in", null)
+    }
+
+    fun onChatMessageSend() {
+        analytics.logEvent("chat_message_send", null)
+    }
+
+    fun logChatError(message: String) {
+        Log.e(TAG, "Chat error: $message")
+        analytics.logEvent("chat_error", Bundle().apply {
+            putString("msg", message)
+        })
+    }
+
+    //endregion
+
 }

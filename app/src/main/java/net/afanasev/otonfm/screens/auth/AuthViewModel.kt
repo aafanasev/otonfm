@@ -28,8 +28,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
-    private val _navigateToRegistration = MutableSharedFlow<Unit>()
-    val navigateToRegistration: SharedFlow<Unit> = _navigateToRegistration.asSharedFlow()
+    private val _navigateToProfileSetup = MutableSharedFlow<Unit>()
+    val navigateToProfileSetup: SharedFlow<Unit> = _navigateToProfileSetup.asSharedFlow()
 
     private var pendingSignIn = false
 
@@ -50,10 +50,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             if (userRepository.userExists(uid)) {
                 observeUserProfile(uid)
             } else {
-                _authState.value = AuthState.NeedsRegistration
+                _authState.value = AuthState.NeedsProfileSetup
                 if (pendingSignIn) {
                     pendingSignIn = false
-                    _navigateToRegistration.emit(Unit)
+                    _navigateToProfileSetup.emit(Unit)
                 }
             }
         } catch (e: Exception) {
@@ -88,9 +88,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun requestRegistration() {
+    fun requestProfileSetup() {
         viewModelScope.launch {
-            _navigateToRegistration.emit(Unit)
+            _navigateToProfileSetup.emit(Unit)
         }
     }
 
@@ -98,14 +98,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         authRepository.signOut()
     }
 
-    fun register(displayName: String, countryFlag: String) {
+    fun saveProfile(displayName: String, countryFlag: String) {
         val uid = authRepository.currentUser?.uid ?: return
         viewModelScope.launch {
             try {
                 userRepository.createUser(uid, displayName, countryFlag)
                 observeUserProfile(uid)
             } catch (e: Exception) {
-                Logger.logChatError("Registration error: ${e.message}")
+                Logger.logChatError("Profile setup error: ${e.message}")
             }
         }
     }
@@ -113,7 +113,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     sealed interface AuthState {
         data object Loading : AuthState
         data object NotAuthenticated : AuthState
-        data object NeedsRegistration : AuthState
+        data object NeedsProfileSetup : AuthState
         data class Authenticated(val uid: String, val user: UserModel) : AuthState
     }
 }

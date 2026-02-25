@@ -54,8 +54,8 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
                         chatViewModel.sendMessage(state.uid, state.user)
                     is AuthState.NotAuthenticated ->
                         authViewModel.signIn(context)
-                    is AuthState.NeedsRegistration ->
-                        authViewModel.requestRegistration()
+                    is AuthState.NeedsProfileSetup ->
+                        authViewModel.requestProfileSetup()
                     is AuthState.Loading -> {}
                 }
             },

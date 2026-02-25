@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.screens.registration
+package net.afanasev.otonfm.screens.profilesetup
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

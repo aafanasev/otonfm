@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.screens.registration
+package net.afanasev.otonfm.screens.profilesetup
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +23,7 @@ import net.afanasev.otonfm.R
 
 @Composable
 fun ProfileSetupScreen(
-    onRegister: (displayName: String, countryFlag: String) -> Unit,
+    onProfileSetup: (displayName: String, countryFlag: String) -> Unit,
 ) {
     var displayName by rememberSaveable { mutableStateOf("") }
     var selectedFlag by rememberSaveable { mutableStateOf<String?>(null) }
@@ -38,7 +38,7 @@ fun ProfileSetupScreen(
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            text = stringResource(R.string.registration_title),
+            text = stringResource(R.string.profile_setup_title),
             style = MaterialTheme.typography.headlineMedium,
         )
 
@@ -47,7 +47,7 @@ fun ProfileSetupScreen(
         OutlinedTextField(
             value = displayName,
             onValueChange = { displayName = it.take(30) },
-            label = { Text(stringResource(R.string.registration_name_hint)) },
+            label = { Text(stringResource(R.string.profile_setup_name_hint)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -55,7 +55,7 @@ fun ProfileSetupScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = stringResource(R.string.registration_pick_flag),
+            text = stringResource(R.string.profile_setup_pick_flag),
             style = MaterialTheme.typography.titleMedium,
         )
 
@@ -72,11 +72,11 @@ fun ProfileSetupScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { onRegister(displayName.trim(), selectedFlag!!) },
+            onClick = { onProfileSetup(displayName.trim(), selectedFlag!!) },
             enabled = isValid,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(stringResource(R.string.registration_submit))
+            Text(stringResource(R.string.profile_setup_submit))
         }
     }
 }

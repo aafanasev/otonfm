@@ -32,7 +32,7 @@ import net.afanasev.otonfm.screens.chat.ChatViewModel
 import net.afanasev.otonfm.screens.contacts.ContactsScreen
 import net.afanasev.otonfm.screens.menu.MenuScreen
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
-import net.afanasev.otonfm.screens.registration.ProfileSetupScreen
+import net.afanasev.otonfm.screens.profilesetup.ProfileSetupScreen
 import net.afanasev.otonfm.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.navigation.BottomSheetSceneStrategy
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
@@ -118,8 +118,8 @@ class MainActivity : ComponentActivity() {
                             }
                             entry<MainRoutes.ProfileSetup> {
                                 ProfileSetupScreen(
-                                    onRegister = { displayName, countryFlag ->
-                                        authViewModel.register(displayName, countryFlag)
+                                    onProfileSetup = { displayName, countryFlag ->
+                                        authViewModel.saveProfile(displayName, countryFlag)
                                         backStack.removeLastOrNull()
                                     },
                                 )
@@ -130,7 +130,7 @@ class MainActivity : ComponentActivity() {
                                 val chatViewModel: ChatViewModel = viewModel()
 
                                 LaunchedEffect(Unit) {
-                                    authViewModel.navigateToRegistration.collect {
+                                    authViewModel.navigateToProfileSetup.collect {
                                         backStack.add(MainRoutes.ProfileSetup)
                                     }
                                 }

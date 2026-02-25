@@ -27,9 +27,9 @@
     <string name="chat_send_error">Не удалось отправить сообщение</string>
     <string name="chat_title">Чат</string>
 
-    <string name="registration_title">Профиль</string>
-    <string name="registration_name_hint">Ваше имя</string>
-    <string name="registration_pick_flag">Выберите флаг</string>
-    <string name="registration_submit">Готово</string>
+    <string name="profile_setup_title">Профиль</string>
+    <string name="profile_setup_name_hint">Ваше имя</string>
+    <string name="profile_setup_pick_flag">Выберите флаг</string>
+    <string name="profile_setup_submit">Готово</string>
 
 </resources>

@@ -112,7 +112,7 @@ fun PlayerViewScreen(
                             isDarkMode = isDarkMode,
                             modifier = Modifier.fillMaxWidth(0.6f),
                         )
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
                         Title(
                             text = title,
                             modifier = Modifier.fillMaxWidth(0.8f),

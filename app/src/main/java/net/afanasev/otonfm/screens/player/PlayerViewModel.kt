@@ -30,10 +30,10 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _artworkUri = MutableStateFlow<String>(DEFAULT_ARTWORK_URI)
     val artworkUri: StateFlow<String> = _artworkUri.asStateFlow()
 
-    private val _title = MutableStateFlow<String>("")
+    private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title.asStateFlow()
 
-    private val _nextTrackTitle = MutableStateFlow<String>("")
+    private val _nextTrackTitle = MutableStateFlow("")
     val nextTrackTitle: StateFlow<String> = _nextTrackTitle.asStateFlow()
 
     private val _buttonState = MutableStateFlow<ButtonState>(ButtonState.PAUSED)

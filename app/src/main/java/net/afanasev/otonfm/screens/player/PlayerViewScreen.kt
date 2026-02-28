@@ -43,8 +43,6 @@ fun PlayerViewScreen(
     val title by viewModel.title.collectAsState()
     val nextTrackTitle by viewModel.nextTrackTitle.collectAsState()
     val buttonState by viewModel.buttonState.collectAsState()
-    val latestChatMessage by viewModel.latestChatMessage.collectAsState()
-
     val configuration = LocalConfiguration.current
     val onPlayButtonClick = {
         Logger.onPlayButtonClick(buttonState)
@@ -172,7 +170,6 @@ fun PlayerViewScreen(
                     Logger.onChatButtonClick()
                     onChatClick()
                 },
-                latestMessageText = latestChatMessage,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(bottom = 16.dp),

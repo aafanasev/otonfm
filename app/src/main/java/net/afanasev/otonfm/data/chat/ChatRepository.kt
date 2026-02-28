@@ -40,23 +40,6 @@ class ChatRepository {
         awaitClose { registration.remove() }
     }
 
-    fun observeLatestMessage(): Flow<MessageModel?> = callbackFlow {
-        val registration = collection
-            .orderBy("createdAt", Query.Direction.ASCENDING)
-            .limitToLast(1)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Logger.logChatError("Latest message observe error: ${error.message}")
-                    trySend(null)
-                    return@addSnapshotListener
-                }
-                val message = snapshot?.documents?.firstOrNull()
-                    ?.toObject(MessageModel::class.java)
-                trySend(message)
-            }
-        awaitClose { registration.remove() }
-    }
-
     suspend fun sendMessage(text: String, authorId: String, user: UserModel) {
         val data = hashMapOf(
             "type" to MessageType.USER_MESSAGE.value,

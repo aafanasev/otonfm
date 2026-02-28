@@ -19,22 +19,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.afanasev.otonfm.data.chat.MessageModel
 import net.afanasev.otonfm.data.chat.MessageType
 import net.afanasev.otonfm.ui.components.FlagIcon
 import net.afanasev.otonfm.ui.theme.UserNameColors
+import kotlin.math.abs
 
 private val AdminNameColor = Color(0xFFCD0200)
 
 private fun colorForName(name: String): Color =
-    UserNameColors[Math.abs(name.hashCode()) % UserNameColors.size]
+    UserNameColors[abs(name.hashCode()) % UserNameColors.size]
 
 @Composable
 fun MessageRow(
@@ -55,24 +53,21 @@ private fun UserMessageRow(message: MessageModel, modifier: Modifier = Modifier)
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 3.dp),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         FlagIcon(message.authorFlag, 18.dp)
         Spacer(modifier = Modifier.width(4.dp))
         Text(
-            text = buildAnnotatedString {
-                withStyle(
-                    SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                        color = if (message.isAuthorAdmin) AdminNameColor else colorForName(message.authorName),
-                    )
-                ) {
-                    append("${message.authorName}:")
-                }
-                append("  ")
-                append(message.text)
-            },
+            text = "${message.authorName}:",
+            fontWeight = FontWeight.Bold,
+            color = if (message.isAuthorAdmin) AdminNameColor else colorForName(message.authorName),
             style = MaterialTheme.typography.bodyMedium,
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = message.text,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
         )
     }
 }

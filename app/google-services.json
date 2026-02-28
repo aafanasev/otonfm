@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "506038865559-c8rlgutme0ctuarq6p9oe07hg1qg8jng.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.afanasev.otonfm",
+            "certificate_hash": "42038e68fc57c0273abb97a39fef356dfbb99c3e"
+          }
+        },
+        {
+          "client_id": "506038865559-lo2vjs8cbtb22vjiuj5eja7lpjjk0hkp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.afanasev.otonfm",
+            "certificate_hash": "79d58758a769a196e006c2a02aa8cbee492f3280"
+          }
+        },
+        {
           "client_id": "506038865559-nngear1povfic4djb60joa087e7de2t4.apps.googleusercontent.com",
           "client_type": 3
         }

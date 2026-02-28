@@ -22,6 +22,13 @@ import net.afanasev.otonfm.log.Logger
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
+    sealed interface AuthState {
+        data object Loading : AuthState
+        data object NotAuthenticated : AuthState
+        data object NeedsProfileSetup : AuthState
+        data class Authenticated(val uid: String, val user: UserModel) : AuthState
+    }
+
     private val authRepository = AuthRepository()
     private val userRepository = UserRepository()
 
@@ -110,10 +117,4 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    sealed interface AuthState {
-        data object Loading : AuthState
-        data object NotAuthenticated : AuthState
-        data object NeedsProfileSetup : AuthState
-        data class Authenticated(val uid: String, val user: UserModel) : AuthState
-    }
 }

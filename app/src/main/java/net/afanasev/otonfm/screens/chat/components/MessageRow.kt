@@ -29,8 +29,12 @@ import androidx.compose.ui.unit.sp
 import net.afanasev.otonfm.data.chat.MessageModel
 import net.afanasev.otonfm.data.chat.MessageType
 import net.afanasev.otonfm.ui.components.FlagIcon
+import net.afanasev.otonfm.ui.theme.UserNameColors
 
 private val AdminNameColor = Color(0xFFCD0200)
+
+private fun colorForName(name: String): Color =
+    UserNameColors[Math.abs(name.hashCode()) % UserNameColors.size]
 
 @Composable
 fun MessageRow(
@@ -60,10 +64,10 @@ private fun UserMessageRow(message: MessageModel, modifier: Modifier = Modifier)
                 withStyle(
                     SpanStyle(
                         fontWeight = FontWeight.Bold,
-                        color = if (message.isAuthorAdmin) AdminNameColor else Color.Unspecified,
+                        color = if (message.isAuthorAdmin) AdminNameColor else colorForName(message.authorName),
                     )
                 ) {
-                    append(message.authorName)
+                    append("${message.authorName}:")
                 }
                 append("  ")
                 append(message.text)
@@ -84,9 +88,9 @@ private fun SongRequestRow(message: MessageModel, modifier: Modifier = Modifier)
             FlagIcon(message.authorFlag, 18.dp)
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = message.authorName,
+                text = "${message.authorName}:",
                 fontWeight = FontWeight.Bold,
-                color = if (message.isAuthorAdmin) AdminNameColor else Color.Unspecified,
+                color = if (message.isAuthorAdmin) AdminNameColor else colorForName(message.authorName),
                 style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(modifier = Modifier.width(6.dp))

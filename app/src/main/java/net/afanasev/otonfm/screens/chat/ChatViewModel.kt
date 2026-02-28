@@ -15,6 +15,7 @@ import net.afanasev.otonfm.data.auth.UserModel
 import net.afanasev.otonfm.data.chat.ChatRepository
 import net.afanasev.otonfm.data.chat.MessageModel
 import net.afanasev.otonfm.log.Logger
+import net.afanasev.otonfm.util.ProfanityFilter
 
 class ChatViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -35,6 +36,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     fun sendMessage(uid: String, user: UserModel) {
         val text = _inputText.value.trim()
         if (text.isEmpty() || text.length > 500) return
+        if (ProfanityFilter.containsProfanity(text)) return
         _inputText.value = ""
         Logger.onChatMessageSend()
         viewModelScope.launch {
@@ -53,6 +55,6 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun updateInputText(text: String) {
-        _inputText.value = text
+        _inputText.value = text.take(500)
     }
 }

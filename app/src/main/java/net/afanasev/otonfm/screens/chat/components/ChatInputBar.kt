@@ -14,17 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.R
 
 @Composable
 fun ChatInputBar(
     text: String,
+    containsProfanity: Boolean,
     onTextChange: (String) -> Unit,
     onSend: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isValid = text.isNotBlank() && text.length <= 500
+    val isValid = text.isNotBlank() && !containsProfanity
 
     Row(
         modifier = modifier
@@ -38,6 +40,10 @@ fun ChatInputBar(
             placeholder = { Text(stringResource(R.string.chat_input_hint)) },
             singleLine = true,
             textStyle = MaterialTheme.typography.bodyMedium,
+            isError = containsProfanity,
+            supportingText = if (containsProfanity) {
+                { Text(stringResource(R.string.chat_profanity_error)) }
+            } else null,
             modifier = Modifier.weight(1f),
         )
         IconButton(
@@ -50,4 +56,22 @@ fun ChatInputBar(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ChatInputBarEmptyPreview() {
+    ChatInputBar(text = "", containsProfanity = false, onTextChange = {}, onSend = {})
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ChatInputBarWithTextPreview() {
+    ChatInputBar(text = "Hello, world!", containsProfanity = false, onTextChange = {}, onSend = {})
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ChatInputBarProfanityErrorPreview() {
+    ChatInputBar(text = "badword", containsProfanity = true, onTextChange = {}, onSend = {})
 }

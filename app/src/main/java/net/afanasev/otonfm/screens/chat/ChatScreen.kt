@@ -17,14 +17,17 @@ import net.afanasev.otonfm.screens.auth.AuthViewModel
 import net.afanasev.otonfm.screens.auth.AuthViewModel.AuthState
 import net.afanasev.otonfm.screens.chat.components.ChatInputBar
 import net.afanasev.otonfm.screens.chat.components.MessageRow
+import net.afanasev.otonfm.util.ProfanityFilter
 
 @Composable
 fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
-    val messages by chatViewModel.messages.collectAsState()
-    val inputText by chatViewModel.inputText.collectAsState()
-    val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
     val listState = rememberLazyListState()
+
+    val authState by authViewModel.authState.collectAsState()
+    val messages by chatViewModel.messages.collectAsState()
+    val inputText by chatViewModel.inputText.collectAsState()
+    val containsProfanity = ProfanityFilter.containsProfanity(inputText)
 
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
@@ -32,7 +35,11 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxHeight(0.75f).imePadding()) {
+    Column(
+        modifier = Modifier
+            .fillMaxHeight(0.75f)
+            .imePadding()
+    ) {
         LazyColumn(
             state = listState,
             reverseLayout = true,
@@ -47,15 +54,19 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
 
         ChatInputBar(
             text = inputText,
+            containsProfanity = containsProfanity,
             onTextChange = chatViewModel::updateInputText,
             onSend = {
                 when (val state = authState) {
                     is AuthState.Authenticated ->
                         chatViewModel.sendMessage(state.uid, state.user)
+
                     is AuthState.NotAuthenticated ->
                         authViewModel.signIn(context)
+
                     is AuthState.NeedsProfileSetup ->
                         authViewModel.requestProfileSetup()
+
                     is AuthState.Loading -> {}
                 }
             },

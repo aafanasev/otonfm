@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,11 +50,11 @@ fun ChatButton(
             tint = contentColor,
             modifier = Modifier.size(14.dp),
         )
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = stringResource(R.string.chat_button_label),
             color = contentColor,
-            fontSize = 13.sp,
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }

@@ -3,6 +3,7 @@ package net.afanasev.otonfm.screens.chat.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Icon
@@ -44,6 +45,7 @@ fun ChatInputBar(
             supportingText = if (containsProfanity) {
                 { Text(stringResource(R.string.chat_profanity_error)) }
             } else null,
+            shape = RoundedCornerShape(24.dp),
             modifier = Modifier.weight(1f),
         )
         IconButton(

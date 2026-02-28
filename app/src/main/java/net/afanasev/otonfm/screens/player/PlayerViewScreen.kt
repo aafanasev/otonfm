@@ -27,12 +27,14 @@ import net.afanasev.otonfm.screens.player.components.Logo
 import net.afanasev.otonfm.screens.player.components.MenuButton
 import net.afanasev.otonfm.screens.player.components.NextTrack
 import net.afanasev.otonfm.screens.player.components.PlayButton
+import net.afanasev.otonfm.screens.player.components.ChatButton
 import net.afanasev.otonfm.screens.player.components.Title
 
 @Composable
 fun PlayerViewScreen(
     viewModel: PlayerViewModel,
     onMenuClick: () -> Unit,
+    onChatClick: () -> Unit,
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
 ) {
@@ -41,7 +43,6 @@ fun PlayerViewScreen(
     val title by viewModel.title.collectAsState()
     val nextTrackTitle by viewModel.nextTrackTitle.collectAsState()
     val buttonState by viewModel.buttonState.collectAsState()
-
     val configuration = LocalConfiguration.current
     val onPlayButtonClick = {
         Logger.onPlayButtonClick(buttonState)
@@ -111,7 +112,7 @@ fun PlayerViewScreen(
                             isDarkMode = isDarkMode,
                             modifier = Modifier.fillMaxWidth(0.6f),
                         )
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
                         Title(
                             text = title,
                             modifier = Modifier.fillMaxWidth(0.8f),
@@ -162,6 +163,17 @@ fun PlayerViewScreen(
                     )
                 }
             }
+
+            ChatButton(
+                isDarkMode = isDarkMode,
+                onClick = {
+                    Logger.onChatButtonClick()
+                    onChatClick()
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp),
+            )
         }
     }
 }

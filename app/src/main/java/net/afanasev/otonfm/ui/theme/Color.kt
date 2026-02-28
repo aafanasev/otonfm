@@ -28,6 +28,17 @@ val DarkCustomColorsPalette = CustomColorsPalette(
 )
 
 // Credits: https://github.com/androsovm/otonfm/blob/main/Oton.FM/YakutiaGradients.swift
+val UserNameColors = listOf(
+    Color(0xFFF27A38), // warm orange
+    Color(0xFFD9A6D9), // soft purple
+    Color(0xFF80ADD9), // sky blue
+    Color(0xFFF28533), // amber
+    Color(0xFF33CCE6), // cyan
+    Color(0xFFD99A4D), // golden
+    Color(0xFF1ABF73), // emerald
+    Color(0xFFF24073), // rose
+)
+
 val BACKGROUND_GRADIENTS: List<List<Color>> = listOf(
     // Северное сияние над Якутией
     listOf(Color(0xFF264CB2), Color(0xFF663080)),

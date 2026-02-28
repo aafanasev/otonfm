@@ -22,3 +22,5 @@
 
 # Firestore uses reflection for deserialization
 -keepclassmembers class net.afanasev.otonfm.data.adminstatus.AdminStatusModel { *; }
+-keepclassmembers class net.afanasev.otonfm.data.auth.UserModel { *; }
+-keepclassmembers class net.afanasev.otonfm.data.chat.MessageModel { *; }

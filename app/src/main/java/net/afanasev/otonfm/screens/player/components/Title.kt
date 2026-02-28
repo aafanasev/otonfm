@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -22,6 +23,7 @@ fun Title(
             minLines = 2,
             maxLines = 2,
             style = MaterialTheme.typography.titleLarge,
+            overflow = TextOverflow.Ellipsis,
             modifier = modifier,
         )
     }

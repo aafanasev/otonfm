@@ -3,6 +3,7 @@ package net.afanasev.otonfm.screens.menu
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.AlternateEmail
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.runtime.Composable
@@ -15,7 +16,11 @@ import net.afanasev.otonfm.log.Logger
 import net.afanasev.otonfm.ui.components.IconTextRowItem
 
 @Composable
-fun MenuScreen(onItemSelected: (NavKey) -> Unit) {
+fun MenuScreen(
+    isSignedIn: Boolean,
+    onItemSelected: (NavKey) -> Unit,
+    onSignOut: () -> Unit,
+) {
     Column(modifier = Modifier.padding(vertical = 12.dp)) {
         IconTextRowItem(
             icon = Icons.Outlined.Palette,
@@ -33,5 +38,12 @@ fun MenuScreen(onItemSelected: (NavKey) -> Unit) {
                 onItemSelected(MainRoutes.Contacts)
             },
         )
+        if (isSignedIn) {
+            IconTextRowItem(
+                icon = Icons.AutoMirrored.Outlined.Logout,
+                stringResId = R.string.menu_sign_out,
+                onClick = onSignOut,
+            )
+        }
     }
 }

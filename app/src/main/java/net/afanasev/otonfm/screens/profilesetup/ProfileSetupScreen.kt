@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,6 +51,7 @@ fun ProfileSetupScreen(
             onValueChange = { displayName = it.take(30) },
             label = { Text(stringResource(R.string.profile_setup_name_hint)) },
             singleLine = true,
+            shape = RoundedCornerShape(24.dp),
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -79,4 +82,10 @@ fun ProfileSetupScreen(
             Text(stringResource(R.string.profile_setup_submit))
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun ProfileSetupScreenPreview() {
+    ProfileSetupScreen(onProfileSetup = { _, _ -> })
 }

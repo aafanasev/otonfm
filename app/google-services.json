@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "506038865559-22ef0dukjhjvfmvgano9bsi8knhaksoo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.afanasev.otonfm",
+            "certificate_hash": "473fc482bbc8d39da2a6d31bfe652505d4774109"
+          }
+        },
+        {
           "client_id": "506038865559-c8rlgutme0ctuarq6p9oe07hg1qg8jng.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

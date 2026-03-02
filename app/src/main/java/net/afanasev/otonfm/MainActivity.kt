@@ -24,6 +24,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.data.prefs.DataStoreManager
 import net.afanasev.otonfm.screens.auth.AuthViewModel
@@ -44,15 +45,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
-                    .launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-
+        setupNotifications()
         val dataStore = DataStoreManager(applicationContext)
 
         enableEdgeToEdge()
@@ -137,10 +130,30 @@ class MainActivity : ComponentActivity() {
 
                                 ChatScreen(chatViewModel, authViewModel)
                             }
-                        }
-                    )
+                        })
                 }
             }
+        }
+    }
+
+    private fun setupNotifications() {
+        fun subscribeToTopic() {
+            FirebaseMessaging.getInstance().subscribeToTopic("all_users")
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+                subscribeToTopic()
+            } else {
+                registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+                    if (granted) {
+                        subscribeToTopic()
+                    }
+                }.launch(permission)
+            }
+        } else {
+            subscribeToTopic()
         }
     }
 }

@@ -48,6 +48,7 @@ class ChatRepository {
             "authorName" to user.displayName,
             "authorFlag" to user.countryFlag,
             "authorIsAdmin" to user.isAdmin,
+            "authorIsPremium" to user.isPremium,
             "platform" to "android",
             "createdAt" to FieldValue.serverTimestamp(),
         )

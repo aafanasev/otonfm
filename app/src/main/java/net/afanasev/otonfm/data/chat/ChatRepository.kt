@@ -32,7 +32,7 @@ class ChatRepository {
 
                 val messages = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(MessageModel::class.java)?.copy(id = doc.id)
-                } ?: emptyList()
+                }?.filter { !it.isHidden } ?: emptyList()
 
                 trySend(messages)
             }

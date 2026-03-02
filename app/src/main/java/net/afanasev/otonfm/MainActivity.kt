@@ -92,6 +92,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onSignOut = {
                                         authViewModel.signOut()
+                                        scope.launch { dataStore.saveLastProfileUpdateAt(0L) }
                                         backStack.removeLastOrNull()
                                     },
                                 )

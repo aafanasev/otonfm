@@ -33,7 +33,7 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
     val containsProfanity = ProfanityFilter.containsProfanity(inputText)
 
     LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) {
+        if (messages.isNotEmpty() && listState.firstVisibleItemIndex == 0) {
             listState.animateScrollToItem(0)
         }
     }

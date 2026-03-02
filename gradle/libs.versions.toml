@@ -20,6 +20,7 @@ firebaseBom = "33.15.0"
 crashlytics = "3.0.4"
 credentialManager = "1.5.0"
 googleIdIdentity = "1.1.1"
+sekret = "2.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -77,6 +78,7 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentialManager" }
 androidx-credentials-play = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentialManager" }
 google-id-identity = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleIdIdentity" }
+sekret-annotation = { group = "net.afanasev", name = "sekret-annotation", version.ref = "sekret" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -85,4 +87,5 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
+sekret = { id = "net.afanasev.sekret", version.ref = "sekret" }
 

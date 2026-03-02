@@ -60,7 +60,7 @@ private fun UserMessageRow(message: MessageModel, modifier: Modifier = Modifier)
         Text(
             text = "${message.authorName}:",
             fontWeight = FontWeight.Bold,
-            color = if (message.isAuthorAdmin) AdminNameColor else colorForName(message.authorName),
+            color = if (message.authorIsAdmin) AdminNameColor else colorForName(message.authorName),
             style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(modifier = Modifier.width(6.dp))
@@ -85,7 +85,7 @@ private fun SongRequestRow(message: MessageModel, modifier: Modifier = Modifier)
             Text(
                 text = "${message.authorName}:",
                 fontWeight = FontWeight.Bold,
-                color = if (message.isAuthorAdmin) AdminNameColor else colorForName(message.authorName),
+                color = if (message.authorIsAdmin) AdminNameColor else colorForName(message.authorName),
                 style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(modifier = Modifier.width(6.dp))

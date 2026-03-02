@@ -1,6 +1,7 @@
 package net.afanasev.otonfm.data.chat
 
 import com.google.firebase.Timestamp
+import net.afanasev.sekret.Secret
 
 data class MessageModel(
     var id: String = "",
@@ -9,13 +10,14 @@ data class MessageModel(
     var authorId: String = "",
     var authorName: String = "",
     var authorFlag: String = "",
-    @JvmField var isAuthorAdmin: Boolean = false,
-    @JvmField var isAuthorPremium: Boolean = false,
+    @Secret @JvmField var authorIsAdmin: Boolean = false,
+    @Secret @JvmField var authorIsPremium: Boolean = false,
     var songArtist: String? = null,
     var songTitle: String? = null,
     @JvmField var isHidden: Boolean = false,
     @JvmField var isPinned: Boolean = false,
     @JvmField var isUrgent: Boolean = false,
+    var platform: String = "",
     var createdAt: Timestamp? = null,
 )
 

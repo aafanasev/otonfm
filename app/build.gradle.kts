@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.firebase)
     alias(libs.plugins.crashlytics)
+    alias(libs.plugins.sekret)
 }
 
 android {
@@ -103,4 +104,6 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play)
     implementation(libs.google.id.identity)
+
+    implementation(libs.sekret.annotation)
 }

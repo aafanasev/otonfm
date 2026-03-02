@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +28,9 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val _inputText = MutableStateFlow("")
     val inputText: StateFlow<String> = _inputText.asStateFlow()
 
+    private val _canSend = MutableStateFlow(true)
+    val canSend: StateFlow<Boolean> = _canSend.asStateFlow()
+
     init {
         chatRepository.observeMessages()
             .onEach { _messages.value = it }
@@ -37,7 +41,13 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         val text = _inputText.value.trim()
         if (text.isEmpty() || text.length > 500) return
         if (ProfanityFilter.containsProfanity(text)) return
+        if (!_canSend.value) return
         _inputText.value = ""
+        _canSend.value = false
+        viewModelScope.launch {
+            delay(10_000)
+            _canSend.value = true
+        }
         Logger.onChatMessageSend()
         viewModelScope.launch {
             try {

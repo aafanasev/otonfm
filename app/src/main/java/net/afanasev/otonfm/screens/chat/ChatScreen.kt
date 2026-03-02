@@ -28,6 +28,7 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
     val authState by authViewModel.authState.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
     val inputText by chatViewModel.inputText.collectAsState()
+    val canSend by chatViewModel.canSend.collectAsState()
     val pinnedMessage = messages.lastOrNull { it.isPinned }
     val containsProfanity = ProfanityFilter.containsProfanity(inputText)
 
@@ -58,6 +59,7 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
         ChatInputBar(
             text = inputText,
             containsProfanity = containsProfanity,
+            canSend = canSend,
             onTextChange = chatViewModel::updateInputText,
             onSend = {
                 when (val state = authState) {

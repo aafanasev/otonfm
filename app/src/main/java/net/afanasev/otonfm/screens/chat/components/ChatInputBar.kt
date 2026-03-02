@@ -23,11 +23,12 @@ import net.afanasev.otonfm.R
 fun ChatInputBar(
     text: String,
     containsProfanity: Boolean,
+    canSend: Boolean,
     onTextChange: (String) -> Unit,
     onSend: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isValid = text.isNotBlank() && !containsProfanity
+    val isValid = text.isNotBlank() && !containsProfanity && canSend
 
     Row(
         modifier = modifier
@@ -63,17 +64,17 @@ fun ChatInputBar(
 @Preview(showBackground = true)
 @Composable
 private fun ChatInputBarEmptyPreview() {
-    ChatInputBar(text = "", containsProfanity = false, onTextChange = {}, onSend = {})
+    ChatInputBar(text = "", containsProfanity = false, canSend = true, onTextChange = {}, onSend = {})
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ChatInputBarWithTextPreview() {
-    ChatInputBar(text = "Hello, world!", containsProfanity = false, onTextChange = {}, onSend = {})
+    ChatInputBar(text = "Hello, world!", containsProfanity = false, canSend = true, onTextChange = {}, onSend = {})
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ChatInputBarProfanityErrorPreview() {
-    ChatInputBar(text = "badword", containsProfanity = true, onTextChange = {}, onSend = {})
+    ChatInputBar(text = "badword", containsProfanity = true, canSend = true, onTextChange = {}, onSend = {})
 }

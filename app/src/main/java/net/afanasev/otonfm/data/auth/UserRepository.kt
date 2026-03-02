@@ -40,4 +40,8 @@ class UserRepository {
         )
         collection.document(uid).set(user).await()
     }
+
+    suspend fun updateProfile(uid: String, displayName: String, countryFlag: String) {
+        collection.document(uid).update("displayName", displayName, "countryFlag", countryFlag).await()
+    }
 }

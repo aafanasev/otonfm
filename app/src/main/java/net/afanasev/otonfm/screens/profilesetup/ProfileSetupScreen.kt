@@ -25,10 +25,13 @@ import net.afanasev.otonfm.R
 
 @Composable
 fun ProfileSetupScreen(
+    initialName: String = "",
+    initialFlag: String? = null,
+    submitEnabled: Boolean = true,
     onProfileSetup: (displayName: String, countryFlag: String) -> Unit,
 ) {
-    var displayName by rememberSaveable { mutableStateOf("") }
-    var selectedFlag by rememberSaveable { mutableStateOf<String?>(null) }
+    var displayName by rememberSaveable { mutableStateOf(initialName) }
+    var selectedFlag by rememberSaveable { mutableStateOf(initialFlag) }
     val isValid = displayName.isNotBlank() && selectedFlag != null
 
     Column(
@@ -76,7 +79,7 @@ fun ProfileSetupScreen(
 
         Button(
             onClick = { onProfileSetup(displayName.trim(), selectedFlag!!) },
-            enabled = isValid,
+            enabled = isValid && submitEnabled,
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(stringResource(R.string.profile_setup_submit))

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AlternateEmail
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.runtime.Composable
@@ -39,6 +40,11 @@ fun MenuScreen(
             },
         )
         if (isSignedIn) {
+            IconTextRowItem(
+                icon = Icons.Outlined.AccountCircle,
+                stringResId = R.string.profile_setup_title,
+                onClick = { onItemSelected(MainRoutes.ProfileSetup) },
+            )
             IconTextRowItem(
                 icon = Icons.AutoMirrored.Outlined.Logout,
                 stringResId = R.string.menu_sign_out,

@@ -117,4 +117,15 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun updateProfile(displayName: String, countryFlag: String) {
+        val uid = authRepository.currentUser?.uid ?: return
+        viewModelScope.launch {
+            try {
+                userRepository.updateProfile(uid, displayName, countryFlag)
+            } catch (e: Exception) {
+                Logger.logChatError("Profile update error: ${e.message}")
+            }
+        }
+    }
+
 }

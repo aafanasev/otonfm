@@ -110,9 +110,23 @@ class MainActivity : ComponentActivity() {
                                 ContactsScreen()
                             }
                             entry<MainRoutes.ProfileSetup> {
+                                val authState by authViewModel.authState.collectAsState()
+                                val currentUser = (authState as? AuthViewModel.AuthState.Authenticated)?.user
+                                val isEditMode = authState is AuthViewModel.AuthState.Authenticated
+                                val lastUpdate by dataStore.lastProfileUpdateAt.collectAsState(0L)
+                                val canEditProfile = !isEditMode || System.currentTimeMillis() - lastUpdate > 3_600_000L
+
                                 ProfileSetupScreen(
+                                    initialName = currentUser?.displayName ?: "",
+                                    initialFlag = currentUser?.countryFlag?.takeIf { it.isNotEmpty() },
+                                    submitEnabled = canEditProfile,
                                     onProfileSetup = { displayName, countryFlag ->
-                                        authViewModel.saveProfile(displayName, countryFlag)
+                                        if (isEditMode) {
+                                            authViewModel.updateProfile(displayName, countryFlag)
+                                            scope.launch { dataStore.saveLastProfileUpdateAt(System.currentTimeMillis()) }
+                                        } else {
+                                            authViewModel.saveProfile(displayName, countryFlag)
+                                        }
                                         backStack.removeLastOrNull()
                                     },
                                 )

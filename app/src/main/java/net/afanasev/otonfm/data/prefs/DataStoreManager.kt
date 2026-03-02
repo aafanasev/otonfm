@@ -2,6 +2,7 @@ package net.afanasev.otonfm.data.prefs
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,7 @@ class DataStoreManager(private val context: Context) {
 
     private companion object {
         val KEY_THEME = stringPreferencesKey("theme")
+        val KEY_LAST_PROFILE_UPDATE = longPreferencesKey("last_profile_update_at")
     }
 
     val theme: Flow<String> =
@@ -22,6 +24,15 @@ class DataStoreManager(private val context: Context) {
     suspend fun saveTheme(@Theme theme: String) {
         context.dataStore.edit { prefs ->
             prefs[KEY_THEME] = theme
+        }
+    }
+
+    val lastProfileUpdateAt: Flow<Long> =
+        context.dataStore.data.map { prefs -> prefs[KEY_LAST_PROFILE_UPDATE] ?: 0L }
+
+    suspend fun saveLastProfileUpdateAt(time: Long) {
+        context.dataStore.edit { prefs ->
+            prefs[KEY_LAST_PROFILE_UPDATE] = time
         }
     }
 

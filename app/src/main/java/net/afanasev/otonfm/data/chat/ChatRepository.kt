@@ -48,6 +48,7 @@ class ChatRepository {
             "authorName" to user.displayName,
             "authorFlag" to user.countryFlag,
             "isAuthorAdmin" to user.isAdmin,
+            "platform" to "android",
             "createdAt" to FieldValue.serverTimestamp(),
         )
         collection.add(data).await()

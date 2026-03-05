@@ -44,7 +44,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val statusFetcher = StatusFetcher()
     private var mediaController: MediaController? = null
     private var artworkJob: Job? = null
-    private var nextTrackJob: Job? = null
 
     init {
         adminStatusFetcher.observe()
@@ -103,8 +102,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             _artworkUri.value = statusFetcher.fetchArtworkUri(currentTitle)
         }
 
-        nextTrackJob?.cancel()
-        nextTrackJob = viewModelScope.launch {
+        viewModelScope.launch {
             _nextTrackTitle.value = statusFetcher.fetchNextTrack().orEmpty()
         }
     }

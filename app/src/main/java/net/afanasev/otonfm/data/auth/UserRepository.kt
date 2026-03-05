@@ -44,4 +44,8 @@ class UserRepository {
     suspend fun updateProfile(uid: String, displayName: String, countryFlag: String) {
         collection.document(uid).update("displayName", displayName, "countryFlag", countryFlag).await()
     }
+
+    suspend fun updateLastMessageAt(uid: String) {
+        collection.document(uid).update("lastMessageAt", Timestamp.now()).await()
+    }
 }

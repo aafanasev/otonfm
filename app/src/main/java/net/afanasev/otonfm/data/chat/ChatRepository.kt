@@ -1,6 +1,5 @@
 package net.afanasev.otonfm.data.chat
 
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
@@ -10,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import net.afanasev.otonfm.data.auth.UserModel
+import net.afanasev.otonfm.data.auth.UserRepository
 import net.afanasev.otonfm.log.Logger
 
 private const val COLLECTION = "messages"
@@ -18,6 +18,7 @@ private const val MESSAGE_LIMIT = 50L
 class ChatRepository {
 
     private val collection = Firebase.firestore.collection(COLLECTION)
+    private val userRepository = UserRepository()
 
     fun observeMessages(): Flow<List<MessageModel>> = callbackFlow {
         val registration = collection
@@ -53,8 +54,6 @@ class ChatRepository {
             "createdAt" to FieldValue.serverTimestamp(),
         )
         collection.add(data).await()
-
-        Firebase.firestore.collection("users").document(authorId)
-            .update("lastMessageAt", Timestamp.now())
+        userRepository.updateLastMessageAt(authorId)
     }
 }

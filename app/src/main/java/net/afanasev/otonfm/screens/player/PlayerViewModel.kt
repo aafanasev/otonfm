@@ -104,6 +104,11 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    override fun onCleared() {
+        mediaController?.release()
+        mediaController = null
+    }
+
     enum class ButtonState {
         PAUSED,
         LOADING,

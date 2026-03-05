@@ -148,7 +148,7 @@ private fun SystemMessageRow(message: MessageModel, modifier: Modifier = Modifie
     Text(
         text = message.text,
         style = MaterialTheme.typography.bodySmall,
-        color = Color.Gray,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 4.dp),

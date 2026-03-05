@@ -44,17 +44,16 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         if (!_canSend.value) return
         _inputText.value = ""
         _canSend.value = false
-        viewModelScope.launch {
-            delay(10_000)
-            _canSend.value = true
-        }
         Logger.onChatMessageSend()
         viewModelScope.launch {
             try {
                 chatRepository.sendMessage(text, uid, user)
+                delay(10_000)
+                _canSend.value = true
             } catch (e: Exception) {
                 Logger.logChatError("Send message error: ${e.message}")
                 _inputText.value = text
+                _canSend.value = true
                 Toast.makeText(
                     getApplication(),
                     R.string.chat_send_error,

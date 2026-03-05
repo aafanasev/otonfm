@@ -17,7 +17,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
@@ -25,8 +24,6 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.google.firebase.messaging.FirebaseMessaging
-import kotlinx.coroutines.launch
-import net.afanasev.otonfm.data.prefs.DataStoreManager
 import net.afanasev.otonfm.screens.auth.AuthViewModel
 import net.afanasev.otonfm.screens.chat.ChatScreen
 import net.afanasev.otonfm.screens.chat.ChatViewModel
@@ -34,6 +31,7 @@ import net.afanasev.otonfm.screens.contacts.ContactsScreen
 import net.afanasev.otonfm.screens.menu.MenuScreen
 import net.afanasev.otonfm.screens.player.PlayerViewScreen
 import net.afanasev.otonfm.screens.profilesetup.ProfileSetupScreen
+import net.afanasev.otonfm.screens.settings.SettingsViewModel
 import net.afanasev.otonfm.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.navigation.BottomSheetSceneStrategy
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
@@ -46,12 +44,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setupNotifications()
-        val dataStore = DataStoreManager(applicationContext)
 
         enableEdgeToEdge()
         setContent {
-            val scope = rememberCoroutineScope()
-            val theme by dataStore.theme.collectAsState("system")
+            val settingsViewModel: SettingsViewModel = viewModel()
+            val theme by settingsViewModel.theme.collectAsState()
             val isDarkMode = when (theme) {
                 Theme.ARTWORK -> true
                 Theme.DARK -> true
@@ -92,7 +89,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onSignOut = {
                                         authViewModel.signOut()
-                                        scope.launch { dataStore.saveLastProfileUpdateAt(0L) }
+                                        settingsViewModel.resetLastProfileUpdateAt()
                                         backStack.removeLastOrNull()
                                     },
                                 )
@@ -101,7 +98,7 @@ class MainActivity : ComponentActivity() {
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
                                 ThemeChooserScreen(onThemeSelected = {
-                                    scope.launch { dataStore.saveTheme(it) }
+                                    settingsViewModel.saveTheme(it)
                                     backStack.removeLastOrNull()
                                 })
                             }
@@ -114,7 +111,7 @@ class MainActivity : ComponentActivity() {
                                 val authState by authViewModel.authState.collectAsState()
                                 val currentUser = (authState as? AuthViewModel.AuthState.Authenticated)?.user
                                 val isEditMode = authState is AuthViewModel.AuthState.Authenticated
-                                val lastUpdate by dataStore.lastProfileUpdateAt.collectAsState(0L)
+                                val lastUpdate by settingsViewModel.lastProfileUpdateAt.collectAsState()
                                 val canEditProfile = !isEditMode || System.currentTimeMillis() - lastUpdate > 3_600_000L
 
                                 ProfileSetupScreen(
@@ -124,7 +121,7 @@ class MainActivity : ComponentActivity() {
                                     onProfileSetup = { displayName, countryFlag ->
                                         if (isEditMode) {
                                             authViewModel.updateProfile(displayName, countryFlag)
-                                            scope.launch { dataStore.saveLastProfileUpdateAt(System.currentTimeMillis()) }
+                                            settingsViewModel.saveLastProfileUpdateAt(System.currentTimeMillis())
                                         } else {
                                             authViewModel.saveProfile(displayName, countryFlag)
                                         }

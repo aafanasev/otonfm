@@ -21,11 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.afanasev.otonfm.data.chat.MessageModel
 import net.afanasev.otonfm.data.chat.MessageType
 import net.afanasev.otonfm.ui.components.FlagIcon
+import net.afanasev.otonfm.ui.theme.OtonFmTheme
 import net.afanasev.otonfm.ui.theme.UserNameColors
 import kotlin.math.abs
 
@@ -154,3 +156,70 @@ private fun SystemMessageRow(message: MessageModel, modifier: Modifier = Modifie
             .padding(horizontal = 12.dp, vertical = 4.dp),
     )
 }
+
+// region Previews
+
+private val previewUserMessage = MessageModel(
+    type = MessageType.USER_MESSAGE.value,
+    authorName = "Иван",
+    authorFlag = "🇷🇺",
+    text = "Привет всем!",
+)
+
+private val previewAdminMessage = MessageModel(
+    type = MessageType.USER_MESSAGE.value,
+    authorName = "Admin",
+    authorFlag = "🇷🇺",
+    authorIsAdmin = true,
+    text = "Добро пожаловать на эфир",
+)
+
+private val previewSongRequest = MessageModel(
+    type = MessageType.SONG_REQUEST.value,
+    authorName = "Мария",
+    authorFlag = "🇾🇦",
+    songArtist = "Земфира",
+    songTitle = "Хочешь",
+    text = "пожалуйста!",
+)
+
+private val previewAnnouncement = MessageModel(
+    type = MessageType.ADMIN_ANNOUNCEMENT.value,
+    text = "Сегодня прямой эфир в 20:00",
+    isPinned = true,
+)
+
+private val previewSystemMessage = MessageModel(
+    type = MessageType.SYSTEM.value,
+    text = "Иван присоединился к чату",
+)
+
+@Preview(showBackground = true, name = "All types — Light")
+@Composable
+private fun MessageRowAllTypesLightPreview() {
+    OtonFmTheme(isDarkMode = false) {
+        Column {
+            MessageRow(previewUserMessage)
+            MessageRow(previewAdminMessage)
+            MessageRow(previewSongRequest)
+            MessageRow(previewAnnouncement)
+            MessageRow(previewSystemMessage)
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "All types — Dark")
+@Composable
+private fun MessageRowAllTypesDarkPreview() {
+    OtonFmTheme(isDarkMode = true) {
+        Column {
+            MessageRow(previewUserMessage)
+            MessageRow(previewAdminMessage)
+            MessageRow(previewSongRequest)
+            MessageRow(previewAnnouncement)
+            MessageRow(previewSystemMessage)
+        }
+    }
+}
+
+// endregion

@@ -31,6 +31,9 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val _canSend = MutableStateFlow(true)
     val canSend: StateFlow<Boolean> = _canSend.asStateFlow()
 
+    private val _containsProfanity = MutableStateFlow(false)
+    val containsProfanity: StateFlow<Boolean> = _containsProfanity.asStateFlow()
+
     init {
         chatRepository.observeMessages()
             .onEach { _messages.value = it }
@@ -65,6 +68,8 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun updateInputText(text: String) {
-        _inputText.value = text.take(500)
+        val trimmed = text.take(500)
+        _inputText.value = trimmed
+        _containsProfanity.value = ProfanityFilter.containsProfanity(trimmed)
     }
 }

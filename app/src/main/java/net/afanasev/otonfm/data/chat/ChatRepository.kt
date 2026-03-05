@@ -54,6 +54,7 @@ class ChatRepository {
             "createdAt" to FieldValue.serverTimestamp(),
         )
         collection.add(data).await()
+
         // Fire-and-forget: updating lastMessageAt is non-critical to the chat flow,
         // so we intentionally don't await it — a failure here is acceptable.
         Firebase.firestore.collection(USERS_COLLECTION).document(authorId)

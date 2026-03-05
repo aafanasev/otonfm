@@ -18,7 +18,6 @@ import net.afanasev.otonfm.screens.auth.AuthViewModel.AuthState
 import net.afanasev.otonfm.screens.chat.components.ChatInputBar
 import net.afanasev.otonfm.screens.chat.components.MessageRow
 import net.afanasev.otonfm.screens.chat.components.PinnedMessageBanner
-import net.afanasev.otonfm.util.ProfanityFilter
 
 @Composable
 fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
@@ -29,8 +28,8 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
     val messages by chatViewModel.messages.collectAsState()
     val inputText by chatViewModel.inputText.collectAsState()
     val canSend by chatViewModel.canSend.collectAsState()
+    val containsProfanity by chatViewModel.containsProfanity.collectAsState()
     val pinnedMessage = messages.lastOrNull { it.isPinned }
-    val containsProfanity = ProfanityFilter.containsProfanity(inputText)
 
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty() && listState.firstVisibleItemIndex == 0) {

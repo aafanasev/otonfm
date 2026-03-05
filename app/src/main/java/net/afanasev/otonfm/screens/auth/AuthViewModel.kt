@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -39,6 +40,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     val navigateToProfileSetup: SharedFlow<Unit> = _navigateToProfileSetup.asSharedFlow()
 
     private var pendingSignIn = false
+    private var userProfileJob: Job? = null
 
     init {
         authRepository.observeAuthState()
@@ -71,7 +73,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun observeUserProfile(uid: String) {
-        userRepository.observeUser(uid)
+        userProfileJob?.cancel()
+        userProfileJob = userRepository.observeUser(uid)
             .onEach { user ->
                 if (user != null) {
                     _authState.value = AuthState.Authenticated(uid, user)

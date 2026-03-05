@@ -32,7 +32,7 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
     val pinnedMessage = messages.lastOrNull { it.isPinned }
     val containsProfanity = ProfanityFilter.containsProfanity(inputText)
 
-    LaunchedEffect(messages.size) {
+    LaunchedEffect(messages.lastOrNull()?.id) {
         if (messages.isNotEmpty() && listState.firstVisibleItemIndex == 0) {
             listState.animateScrollToItem(0)
         }

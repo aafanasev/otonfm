@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import net.afanasev.otonfm.data.auth.UserModel
+import net.afanasev.otonfm.data.auth.USERS_COLLECTION
 import net.afanasev.otonfm.log.Logger
 
 private const val COLLECTION = "messages"
@@ -54,7 +55,9 @@ class ChatRepository {
         )
         collection.add(data).await()
 
-        Firebase.firestore.collection("users").document(authorId)
+        // Fire-and-forget: updating lastMessageAt is non-critical to the chat flow,
+        // so we intentionally don't await it — a failure here is acceptable.
+        Firebase.firestore.collection(USERS_COLLECTION).document(authorId)
             .update("lastMessageAt", Timestamp.now())
     }
 }

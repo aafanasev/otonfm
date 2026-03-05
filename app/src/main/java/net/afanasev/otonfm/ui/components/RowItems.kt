@@ -17,20 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TextRowItem(
-    @StringRes stringResId: Int,
-    onClick: () -> Unit,
-) {
-    Text(
-        stringResource(stringResId),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 24.dp, vertical = 12.dp),
-    )
-}
-
-@Composable
 fun IconTextRowItem(
     icon: ImageVector,
     @StringRes stringResId: Int,

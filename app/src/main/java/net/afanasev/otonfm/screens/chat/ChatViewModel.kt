@@ -31,6 +31,9 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val _canSend = MutableStateFlow(true)
     val canSend: StateFlow<Boolean> = _canSend.asStateFlow()
 
+    private val _containsProfanity = MutableStateFlow(false)
+    val containsProfanity: StateFlow<Boolean> = _containsProfanity.asStateFlow()
+
     init {
         chatRepository.observeMessages()
             .onEach { _messages.value = it }
@@ -44,17 +47,16 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         if (!_canSend.value) return
         _inputText.value = ""
         _canSend.value = false
-        viewModelScope.launch {
-            delay(10_000)
-            _canSend.value = true
-        }
         Logger.onChatMessageSend()
         viewModelScope.launch {
             try {
                 chatRepository.sendMessage(text, uid, user)
+                delay(10_000)
+                _canSend.value = true
             } catch (e: Exception) {
                 Logger.logChatError("Send message error: ${e.message}")
                 _inputText.value = text
+                _canSend.value = true
                 Toast.makeText(
                     getApplication(),
                     R.string.chat_send_error,
@@ -65,6 +67,8 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun updateInputText(text: String) {
-        _inputText.value = text.take(500)
+        val trimmed = text.take(500)
+        _inputText.value = trimmed
+        _containsProfanity.value = ProfanityFilter.containsProfanity(trimmed)
     }
 }

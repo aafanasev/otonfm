@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import net.afanasev.otonfm.data.chat.MessageModel
 import net.afanasev.otonfm.data.chat.MessageType
 import net.afanasev.otonfm.ui.components.FlagIcon
@@ -35,6 +35,23 @@ private val AdminNameColor = Color(0xFFCD0200)
 
 private fun colorForName(name: String): Color =
     UserNameColors[abs(name.hashCode()) % UserNameColors.size]
+
+@Composable
+private fun AuthorHeader(
+    authorFlag: String,
+    authorName: String,
+    authorIsAdmin: Boolean,
+    flagSize: Dp = 18.dp,
+) {
+    FlagIcon(authorFlag, flagSize)
+    Spacer(modifier = Modifier.width(4.dp))
+    Text(
+        text = "$authorName:",
+        fontWeight = FontWeight.Bold,
+        color = if (authorIsAdmin) AdminNameColor else colorForName(authorName),
+        style = MaterialTheme.typography.bodyMedium,
+    )
+}
 
 @Composable
 fun MessageRow(
@@ -57,14 +74,7 @@ private fun UserMessageRow(message: MessageModel, modifier: Modifier = Modifier)
             .padding(horizontal = 12.dp, vertical = 3.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        FlagIcon(message.authorFlag, 18.dp)
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = "${message.authorName}:",
-            fontWeight = FontWeight.Bold,
-            color = if (message.authorIsAdmin) AdminNameColor else colorForName(message.authorName),
-            style = MaterialTheme.typography.bodyMedium,
-        )
+        AuthorHeader(message.authorFlag, message.authorName, message.authorIsAdmin)
         Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = message.text,
@@ -82,14 +92,7 @@ private fun SongRequestRow(message: MessageModel, modifier: Modifier = Modifier)
             .padding(horizontal = 12.dp, vertical = 3.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            FlagIcon(message.authorFlag, 18.dp)
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = "${message.authorName}:",
-                fontWeight = FontWeight.Bold,
-                color = if (message.authorIsAdmin) AdminNameColor else colorForName(message.authorName),
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            AuthorHeader(message.authorFlag, message.authorName, message.authorIsAdmin)
             Spacer(modifier = Modifier.width(6.dp))
             Icon(
                 imageVector = Icons.Filled.MusicNote,

@@ -37,6 +37,13 @@ class PlaybackService : MediaSessionService() {
         registerReceiver(noisyReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        val player = mediaSession?.player ?: return
+        if (!player.playWhenReady || player.mediaItemCount == 0) {
+            stopSelf()
+        }
+    }
+
     override fun onDestroy() {
         destroyMediaSession()
         unregisterReceiver(noisyReceiver)

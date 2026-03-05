@@ -38,7 +38,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _navigateToProfileSetup = MutableSharedFlow<Unit>()
     val navigateToProfileSetup: SharedFlow<Unit> = _navigateToProfileSetup.asSharedFlow()
 
-    private var pendingSignIn = false
+    @Volatile private var pendingSignIn = false
 
     init {
         authRepository.observeAuthState()

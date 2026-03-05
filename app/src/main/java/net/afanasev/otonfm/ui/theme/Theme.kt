@@ -35,7 +35,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(Theme.DARK, Theme.LIGHT, Theme.SYSTEM)
+@StringDef(Theme.DARK, Theme.LIGHT, Theme.SYSTEM, Theme.ARTWORK)
 annotation class Theme {
     companion object {
         const val DARK = "dark"

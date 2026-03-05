@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import net.afanasev.otonfm.log.Logger
 
-private const val COLLECTION = "users"
+internal const val USERS_COLLECTION = "users"
 
 class UserRepository {
 
-    private val collection = Firebase.firestore.collection(COLLECTION)
+    private val collection = Firebase.firestore.collection(USERS_COLLECTION)
 
     fun observeUser(uid: String): Flow<UserModel?> = callbackFlow {
         val registration = collection.document(uid).addSnapshotListener { snapshot, error ->
@@ -43,9 +43,5 @@ class UserRepository {
 
     suspend fun updateProfile(uid: String, displayName: String, countryFlag: String) {
         collection.document(uid).update("displayName", displayName, "countryFlag", countryFlag).await()
-    }
-
-    suspend fun updateLastMessageAt(uid: String) {
-        collection.document(uid).update("lastMessageAt", Timestamp.now()).await()
     }
 }

@@ -6,8 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.net.Uri
-import net.afanasev.otonfm.MainActivity
+import androidx.core.net.toUri
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
@@ -21,14 +20,16 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import net.afanasev.otonfm.MainActivity
 import net.afanasev.otonfm.data.status.StatusFetcher
 
 class PlaybackService : MediaSessionService() {
 
     private var mediaSession: MediaSession? = null
+    private var artworkJob: Job? = null
+
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val statusFetcher = StatusFetcher()
-    private var artworkJob: Job? = null
     private val noisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // stop playing music when become noisy (e.g. unplug headphones)
@@ -75,22 +76,17 @@ class PlaybackService : MediaSessionService() {
                 true, /* handleAudioFocus */
             )
             .build()
-        val sessionActivity = PendingIntent.getActivity(
-            this,
-            0,
-            Intent(this, MainActivity::class.java),
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-        )
 
         player.addListener(object : Player.Listener {
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                 val title = mediaMetadata.title?.toString() ?: return
+
                 artworkJob?.cancel()
                 artworkJob = serviceScope.launch {
                     val uri = statusFetcher.fetchArtworkUri(title)
                     val currentItem = player.currentMediaItem ?: return@launch
                     val updatedMetadata = player.mediaMetadata.buildUpon()
-                        .setArtworkUri(Uri.parse(uri))
+                        .setArtworkUri(uri.toUri())
                         .build()
                     player.replaceMediaItem(
                         player.currentMediaItemIndex,
@@ -99,6 +95,13 @@ class PlaybackService : MediaSessionService() {
                 }
             }
         })
+
+        val sessionActivity = PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, MainActivity::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
 
         mediaSession = MediaSession.Builder(this, player)
             .setSessionActivity(sessionActivity)

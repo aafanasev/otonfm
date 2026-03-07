@@ -1,10 +1,12 @@
 package net.afanasev.otonfm.services
 
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import net.afanasev.otonfm.MainActivity
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
@@ -60,7 +62,16 @@ class PlaybackService : MediaSessionService() {
                 true, /* handleAudioFocus */
             )
             .build()
-        mediaSession = MediaSession.Builder(this, player).build()
+        val sessionActivity = PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, MainActivity::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+
+        mediaSession = MediaSession.Builder(this, player)
+            .setSessionActivity(sessionActivity)
+            .build()
     }
 
     private fun destroyMediaSession() {

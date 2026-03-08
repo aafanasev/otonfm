@@ -27,6 +27,7 @@ class PlaybackService : MediaSessionService() {
 
     private var mediaSession: MediaSession? = null
     private var artworkJob: Job? = null
+    private var lastFetchedTitle: String? = null
 
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val statusFetcher = StatusFetcher()
@@ -78,14 +79,22 @@ class PlaybackService : MediaSessionService() {
             .build()
 
         player.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_IDLE) {
+                    lastFetchedTitle = null
+                }
+            }
+
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
-                val title = mediaMetadata.title?.toString() ?: return
+                val title = mediaMetadata.title?.toString()
+                if (title == null || title == lastFetchedTitle) return
+                lastFetchedTitle = title
 
                 artworkJob?.cancel()
                 artworkJob = serviceScope.launch {
                     val uri = statusFetcher.fetchArtworkUri(title)
                     val currentItem = player.currentMediaItem ?: return@launch
-                    val updatedMetadata = player.mediaMetadata.buildUpon()
+                    val updatedMetadata = currentItem.mediaMetadata.buildUpon()
                         .setArtworkUri(uri.toUri())
                         .build()
                     player.replaceMediaItem(

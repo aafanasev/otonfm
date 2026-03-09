@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import net.afanasev.otonfm.data.auth.UserModel
 import net.afanasev.otonfm.data.auth.USERS_COLLECTION
-import net.afanasev.otonfm.log.Logger
+import net.afanasev.otonfm.util.log.Logger
 
 private const val COLLECTION = "messages"
 private const val MESSAGE_LIMIT = 50L

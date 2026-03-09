@@ -7,7 +7,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import net.afanasev.otonfm.log.Logger
+import net.afanasev.otonfm.util.log.Logger
 
 internal const val USERS_COLLECTION = "users"
 

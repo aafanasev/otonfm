@@ -18,7 +18,7 @@ import net.afanasev.otonfm.R
 import net.afanasev.otonfm.data.auth.AuthRepository
 import net.afanasev.otonfm.data.auth.UserModel
 import net.afanasev.otonfm.data.auth.UserRepository
-import net.afanasev.otonfm.util.Logger
+import net.afanasev.otonfm.util.log.Logger
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 

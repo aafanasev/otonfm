@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import net.afanasev.otonfm.util.Logger
+import net.afanasev.otonfm.util.log.Logger
 import net.afanasev.otonfm.ui.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.ui.screens.player.components.Artwork
 import net.afanasev.otonfm.ui.screens.player.components.Background

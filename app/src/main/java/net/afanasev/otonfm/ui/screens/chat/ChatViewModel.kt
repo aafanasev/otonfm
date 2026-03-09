@@ -15,7 +15,7 @@ import net.afanasev.otonfm.R
 import net.afanasev.otonfm.data.auth.UserModel
 import net.afanasev.otonfm.data.chat.ChatRepository
 import net.afanasev.otonfm.data.chat.MessageModel
-import net.afanasev.otonfm.util.Logger
+import net.afanasev.otonfm.util.log.Logger
 import net.afanasev.otonfm.util.profanity.ProfanityFilter
 
 class ChatViewModel(application: Application) : AndroidViewModel(application) {

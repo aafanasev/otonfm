@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import net.afanasev.otonfm.R
-import net.afanasev.otonfm.util.Logger
+import net.afanasev.otonfm.util.log.Logger
 import net.afanasev.otonfm.ui.components.TextRowItem
 
 @Composable

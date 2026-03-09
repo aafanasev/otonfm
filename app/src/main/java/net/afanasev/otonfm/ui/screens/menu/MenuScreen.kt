@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import net.afanasev.otonfm.MainRoutes
 import net.afanasev.otonfm.R
-import net.afanasev.otonfm.util.Logger
+import net.afanasev.otonfm.util.log.Logger
 import net.afanasev.otonfm.ui.components.IconTextRowItem
 
 @Composable

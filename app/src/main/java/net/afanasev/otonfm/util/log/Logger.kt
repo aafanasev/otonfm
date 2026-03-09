@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.util
+package net.afanasev.otonfm.util.log
 
 import android.os.Bundle
 import android.util.Log

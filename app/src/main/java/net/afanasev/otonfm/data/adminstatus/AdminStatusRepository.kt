@@ -5,7 +5,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import net.afanasev.otonfm.util.Logger
+import net.afanasev.otonfm.util.log.Logger
 
 private const val COLLECTION = "admin_status"
 private const val DOCUMENT = "current"

@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.R
-import net.afanasev.otonfm.util.Logger
+import net.afanasev.otonfm.util.log.Logger
 import net.afanasev.otonfm.ui.components.TextRowItem
 import net.afanasev.otonfm.ui.theme.Theme
 

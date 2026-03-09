@@ -6,16 +6,31 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import net.afanasev.otonfm.MainActivity
+import androidx.core.net.toUri
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import net.afanasev.otonfm.MainActivity
+import net.afanasev.otonfm.data.status.StatusFetcher
 
 class PlaybackService : MediaSessionService() {
 
     private var mediaSession: MediaSession? = null
+    private var artworkJob: Job? = null
+    private var lastFetchedTitle: String? = null
+
+    private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val statusFetcher = StatusFetcher()
     private val noisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // stop playing music when become noisy (e.g. unplug headphones)
@@ -62,6 +77,34 @@ class PlaybackService : MediaSessionService() {
                 true, /* handleAudioFocus */
             )
             .build()
+
+        player.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_IDLE) {
+                    lastFetchedTitle = null
+                }
+            }
+
+            override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+                val title = mediaMetadata.title?.toString()
+                if (title == null || title == lastFetchedTitle) return
+                lastFetchedTitle = title
+
+                artworkJob?.cancel()
+                artworkJob = serviceScope.launch {
+                    val uri = statusFetcher.fetchArtworkUri(title)
+                    val currentItem = player.currentMediaItem ?: return@launch
+                    val updatedMetadata = currentItem.mediaMetadata.buildUpon()
+                        .setArtworkUri(uri.toUri())
+                        .build()
+                    player.replaceMediaItem(
+                        player.currentMediaItemIndex,
+                        currentItem.buildUpon().setMediaMetadata(updatedMetadata).build()
+                    )
+                }
+            }
+        })
+
         val sessionActivity = PendingIntent.getActivity(
             this,
             0,
@@ -75,6 +118,8 @@ class PlaybackService : MediaSessionService() {
     }
 
     private fun destroyMediaSession() {
+        artworkJob?.cancel()
+        serviceScope.cancel()
         mediaSession?.let {
             it.player.release()
             it.release()

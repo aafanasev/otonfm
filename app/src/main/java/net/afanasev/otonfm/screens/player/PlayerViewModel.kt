@@ -9,7 +9,6 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,7 +42,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val adminStatusFetcher = AdminStatusFetcher()
     private val statusFetcher = StatusFetcher()
     private var mediaController: MediaController? = null
-    private var artworkJob: Job? = null
 
     init {
         adminStatusFetcher.observe()
@@ -94,13 +92,8 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun setMetadata(mediaMetadata: MediaMetadata) {
-        val currentTitle = mediaMetadata.title?.toString() ?: return
-        _title.value = currentTitle
-
-        artworkJob?.cancel()
-        artworkJob = viewModelScope.launch {
-            _artworkUri.value = statusFetcher.fetchArtworkUri(currentTitle)
-        }
+        _title.value = mediaMetadata.title?.toString() ?: ""
+        _artworkUri.value = mediaMetadata.artworkUri?.toString() ?: DEFAULT_ARTWORK_URI
 
         viewModelScope.launch {
             _nextTrackTitle.value = statusFetcher.fetchNextTrack().orEmpty()

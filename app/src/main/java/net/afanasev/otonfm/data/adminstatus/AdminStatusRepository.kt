@@ -10,7 +10,7 @@ import net.afanasev.otonfm.log.Logger
 private const val COLLECTION = "admin_status"
 private const val DOCUMENT = "current"
 
-class AdminStatusFetcher {
+class AdminStatusRepository {
 
     private val docRef = Firebase.firestore.collection(COLLECTION).document(DOCUMENT)
 

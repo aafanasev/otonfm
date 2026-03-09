@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.OtonFmApplication
-import net.afanasev.otonfm.data.adminstatus.AdminStatusFetcher
+import net.afanasev.otonfm.data.adminstatus.AdminStatusRepository
 import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
 import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.services.PlaybackService
@@ -39,12 +39,12 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _buttonState = MutableStateFlow<ButtonState>(ButtonState.PAUSED)
     val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
 
-    private val adminStatusFetcher = AdminStatusFetcher()
+    private val adminStatusRepository = AdminStatusRepository()
     private val statusRepository = getApplication<OtonFmApplication>().statusRepository
     private var mediaController: MediaController? = null
 
     init {
-        adminStatusFetcher.observe()
+        adminStatusRepository.observe()
             .onEach { _adminStatus.value = it }
             .launchIn(viewModelScope)
 

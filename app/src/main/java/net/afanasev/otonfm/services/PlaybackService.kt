@@ -22,7 +22,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.MainActivity
 import net.afanasev.otonfm.OtonFmApplication
-import net.afanasev.otonfm.data.status.StatusRepository
 
 class PlaybackService : MediaSessionService() {
 
@@ -44,9 +43,6 @@ class PlaybackService : MediaSessionService() {
         }
 
     }
-
-    private val statusRepository: StatusRepository
-        get() = (application as OtonFmApplication).statusRepository
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? =
         mediaSession
@@ -95,7 +91,7 @@ class PlaybackService : MediaSessionService() {
 
                 artworkJob?.cancel()
                 artworkJob = serviceScope.launch {
-                    val uri = statusRepository.fetchArtworkUri(title)
+                    val uri = (application as OtonFmApplication).statusRepository.fetchArtworkUri(title)
                     val currentItem = player.currentMediaItem ?: return@launch
                     val updatedMetadata = currentItem.mediaMetadata.buildUpon()
                         .setArtworkUri(uri.toUri())

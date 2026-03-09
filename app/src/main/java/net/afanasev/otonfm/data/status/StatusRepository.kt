@@ -9,7 +9,7 @@ import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
-import net.afanasev.otonfm.log.Logger
+import net.afanasev.otonfm.util.Logger
 
 private const val STATUS_URL = "https://public.radio.co/stations/s696f24a77/status?v="
 private const val NEXT_TRACK_URL = "https://public.radio.co/stations/s696f24a77/next?v="

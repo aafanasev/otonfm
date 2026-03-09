@@ -17,7 +17,7 @@ private const val TIMEOUT_MS = 6_000L
 private const val RETRY_MAX_COUNT = 3
 private const val RETRY_DELAY_MS = 2_000L
 
-class StatusFetcher {
+class StatusRepository {
 
     private val httpClient = HttpClient(Android) {
         install(ContentNegotiation) {

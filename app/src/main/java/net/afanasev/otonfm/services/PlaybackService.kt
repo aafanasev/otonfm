@@ -21,7 +21,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.MainActivity
-import net.afanasev.otonfm.data.status.StatusFetcher
+import net.afanasev.otonfm.OtonFmApplication
+import net.afanasev.otonfm.data.status.StatusRepository
 
 class PlaybackService : MediaSessionService() {
 
@@ -30,7 +31,6 @@ class PlaybackService : MediaSessionService() {
     private var lastFetchedTitle: String? = null
 
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private val statusFetcher = StatusFetcher()
     private val noisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // stop playing music when become noisy (e.g. unplug headphones)
@@ -44,6 +44,9 @@ class PlaybackService : MediaSessionService() {
         }
 
     }
+
+    private val statusRepository: StatusRepository
+        get() = (application as OtonFmApplication).statusRepository
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? =
         mediaSession
@@ -92,7 +95,7 @@ class PlaybackService : MediaSessionService() {
 
                 artworkJob?.cancel()
                 artworkJob = serviceScope.launch {
-                    val uri = statusFetcher.fetchArtworkUri(title)
+                    val uri = statusRepository.fetchArtworkUri(title)
                     val currentItem = player.currentMediaItem ?: return@launch
                     val updatedMetadata = currentItem.mediaMetadata.buildUpon()
                         .setArtworkUri(uri.toUri())

@@ -16,10 +16,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
+import net.afanasev.otonfm.OtonFmApplication
 import net.afanasev.otonfm.data.adminstatus.AdminStatusFetcher
 import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
 import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
-import net.afanasev.otonfm.data.status.StatusFetcher
 import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
@@ -40,7 +40,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     val buttonState: StateFlow<ButtonState> = _buttonState.asStateFlow()
 
     private val adminStatusFetcher = AdminStatusFetcher()
-    private val statusFetcher = StatusFetcher()
+    private val statusRepository = getApplication<OtonFmApplication>().statusRepository
     private var mediaController: MediaController? = null
 
     init {
@@ -96,7 +96,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         _artworkUri.value = mediaMetadata.artworkUri?.toString() ?: DEFAULT_ARTWORK_URI
 
         viewModelScope.launch {
-            _nextTrackTitle.value = statusFetcher.fetchNextTrack().orEmpty()
+            _nextTrackTitle.value = statusRepository.fetchNextTrack().orEmpty()
         }
     }
 

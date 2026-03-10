@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Oton.FM</string>
     <string name="stream_url" translatable="false">https://s4.radio.co/s696f24a77/listen</string>
+    <string name="default_artwork_uri" translatable="false">https://images.radio.co/station_logos/s696f24a77.20250505065303.jpg</string>
 
     <string name="menu_theme">Оформление</string>
     <string name="menu_contacts">Контакты</string>

@@ -33,18 +33,18 @@ class StatusRepository {
         }
     }
 
-    suspend fun fetchArtworkUri(expectedTitle: String): String {
+    suspend fun fetchArtworkUri(expectedTitle: String): String? {
         repeat(RETRY_MAX_COUNT) { attemptIdx ->
             loadStatus()?.let {
                 if (it.currentTrack.title == expectedTitle) {
-                    return it.currentTrack.artworkUri ?: DEFAULT_ARTWORK_URI
+                    return it.currentTrack.artworkUri
                 }
             }
             Logger.logArtworkMismatch(attemptIdx + 1, RETRY_MAX_COUNT, RETRY_DELAY_MS)
             delay(RETRY_DELAY_MS)
         }
 
-        return DEFAULT_ARTWORK_URI
+        return null
     }
 
     private suspend fun loadStatus(): StatusModel? {

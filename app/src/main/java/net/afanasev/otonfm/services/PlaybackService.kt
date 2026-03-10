@@ -28,7 +28,6 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.MainActivity
 import net.afanasev.otonfm.OtonFmApplication
 import net.afanasev.otonfm.R
-import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
 
 private const val ROOT_ID = "root"
 private const val STATION_ID = "oton_fm_station"
@@ -62,7 +61,7 @@ class PlaybackService : MediaLibraryService() {
             val root = MediaItem.Builder()
                 .setMediaId(ROOT_ID)
                 .setMediaMetadata(
-                    androidx.media3.common.MediaMetadata.Builder()
+                    MediaMetadata.Builder()
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
                         .build()
@@ -88,9 +87,9 @@ class PlaybackService : MediaLibraryService() {
                 .setMediaId(STATION_ID)
                 .setUri(getString(R.string.stream_url))
                 .setMediaMetadata(
-                    androidx.media3.common.MediaMetadata.Builder()
+                    MediaMetadata.Builder()
                         .setTitle(getString(R.string.app_name))
-                        .setArtworkUri(DEFAULT_ARTWORK_URI.toUri())
+                        .setArtworkUri(getString(R.string.default_artwork_uri).toUri())
                         .setIsBrowsable(false)
                         .setIsPlayable(true)
                         .build()
@@ -148,6 +147,7 @@ class PlaybackService : MediaLibraryService() {
                 artworkJob?.cancel()
                 artworkJob = serviceScope.launch {
                     val uri = (application as OtonFmApplication).statusRepository.fetchArtworkUri(title)
+                        ?: getString(R.string.default_artwork_uri)
                     val currentItem = player.currentMediaItem ?: return@launch
                     val updatedMetadata = currentItem.mediaMetadata.buildUpon()
                         .setArtworkUri(uri.toUri())

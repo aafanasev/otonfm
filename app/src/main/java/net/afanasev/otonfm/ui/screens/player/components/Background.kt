@@ -19,12 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import kotlinx.coroutines.delay
-import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
+import net.afanasev.otonfm.R
 import net.afanasev.otonfm.ui.theme.BACKGROUND_GRADIENTS
 import kotlin.random.Random
 
@@ -34,7 +35,7 @@ fun Background(
     modifier: Modifier,
 ) {
     Crossfade(
-        targetState = artworkUri == DEFAULT_ARTWORK_URI,
+        targetState = artworkUri == stringResource(R.string.default_artwork_uri),
         animationSpec = tween(1_000),
     ) { showGradient ->
         if (showGradient) {

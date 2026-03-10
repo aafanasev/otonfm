@@ -19,8 +19,8 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.OtonFmApplication
 import net.afanasev.otonfm.data.adminstatus.AdminStatusRepository
 import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
+import net.afanasev.otonfm.R
 import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
-import net.afanasev.otonfm.data.status.STATION_STREAM_URL
 import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
@@ -84,7 +84,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             if (it.isPlaying) {
                 it.pause()
             } else {
-                val mediaItem = MediaItem.fromUri(STATION_STREAM_URL)
+                val mediaItem = MediaItem.fromUri(getApplication<Application>().getString(R.string.stream_url))
                 it.setMediaItem(mediaItem)
                 it.prepare()
                 it.play()

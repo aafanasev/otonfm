@@ -28,6 +28,8 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.MainActivity
 import net.afanasev.otonfm.OtonFmApplication
 import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
+import net.afanasev.otonfm.data.status.STATION_NAME
+import net.afanasev.otonfm.data.status.STATION_STREAM_URL
 
 private const val ROOT_ID = "root"
 private const val STATION_ID = "oton_fm_station"
@@ -85,10 +87,10 @@ class PlaybackService : MediaLibraryService() {
             }
             val stationItem = MediaItem.Builder()
                 .setMediaId(STATION_ID)
-                .setUri("https://s4.radio.co/s696f24a77/listen")
+                .setUri(STATION_STREAM_URL)
                 .setMediaMetadata(
                     androidx.media3.common.MediaMetadata.Builder()
-                        .setTitle("Oton FM")
+                        .setTitle(STATION_NAME)
                         .setArtworkUri(DEFAULT_ARTWORK_URI.toUri())
                         .setIsBrowsable(false)
                         .setIsPlayable(true)

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.OtonFmApplication
 import net.afanasev.otonfm.data.adminstatus.AdminStatusRepository
 import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
-import net.afanasev.otonfm.data.status.DEFAULT_ARTWORK_URI
+import net.afanasev.otonfm.R
 import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
@@ -27,7 +27,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _adminStatus = MutableStateFlow<AdminStatusModel?>(AdminStatusModel())
     val adminStatus: StateFlow<AdminStatusModel?> = _adminStatus.asStateFlow()
 
-    private val _artworkUri = MutableStateFlow<String>(DEFAULT_ARTWORK_URI)
+    private val _artworkUri = MutableStateFlow<String>(getApplication<Application>().getString(R.string.default_artwork_uri))
     val artworkUri: StateFlow<String> = _artworkUri.asStateFlow()
 
     private val _title = MutableStateFlow("")
@@ -83,7 +83,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             if (it.isPlaying) {
                 it.pause()
             } else {
-                val mediaItem = MediaItem.fromUri("https://s4.radio.co/s696f24a77/listen")
+                val mediaItem = MediaItem.fromUri(getApplication<Application>().getString(R.string.stream_url))
                 it.setMediaItem(mediaItem)
                 it.prepare()
                 it.play()
@@ -93,7 +93,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun setMetadata(mediaMetadata: MediaMetadata) {
         _title.value = mediaMetadata.title?.toString() ?: ""
-        _artworkUri.value = mediaMetadata.artworkUri?.toString() ?: DEFAULT_ARTWORK_URI
+        _artworkUri.value = mediaMetadata.artworkUri?.toString() ?: getApplication<Application>().getString(R.string.default_artwork_uri)
 
         viewModelScope.launch {
             _nextTrackTitle.value = statusRepository.fetchNextTrack().orEmpty()

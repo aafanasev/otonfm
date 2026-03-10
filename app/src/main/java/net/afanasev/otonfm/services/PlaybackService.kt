@@ -9,11 +9,16 @@ import android.media.AudioManager
 import androidx.core.net.toUri
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.LibraryResult
+import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
-import androidx.media3.session.MediaSessionService
+import com.google.common.collect.ImmutableList
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,10 +27,14 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.MainActivity
 import net.afanasev.otonfm.OtonFmApplication
+import net.afanasev.otonfm.R
 
-class PlaybackService : MediaSessionService() {
+private const val ROOT_ID = "root"
+private const val STATION_ID = "oton_fm_station"
 
-    private var mediaSession: MediaSession? = null
+class PlaybackService : MediaLibraryService() {
+
+    private var mediaLibrarySession: MediaLibrarySession? = null
     private var artworkJob: Job? = null
     private var lastFetchedTitle: String? = null
 
@@ -34,18 +43,64 @@ class PlaybackService : MediaSessionService() {
         override fun onReceive(context: Context, intent: Intent) {
             // stop playing music when become noisy (e.g. unplug headphones)
             if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                mediaSession?.let {
+                mediaLibrarySession?.let {
                     if (it.player.isPlaying) {
                         it.player.stop()
                     }
                 }
             }
         }
-
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? =
-        mediaSession
+    private val libraryCallback = object : MediaLibrarySession.Callback {
+        override fun onGetLibraryRoot(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            params: LibraryParams?,
+        ): ListenableFuture<LibraryResult<MediaItem>> {
+            val root = MediaItem.Builder()
+                .setMediaId(ROOT_ID)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setIsBrowsable(true)
+                        .setIsPlayable(false)
+                        .build()
+                )
+                .build()
+            return Futures.immediateFuture(LibraryResult.ofItem(root, params))
+        }
+
+        override fun onGetChildren(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            parentId: String,
+            page: Int,
+            pageSize: Int,
+            params: LibraryParams?,
+        ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+            if (parentId != ROOT_ID) {
+                return Futures.immediateFuture(
+                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+                )
+            }
+            val stationItem = MediaItem.Builder()
+                .setMediaId(STATION_ID)
+                .setUri(getString(R.string.stream_url))
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(getString(R.string.app_name))
+                        .setArtworkUri(getString(R.string.default_artwork_uri).toUri())
+                        .setIsBrowsable(false)
+                        .setIsPlayable(true)
+                        .build()
+                )
+                .build()
+            return Futures.immediateFuture(LibraryResult.ofItemList(ImmutableList.of(stationItem), params))
+        }
+    }
+
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? =
+        mediaLibrarySession
 
     override fun onCreate() {
         super.onCreate()
@@ -54,7 +109,7 @@ class PlaybackService : MediaSessionService() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        val player = mediaSession?.player ?: return
+        val player = mediaLibrarySession?.player ?: return
         if (!player.playWhenReady || player.mediaItemCount == 0) {
             stopSelf()
         }
@@ -92,6 +147,7 @@ class PlaybackService : MediaSessionService() {
                 artworkJob?.cancel()
                 artworkJob = serviceScope.launch {
                     val uri = (application as OtonFmApplication).statusRepository.fetchArtworkUri(title)
+                        ?: getString(R.string.default_artwork_uri)
                     val currentItem = player.currentMediaItem ?: return@launch
                     val updatedMetadata = currentItem.mediaMetadata.buildUpon()
                         .setArtworkUri(uri.toUri())
@@ -111,7 +167,7 @@ class PlaybackService : MediaSessionService() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
-        mediaSession = MediaSession.Builder(this, player)
+        mediaLibrarySession = MediaLibrarySession.Builder(this, player, libraryCallback)
             .setSessionActivity(sessionActivity)
             .build()
     }
@@ -119,10 +175,10 @@ class PlaybackService : MediaSessionService() {
     private fun destroyMediaSession() {
         artworkJob?.cancel()
         serviceScope.cancel()
-        mediaSession?.let {
+        mediaLibrarySession?.let {
             it.player.release()
             it.release()
-            mediaSession = null
+            mediaLibrarySession = null
         }
     }
 }

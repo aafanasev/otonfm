@@ -46,7 +46,7 @@ fun AdminStatusBar(
             .clickable {
                 Toast.makeText(context, adminStatus.text, Toast.LENGTH_LONG).show()
             }
-            .padding(horizontal = 8.dp, vertical = 2.dp),
+            .padding(horizontal = 8.dp, vertical = 6.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {

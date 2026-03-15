@@ -16,8 +16,8 @@ android {
         applicationId = "net.afanasev.otonfm"
         minSdk = 29
         targetSdk = 35
-        versionCode = 9
-        versionName = "1.5.0"
+        versionCode = 10
+        versionName = "1.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

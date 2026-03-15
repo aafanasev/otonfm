@@ -41,7 +41,7 @@ fun PortraitContent(
             text = title,
             modifier = Modifier.fillMaxWidth(0.9f),
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         NextTrack(
             text = nextTrackTitle,
             modifier = Modifier.fillMaxWidth(0.9f),

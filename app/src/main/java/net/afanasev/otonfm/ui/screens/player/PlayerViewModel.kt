@@ -3,6 +3,7 @@ package net.afanasev.otonfm.ui.screens.player
 import android.app.Application
 import android.content.ComponentName
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -12,22 +13,21 @@ import androidx.media3.session.SessionToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.OtonFmApplication
-import net.afanasev.otonfm.data.adminstatus.AdminStatusRepository
-import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
 import net.afanasev.otonfm.R
+import net.afanasev.otonfm.data.adminstatus.AdminStatusModel
+import net.afanasev.otonfm.data.adminstatus.AdminStatusRepository
 import net.afanasev.otonfm.services.PlaybackService
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _adminStatus = MutableStateFlow<AdminStatusModel?>(AdminStatusModel())
+    private val _adminStatus = MutableStateFlow<AdminStatusModel?>(null)
     val adminStatus: StateFlow<AdminStatusModel?> = _adminStatus.asStateFlow()
 
-    private val _artworkUri = MutableStateFlow<String>(getApplication<Application>().getString(R.string.default_artwork_uri))
+    private val _artworkUri =
+        MutableStateFlow(application.getString(R.string.default_artwork_uri))
     val artworkUri: StateFlow<String> = _artworkUri.asStateFlow()
 
     private val _title = MutableStateFlow("")
@@ -44,9 +44,9 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private var mediaController: MediaController? = null
 
     init {
-        adminStatusRepository.observe()
-            .onEach { _adminStatus.value = it }
-            .launchIn(viewModelScope)
+//        adminStatusRepository.observe()
+//            .onEach { _adminStatus.value = it }
+//            .launchIn(viewModelScope)
 
         viewModelScope.launch {
             val token =
@@ -83,7 +83,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             if (it.isPlaying) {
                 it.pause()
             } else {
-                val mediaItem = MediaItem.fromUri(getApplication<Application>().getString(R.string.stream_url))
+                val mediaItem = MediaItem.fromUri(application.getString(R.string.stream_url))
                 it.setMediaItem(mediaItem)
                 it.prepare()
                 it.play()
@@ -93,7 +93,8 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun setMetadata(mediaMetadata: MediaMetadata) {
         _title.value = mediaMetadata.title?.toString() ?: ""
-        _artworkUri.value = mediaMetadata.artworkUri?.toString() ?: getApplication<Application>().getString(R.string.default_artwork_uri)
+        _artworkUri.value = mediaMetadata.artworkUri?.toString()
+            ?: application.getString(R.string.default_artwork_uri)
 
         viewModelScope.launch {
             _nextTrackTitle.value = statusRepository.fetchNextTrack().orEmpty()

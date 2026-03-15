@@ -89,6 +89,7 @@ class PlaybackService : MediaLibraryService() {
                 .setMediaMetadata(
                     MediaMetadata.Builder()
                         .setTitle(getString(R.string.app_name))
+                        .setStation(getString(R.string.app_name))
                         .setArtworkUri(getString(R.string.default_artwork_uri).toUri())
                         .setIsBrowsable(false)
                         .setIsPlayable(true)

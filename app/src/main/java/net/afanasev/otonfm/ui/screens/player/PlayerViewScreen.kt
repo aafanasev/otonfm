@@ -17,13 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import net.afanasev.otonfm.util.log.Logger
 import net.afanasev.otonfm.ui.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.ui.screens.player.components.Background
 import net.afanasev.otonfm.ui.screens.player.components.ChatButton
 import net.afanasev.otonfm.ui.screens.player.components.LandscapeContent
 import net.afanasev.otonfm.ui.screens.player.components.MenuButton
 import net.afanasev.otonfm.ui.screens.player.components.PortraitContent
+import net.afanasev.otonfm.util.log.Logger
 
 @Composable
 fun PlayerViewScreen(

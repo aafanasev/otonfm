@@ -141,15 +141,18 @@ class PlaybackService : MediaLibraryService() {
             }
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
-                val title = mediaMetadata.title?.toString()
-                if (title == null || title == lastFetchedTitle) return
+                val title = mediaMetadata.title?.toString() ?: return
+                val defaultUri = getString(R.string.default_artwork_uri)
+                val hasCustomArtwork = mediaMetadata.artworkUri?.toString().let {
+                    it != null && it != defaultUri
+                }
+                if (title == lastFetchedTitle && hasCustomArtwork) return
                 lastFetchedTitle = title
 
                 artworkJob?.cancel()
                 artworkJob = serviceScope.launch {
                     val app = application as OtonFmApplication
-                    val uri = app.statusRepository.fetchArtworkUri(title)
-                        ?: app.imagesRepository.getRandomImageUrl()
+                    val uri = app.imagesRepository.getRandomImageUrl()
                         ?: getString(R.string.default_artwork_uri)
                     val currentItem = player.currentMediaItem ?: return@launch
                     val updatedMetadata = currentItem.mediaMetadata.buildUpon()

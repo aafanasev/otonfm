@@ -1,14 +1,18 @@
 package net.afanasev.otonfm.ui.screens.chat.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PushPin
@@ -19,11 +23,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import net.afanasev.otonfm.R
 import net.afanasev.otonfm.data.chat.MessageModel
 import net.afanasev.otonfm.data.chat.MessageType
 import net.afanasev.otonfm.ui.components.FlagIcon
@@ -68,20 +80,50 @@ fun MessageRow(
 
 @Composable
 private fun UserMessageRow(message: MessageModel, modifier: Modifier = Modifier) {
-    Row(
+    val nameColor = if (message.authorIsAdmin) AdminNameColor else colorForName(message.authorName)
+    val isYakutia = message.authorFlag == "yakutia"
+    val flagKey = "flag"
+
+    val annotated = buildAnnotatedString {
+        if (isYakutia) {
+            appendInlineContent(flagKey, "�")
+        } else {
+            append(message.authorFlag)
+        }
+        append(" ")
+        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = nameColor)) {
+            append("${message.authorName}:")
+        }
+        append(" ")
+        append(message.text)
+    }
+
+    val inlineContent = if (isYakutia) {
+        mapOf(flagKey to InlineTextContent(
+            placeholder = Placeholder(
+                width = 1.3.em,
+                height = 1.3.em,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter,
+            )
+        ) {
+            Image(
+                painter = painterResource(R.drawable.flag_yakutia),
+                contentDescription = "Yakutia",
+                modifier = Modifier.fillMaxSize(),
+            )
+        })
+    } else {
+        emptyMap()
+    }
+
+    Text(
+        text = annotated,
+        inlineContent = inlineContent,
+        style = MaterialTheme.typography.bodyMedium,
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 3.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        AuthorHeader(message.authorFlag, message.authorName, message.authorIsAdmin)
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(
-            text = message.text,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f),
-        )
-    }
+    )
 }
 
 @Composable
@@ -192,6 +234,13 @@ private val previewAnnouncement = MessageModel(
     isPinned = true,
 )
 
+private val previewLongMessage = MessageModel(
+    type = MessageType.USER_MESSAGE.value,
+    authorName = "Александр Александров",
+    authorFlag = "🇷🇺",
+    text = "Очень длинное сообщение которое точно не влезет в одну строку и раньше сжималось в узкий правый столбец",
+)
+
 private val previewSystemMessage = MessageModel(
     type = MessageType.SYSTEM.value,
     text = "Иван присоединился к чату",
@@ -204,6 +253,7 @@ private fun MessageRowAllTypesLightPreview() {
         Column {
             MessageRow(previewUserMessage)
             MessageRow(previewAdminMessage)
+            MessageRow(previewLongMessage)
             MessageRow(previewSongRequest)
             MessageRow(previewAnnouncement)
             MessageRow(previewSystemMessage)
@@ -218,6 +268,7 @@ private fun MessageRowAllTypesDarkPreview() {
         Column {
             MessageRow(previewUserMessage)
             MessageRow(previewAdminMessage)
+            MessageRow(previewLongMessage)
             MessageRow(previewSongRequest)
             MessageRow(previewAnnouncement)
             MessageRow(previewSystemMessage)

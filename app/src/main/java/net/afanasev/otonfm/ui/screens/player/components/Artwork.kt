@@ -79,7 +79,7 @@ fun Artwork(
 }
 
 @Composable
-private fun rememberParallaxRotation(maxDegrees: Float = 15f): Pair<Float, Float> {
+private fun rememberParallaxRotation(maxDegrees: Float = 4f): Pair<Float, Float> {
     val context = LocalContext.current
     val sensorManager = remember {
         context.getSystemService(Context.SENSOR_SERVICE) as SensorManager

@@ -152,7 +152,8 @@ class PlaybackService : MediaLibraryService() {
                 artworkJob?.cancel()
                 artworkJob = serviceScope.launch {
                     val app = application as OtonFmApplication
-                    val uri = app.imagesRepository.getRandomImageUrl()
+                    val uri = app.statusRepository.fetchArtworkUri(title)
+                        ?: app.imagesRepository.getRandomImageUrl()
                         ?: getString(R.string.default_artwork_uri)
                     val currentItem = player.currentMediaItem ?: return@launch
                     val updatedMetadata = currentItem.mediaMetadata.buildUpon()

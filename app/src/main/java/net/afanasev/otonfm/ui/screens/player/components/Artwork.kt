@@ -29,7 +29,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,15 +44,15 @@ fun Artwork(
     modifier: Modifier,
 ) {
     val previewShape = RoundedCornerShape(12.dp)
-    val density = LocalDensity.current
-    val (offsetXDp, offsetYDp) = rememberParallaxOffset()
+    val (rotX, rotY) = rememberParallaxRotation()
 
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .graphicsLayer {
-                translationX = with(density) { offsetXDp.dp.toPx() }
-                translationY = with(density) { offsetYDp.dp.toPx() }
+                rotationX = rotX
+                rotationY = rotY
+                cameraDistance = 12f * density
             }
             .then(
                 Modifier
@@ -80,7 +79,7 @@ fun Artwork(
 }
 
 @Composable
-private fun rememberParallaxOffset(maxOffsetDp: Float = 18f): Pair<Float, Float> {
+private fun rememberParallaxRotation(maxDegrees: Float = 15f): Pair<Float, Float> {
     val context = LocalContext.current
     val sensorManager = remember {
         context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -89,8 +88,8 @@ private fun rememberParallaxOffset(maxOffsetDp: Float = 18f): Pair<Float, Float>
         sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
     }
 
-    var rawRoll by remember { mutableFloatStateOf(0f) }
-    var rawPitch by remember { mutableFloatStateOf(0f) }
+    var rawRotX by remember { mutableFloatStateOf(0f) }
+    var rawRotY by remember { mutableFloatStateOf(0f) }
     val baseline = remember { floatArrayOf(Float.NaN, Float.NaN) }
 
     DisposableEffect(sensor) {
@@ -98,7 +97,7 @@ private fun rememberParallaxOffset(maxOffsetDp: Float = 18f): Pair<Float, Float>
 
         val rotationMatrix = FloatArray(9)
         val orientation = FloatArray(3)
-        val scale = maxOffsetDp / 0.3f
+        val maxRadians = Math.toRadians(maxDegrees.toDouble()).toFloat()
 
         val listener = object : SensorEventListener {
             override fun onAccuracyChanged(s: Sensor, accuracy: Int) = Unit
@@ -111,8 +110,10 @@ private fun rememberParallaxOffset(maxOffsetDp: Float = 18f): Pair<Float, Float>
                     baseline[0] = pitch
                     baseline[1] = roll
                 }
-                rawRoll = (roll - baseline[1]).coerceIn(-0.3f, 0.3f) * scale
-                rawPitch = (pitch - baseline[0]).coerceIn(-0.3f, 0.3f) * scale
+                val deltaPitch = (pitch - baseline[0]).coerceIn(-maxRadians, maxRadians)
+                val deltaRoll = (roll - baseline[1]).coerceIn(-maxRadians, maxRadians)
+                rawRotX = Math.toDegrees(deltaPitch.toDouble()).toFloat()
+                rawRotY = -Math.toDegrees(deltaRoll.toDouble()).toFloat()
             }
         }
 
@@ -126,18 +127,18 @@ private fun rememberParallaxOffset(maxOffsetDp: Float = 18f): Pair<Float, Float>
         onDispose { sensorManager.unregisterListener(listener) }
     }
 
-    val smoothX by animateFloatAsState(
-        targetValue = rawRoll,
+    val smoothRotX by animateFloatAsState(
+        targetValue = rawRotX,
         animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessLow),
-        label = "parallaxX",
+        label = "parallaxRotX",
     )
-    val smoothY by animateFloatAsState(
-        targetValue = rawPitch,
+    val smoothRotY by animateFloatAsState(
+        targetValue = rawRotY,
         animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessLow),
-        label = "parallaxY",
+        label = "parallaxRotY",
     )
 
-    return Pair(smoothX, smoothY)
+    return Pair(smoothRotX, smoothRotY)
 }
 
 @Preview

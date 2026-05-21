@@ -141,8 +141,8 @@ class PlaybackService : MediaLibraryService() {
             }
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
-                val title = mediaMetadata.title?.toString() ?: return
-                if (title == lastFetchedTitle) return
+                val title = mediaMetadata.title?.toString()
+                if (title == null || title == lastFetchedTitle) return
                 lastFetchedTitle = title
 
                 artworkJob?.cancel()

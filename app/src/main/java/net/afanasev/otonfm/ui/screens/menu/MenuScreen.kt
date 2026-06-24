@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AlternateEmail
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ import net.afanasev.otonfm.ui.components.IconTextRowItem
 fun MenuScreen(
     isSignedIn: Boolean,
     onItemSelected: (NavKey) -> Unit,
+    onDonation: () -> Unit,
     onSignOut: () -> Unit,
 ) {
     Column(modifier = Modifier.padding(vertical = 12.dp)) {
@@ -37,6 +39,14 @@ fun MenuScreen(
             onClick = {
                 Logger.onMenuContactsClick()
                 onItemSelected(MainRoutes.Contacts)
+            },
+        )
+        IconTextRowItem(
+            icon = Icons.Outlined.Favorite,
+            stringResId = R.string.menu_donation,
+            onClick = {
+                Logger.onMenuDonationClick()
+                onDonation()
             },
         )
         if (isSignedIn) {

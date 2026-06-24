@@ -46,6 +46,22 @@ object Logger {
 
     }
 
+    fun onMenuDonationClick() {
+        analytics.logEvent("menu_donation_click", null)
+    }
+
+    fun onDonationPurchase(productId: String) {
+        analytics.logEvent("donation_purchase", Bundle().apply {
+            putString("product_id", productId)
+        })
+    }
+
+    fun onDonationError(message: String) {
+        analytics.logEvent("donation_error", Bundle().apply {
+            putString("msg", message)
+        })
+    }
+
     //endregion
 
     //region Exceptions

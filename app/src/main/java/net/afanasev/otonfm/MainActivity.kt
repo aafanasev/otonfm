@@ -16,8 +16,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
@@ -31,6 +33,7 @@ import net.afanasev.otonfm.ui.screens.auth.AuthViewModel
 import net.afanasev.otonfm.ui.screens.chat.ChatScreen
 import net.afanasev.otonfm.ui.screens.chat.ChatViewModel
 import net.afanasev.otonfm.ui.screens.contacts.ContactsScreen
+import net.afanasev.otonfm.ui.screens.donation.DonationPaywallDialog
 import net.afanasev.otonfm.ui.screens.menu.MenuScreen
 import net.afanasev.otonfm.ui.screens.player.PlayerViewScreen
 import net.afanasev.otonfm.ui.screens.profilesetup.ProfileSetupScreen
@@ -64,6 +67,7 @@ class MainActivity : ComponentActivity() {
                     val backStack = rememberNavBackStack(MainRoutes.Player)
                     val bottomSheetStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
                     val authViewModel: AuthViewModel = viewModel()
+                    var showDonationPaywall by remember { mutableStateOf(false) }
 
                     NavDisplay(
                         backStack = backStack,
@@ -89,6 +93,10 @@ class MainActivity : ComponentActivity() {
                                     onItemSelected = { route ->
                                         backStack.removeLastOrNull()
                                         backStack.add(route)
+                                    },
+                                    onDonation = {
+                                        backStack.removeLastOrNull()
+                                        showDonationPaywall = true
                                     },
                                     onSignOut = {
                                         authViewModel.signOut()
@@ -146,6 +154,12 @@ class MainActivity : ComponentActivity() {
                                 ChatScreen(chatViewModel, authViewModel)
                             }
                         })
+
+                    if (showDonationPaywall) {
+                        DonationPaywallDialog(
+                            onDismiss = { showDonationPaywall = false },
+                        )
+                    }
                 }
             }
         }

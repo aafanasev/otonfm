@@ -20,7 +20,7 @@
     <string name="contacts_instagram">Инстаграм</string>
     <string name="contacts_github">GitHub</string>
 
-    <string name="player_next_track_prefix">Сотору: %1$s</string>
+    <string name="player_next_track_prefix">Сотору</string>
 
     <string name="chat_button_label">Чат</string>
     <string name="chat_send">Отправить</string>

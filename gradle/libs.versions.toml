@@ -21,8 +21,11 @@ crashlytics = "3.0.4"
 credentialManager = "1.5.0"
 googleIdIdentity = "1.1.1"
 sekret = "2.3.0"
+radioPlayer = "v0.1.0"
 
 [libraries]
+radioplayer-core = { group = "com.github.aafanasev.radio-player", name = "core", version.ref = "radioPlayer" }
+radioplayer-radioco = { group = "com.github.aafanasev.radio-player", name = "radioco", version.ref = "radioPlayer" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }

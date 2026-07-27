@@ -37,7 +37,8 @@ import net.afanasev.otonfm.ui.screens.profilesetup.ProfileSetupScreen
 import net.afanasev.otonfm.ui.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.navigation.BottomSheetSceneStrategy
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
-import net.afanasev.otonfm.ui.theme.Theme
+import net.afanasev.radioplayer.core.theme.PlayerTheme
+import net.afanasev.radioplayer.core.theme.ThemeStore
 
 class MainActivity : ComponentActivity() {
 
@@ -47,16 +48,17 @@ class MainActivity : ComponentActivity() {
 
         setupNotifications()
         val dataStore = DataStoreManager(applicationContext)
+        val themeStore = ThemeStore(applicationContext, (application as OtonFmApplication).playerAnalytics)
 
         enableEdgeToEdge()
         setContent {
             val scope = rememberCoroutineScope()
-            val theme by dataStore.theme.collectAsState("system")
+            val theme by themeStore.theme.collectAsState(PlayerTheme.SYSTEM)
             val isDarkMode = when (theme) {
-                Theme.ARTWORK -> true
-                Theme.DARK -> true
-                Theme.LIGHT -> false
-                else -> isSystemInDarkTheme()
+                PlayerTheme.ARTWORK -> true
+                PlayerTheme.DARK -> true
+                PlayerTheme.LIGHT -> false
+                PlayerTheme.SYSTEM -> isSystemInDarkTheme()
             }
 
             OtonFmTheme(isDarkMode) {
@@ -77,7 +79,7 @@ class MainActivity : ComponentActivity() {
                                     onMenuClick = { backStack.add(MainRoutes.Menu) },
                                     onChatClick = { backStack.add(MainRoutes.Chat) },
                                     isDarkMode = isDarkMode,
-                                    useArtworkAsBackground = theme == Theme.ARTWORK,
+                                    useArtworkAsBackground = theme == PlayerTheme.ARTWORK,
                                 )
                             }
                             entry<MainRoutes.Menu>(
@@ -101,7 +103,7 @@ class MainActivity : ComponentActivity() {
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
                                 ThemeChooserScreen(onThemeSelected = {
-                                    scope.launch { dataStore.saveTheme(it) }
+                                    scope.launch { themeStore.saveTheme(it) }
                                     backStack.removeLastOrNull()
                                 })
                             }

@@ -17,7 +17,7 @@
     <string name="contacts_instagram">Instagram</string>
     <string name="contacts_github">GitHub</string>
 
-    <string name="player_next_track_prefix">Next: %1$s</string>
+    <string name="player_next_track_prefix">Next</string>
 
     <string name="chat_button_label">Chat</string>
     <string name="chat_send">Send</string>

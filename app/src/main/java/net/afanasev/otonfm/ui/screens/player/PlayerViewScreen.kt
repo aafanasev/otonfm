@@ -13,12 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.R
+import net.afanasev.otonfm.data.adminstatus.AdminStatusRepository
+import net.afanasev.otonfm.ui.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.ui.screens.player.components.ChatButton
 import net.afanasev.otonfm.ui.screens.player.components.Logo
 import net.afanasev.otonfm.ui.screens.player.components.MenuButton
@@ -43,6 +46,8 @@ fun PlayerViewScreen(
     val buttonState by viewModel.buttonState.collectAsState()
     val configuration = LocalConfiguration.current
     val nextTrackPrefix = stringResource(R.string.player_next_track_prefix)
+    val adminStatusRepository = remember { AdminStatusRepository() }
+    val adminStatus by adminStatusRepository.observe().collectAsState(initial = null)
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (useArtworkAsBackground) {
@@ -62,7 +67,17 @@ fun PlayerViewScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Spacer(modifier = Modifier.size(48.dp))
-                Spacer(modifier = Modifier.weight(1f))
+
+                val status = adminStatus
+                if (status != null && status.isActive) {
+                    AdminStatusBar(
+                        adminStatus = status,
+                        isDarkMode = isDarkMode,
+                        modifier = Modifier.weight(1f),
+                    )
+                } else {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
 
                 MenuButton(
                     onNavigate = onMenuClick,

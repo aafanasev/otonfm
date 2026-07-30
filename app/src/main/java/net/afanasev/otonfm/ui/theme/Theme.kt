@@ -1,6 +1,5 @@
 package net.afanasev.otonfm.ui.theme
 
-import androidx.annotation.StringDef
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -33,17 +32,6 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
-
-@Retention(AnnotationRetention.SOURCE)
-@StringDef(Theme.DARK, Theme.LIGHT, Theme.SYSTEM, Theme.ARTWORK)
-annotation class Theme {
-    companion object {
-        const val DARK = "dark"
-        const val LIGHT = "light"
-        const val SYSTEM = "system"
-        const val ARTWORK = "artwork"
-    }
-}
 
 @Composable
 fun OtonFmTheme(

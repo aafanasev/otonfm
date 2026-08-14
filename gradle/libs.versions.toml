@@ -1,12 +1,13 @@
 [versions]
-agp = "8.9.3"
-kotlin = "2.1.20"
+agp = "9.3.1"
+kotlin = "2.2.20"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.1"
+fragment = "1.5.7"
 composeBom = "2025.05.01"
 media3Exoplayer = "1.7.1"
 coroutines = "1.10.1"
@@ -15,12 +16,12 @@ kotlinx-serialization = "1.8.1"
 coilCompose = "3.1.0"
 nav3 = "1.0.1"
 dataStoreVersion = "1.1.7"
-firebase = "4.4.2"
+firebase = "4.5.0"
 firebaseBom = "33.15.0"
-crashlytics = "3.0.4"
+crashlytics = "3.0.7"
 credentialManager = "1.5.0"
 googleIdIdentity = "1.1.1"
-sekret = "2.3.0"
+sekret = "2.4.0"
 radioPlayer = "v0.1.0"
 
 [libraries]
@@ -35,6 +36,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3" }
 androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3" }
 
@@ -85,7 +87,6 @@ sekret-annotation = { group = "net.afanasev", name = "sekret-annotation", versio
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.firebase)
@@ -37,15 +36,22 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
         compose = true
     }
 }
 
 dependencies {
+
+    constraints {
+        // AGP 9 stopped aligning the compile and runtime classpaths
+        // (android.dependency.useConstraints now defaults to false), which let the transitive
+        // fragment dependency resolve to 1.2.5 at compile time while runtime kept 1.5.7.
+        // ActivityResult APIs misbehave below 1.3.0, so hold both classpaths at the runtime version.
+        implementation(libs.androidx.fragment) {
+            because("compile classpath must match the 1.5.7 that runtime already resolves")
+        }
+    }
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

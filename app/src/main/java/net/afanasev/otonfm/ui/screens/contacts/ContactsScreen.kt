@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import net.afanasev.otonfm.R
@@ -16,6 +17,7 @@ import net.afanasev.otonfm.ui.components.TextRowItem
 @Composable
 fun ContactsScreen() {
     val context = LocalContext.current
+    val emailChooserTitle = stringResource(R.string.contacts_email)
 
     Column(modifier = Modifier.padding(vertical = 12.dp)) {
         TextRowItem(
@@ -53,10 +55,7 @@ fun ContactsScreen() {
                     Toast.makeText(context, noEmailApp, Toast.LENGTH_LONG).show()
                 } else {
                     context.startActivity(
-                        Intent.createChooser(
-                            intent,
-                            context.getString(R.string.contacts_email)
-                        )
+                        Intent.createChooser(intent, emailChooserTitle)
                     )
                 }
             },

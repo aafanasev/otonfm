@@ -13,10 +13,6 @@ import net.afanasev.otonfm.R
 
 class OtonFmMessagingService : FirebaseMessagingService() {
 
-    override fun onNewToken(token: String) {
-        Log.d(TAG, "FCM token: $token")
-    }
-
     override fun onMessageReceived(message: RemoteMessage) {
         Log.d(TAG, "Message from: ${message.from}")
 

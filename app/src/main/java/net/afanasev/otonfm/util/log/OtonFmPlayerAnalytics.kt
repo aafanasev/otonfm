@@ -2,8 +2,8 @@ package net.afanasev.otonfm.util.log
 
 import android.os.Bundle
 import android.util.Log
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.analytics.analytics
+import com.google.firebase.Firebase
 import net.afanasev.radioplayer.core.analytics.PlayerAnalytics
 import net.afanasev.radioplayer.core.player.PlayerButtonState
 import net.afanasev.radioplayer.core.theme.PlayerTheme

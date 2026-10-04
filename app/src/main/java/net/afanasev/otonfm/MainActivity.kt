@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                     NavDisplay(
                         backStack = backStack,
                         onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
-                        sceneStrategy = bottomSheetStrategy,
+                        sceneStrategies = listOf(bottomSheetStrategy),
                         modifier = Modifier.padding(innerPadding),
                         entryProvider = entryProvider {
                             entry<MainRoutes.Player> {

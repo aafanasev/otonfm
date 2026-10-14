@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.ui.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.ui.screens.player.components.ChatButton
@@ -39,13 +39,13 @@ fun PlayerViewScreen(
     useArtworkAsBackground: Boolean,
     adminStatusViewModel: AdminStatusViewModel,
 ) {
-    val artwork by viewModel.artworkUri.collectAsState()
-    val title by viewModel.title.collectAsState()
-    val nextTrackTitle by viewModel.nextTrackTitle.collectAsState()
-    val buttonState by viewModel.buttonState.collectAsState()
+    val artwork by viewModel.artworkUri.collectAsStateWithLifecycle()
+    val title by viewModel.title.collectAsStateWithLifecycle()
+    val nextTrackTitle by viewModel.nextTrackTitle.collectAsStateWithLifecycle()
+    val buttonState by viewModel.buttonState.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     val nextTrackPrefix = stringResource(R.string.player_next_track_prefix)
-    val adminStatus by adminStatusViewModel.adminStatus.collectAsState()
+    val adminStatus by adminStatusViewModel.adminStatus.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (useArtworkAsBackground) {

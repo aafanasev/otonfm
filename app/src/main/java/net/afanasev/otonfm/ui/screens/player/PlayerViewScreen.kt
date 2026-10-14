@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.ui.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.ui.screens.player.components.ChatButton
@@ -38,7 +37,7 @@ fun PlayerViewScreen(
     onChatClick: () -> Unit,
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
-    adminStatusViewModel: AdminStatusViewModel = viewModel(),
+    adminStatusViewModel: AdminStatusViewModel,
 ) {
     val artwork by viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()

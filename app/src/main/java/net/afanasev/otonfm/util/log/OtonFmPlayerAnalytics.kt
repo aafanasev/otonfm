@@ -12,7 +12,9 @@ private const val TAG = "OtonFmPlayerAnalytics"
 
 object OtonFmPlayerAnalytics : PlayerAnalytics {
 
-    private val analytics = Firebase.analytics
+    // Lazy because the Application references this object from its constructor,
+    // before FirebaseInitProvider has initialized the default FirebaseApp.
+    private val analytics by lazy { Firebase.analytics }
 
     override fun onPlayButtonClick(state: PlayerButtonState) {
         analytics.logEvent("play_btn_click", Bundle().apply {

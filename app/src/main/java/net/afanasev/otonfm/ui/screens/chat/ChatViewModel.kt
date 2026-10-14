@@ -25,6 +25,9 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val _messages = MutableStateFlow<List<MessageModel>>(emptyList())
     val messages: StateFlow<List<MessageModel>> = _messages.asStateFlow()
 
+    private val _pinnedMessage = MutableStateFlow<MessageModel?>(null)
+    val pinnedMessage: StateFlow<MessageModel?> = _pinnedMessage.asStateFlow()
+
     private val _inputText = MutableStateFlow("")
     val inputText: StateFlow<String> = _inputText.asStateFlow()
 
@@ -37,6 +40,9 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     init {
         chatRepository.observeMessages()
             .onEach { _messages.value = it }
+            .launchIn(viewModelScope)
+        chatRepository.observePinnedMessage()
+            .onEach { _pinnedMessage.value = it }
             .launchIn(viewModelScope)
     }
 

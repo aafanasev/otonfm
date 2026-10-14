@@ -41,6 +41,40 @@ class ChatRepository {
         awaitClose { registration.remove() }
     }
 
+    /**
+     * Observes the most recently pinned message, independently of [observeMessages],
+     * so it stays available after more than [MESSAGE_LIMIT] newer messages arrive.
+     *
+     * Requires a Firestore composite index on `messages`: `isPinned` ascending,
+     * `createdAt` descending.
+     *
+     * @return a flow emitting the latest pinned message, or `null` when there is none,
+     * when it is hidden, or when the query fails (the error is logged).
+     */
+    fun observePinnedMessage(): Flow<MessageModel?> = callbackFlow {
+        val registration = collection
+            .whereEqualTo("isPinned", true)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .limit(1)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Logger.logChatError("Pinned message observe error: ${error.message}")
+                    trySend(null)
+                    return@addSnapshotListener
+                }
+
+                // isHidden is checked here rather than in the query because older
+                // documents may lack the field, and isHidden == false would skip them.
+                val pinnedMessage = snapshot?.documents?.firstOrNull()
+                    ?.let { doc -> doc.toObject(MessageModel::class.java)?.copy(id = doc.id) }
+                    ?.takeUnless { it.isHidden }
+
+                trySend(pinnedMessage)
+            }
+
+        awaitClose { registration.remove() }
+    }
+
     suspend fun sendMessage(text: String, authorId: String, user: UserModel) {
         val data = hashMapOf(
             "type" to MessageType.USER_MESSAGE.value,

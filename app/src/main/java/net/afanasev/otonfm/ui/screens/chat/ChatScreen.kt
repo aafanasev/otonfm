@@ -29,7 +29,7 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
     val inputText by chatViewModel.inputText.collectAsState()
     val canSend by chatViewModel.canSend.collectAsState()
     val containsProfanity by chatViewModel.containsProfanity.collectAsState()
-    val pinnedMessage = messages.lastOrNull { it.isPinned }
+    val pinnedMessage by chatViewModel.pinnedMessage.collectAsState()
 
     LaunchedEffect(messages.lastOrNull()?.id) {
         if (messages.isNotEmpty() && listState.firstVisibleItemIndex == 0) {

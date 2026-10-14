@@ -80,6 +80,7 @@ class MainActivity : ComponentActivity() {
                                     onChatClick = { backStack.add(MainRoutes.Chat) },
                                     isDarkMode = isDarkMode,
                                     useArtworkAsBackground = theme == PlayerTheme.ARTWORK,
+                                    adminStatusViewModel = viewModel(),
                                 )
                             }
                             entry<MainRoutes.Menu>(

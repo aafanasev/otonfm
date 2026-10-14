@@ -13,14 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import net.afanasev.otonfm.R
-import net.afanasev.otonfm.data.adminstatus.AdminStatusRepository
 import net.afanasev.otonfm.ui.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.ui.screens.player.components.ChatButton
 import net.afanasev.otonfm.ui.screens.player.components.Logo
@@ -39,6 +38,7 @@ fun PlayerViewScreen(
     onChatClick: () -> Unit,
     isDarkMode: Boolean,
     useArtworkAsBackground: Boolean,
+    adminStatusViewModel: AdminStatusViewModel = viewModel(),
 ) {
     val artwork by viewModel.artworkUri.collectAsState()
     val title by viewModel.title.collectAsState()
@@ -46,8 +46,7 @@ fun PlayerViewScreen(
     val buttonState by viewModel.buttonState.collectAsState()
     val configuration = LocalConfiguration.current
     val nextTrackPrefix = stringResource(R.string.player_next_track_prefix)
-    val adminStatusRepository = remember { AdminStatusRepository() }
-    val adminStatus by adminStatusRepository.observe().collectAsState(initial = null)
+    val adminStatus by adminStatusViewModel.adminStatus.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (useArtworkAsBackground) {

@@ -16,6 +16,11 @@ import net.afanasev.otonfm.util.log.Logger
 private const val COLLECTION = "messages"
 private const val MESSAGE_LIMIT = 50L
 
+// Hidden messages are filtered client-side because older documents may lack
+// the isHidden field, which an isHidden == false query would skip. Looking at
+// a few recent pins lets a hidden latest pin fall back to the one before it.
+private const val PINNED_LOOKBACK = 5L
+
 class ChatRepository {
 
     private val collection = Firebase.firestore.collection(COLLECTION)
@@ -36,6 +41,31 @@ class ChatRepository {
                 }?.filter { !it.isHidden } ?: emptyList()
 
                 trySend(messages)
+            }
+
+        awaitClose { registration.remove() }
+    }
+
+    // Observed separately from the message list so the pinned message stays
+    // visible after more than MESSAGE_LIMIT newer messages arrive.
+    // Requires a composite index on messages: isPinned ASC, createdAt DESC.
+    fun observePinnedMessage(): Flow<MessageModel?> = callbackFlow {
+        val registration = collection
+            .whereEqualTo("isPinned", true)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .limit(PINNED_LOOKBACK)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Logger.logChatError("Pinned message observe error: ${error.message}")
+                    trySend(null)
+                    return@addSnapshotListener
+                }
+
+                val pinnedMessage = snapshot?.documents
+                    ?.mapNotNull { doc -> doc.toObject(MessageModel::class.java)?.copy(id = doc.id) }
+                    ?.firstOrNull { !it.isHidden }
+
+                trySend(pinnedMessage)
             }
 
         awaitClose { registration.remove() }

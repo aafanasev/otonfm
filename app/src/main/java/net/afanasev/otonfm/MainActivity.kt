@@ -14,11 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val scope = rememberCoroutineScope()
-            val theme by themeStore.theme.collectAsState(PlayerTheme.SYSTEM)
+            val theme by themeStore.theme.collectAsStateWithLifecycle(PlayerTheme.SYSTEM)
             val isDarkMode = when (theme) {
                 PlayerTheme.ARTWORK -> true
                 PlayerTheme.DARK -> true
@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
                             entry<MainRoutes.Menu>(
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
-                                val authState by authViewModel.authState.collectAsState()
+                                val authState by authViewModel.authState.collectAsStateWithLifecycle()
                                 MenuScreen(
                                     isSignedIn = authState is AuthViewModel.AuthState.Authenticated,
                                     onItemSelected = { route ->
@@ -114,10 +114,10 @@ class MainActivity : ComponentActivity() {
                                 ContactsScreen()
                             }
                             entry<MainRoutes.ProfileSetup> {
-                                val authState by authViewModel.authState.collectAsState()
+                                val authState by authViewModel.authState.collectAsStateWithLifecycle()
                                 val currentUser = (authState as? AuthViewModel.AuthState.Authenticated)?.user
                                 val isEditMode = authState is AuthViewModel.AuthState.Authenticated
-                                val lastUpdate by dataStore.lastProfileUpdateAt.collectAsState(0L)
+                                val lastUpdate by dataStore.lastProfileUpdateAt.collectAsStateWithLifecycle(0L)
                                 val canEditProfile = !isEditMode || System.currentTimeMillis() - lastUpdate > 3_600_000L
 
                                 ProfileSetupScreen(

@@ -9,10 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.afanasev.otonfm.ui.screens.auth.AuthViewModel
 import net.afanasev.otonfm.ui.screens.auth.AuthViewModel.AuthState
 import net.afanasev.otonfm.ui.screens.chat.components.ChatInputBar
@@ -24,12 +24,12 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
     val context = LocalContext.current
     val listState = rememberLazyListState()
 
-    val authState by authViewModel.authState.collectAsState()
-    val messages by chatViewModel.messages.collectAsState()
-    val inputText by chatViewModel.inputText.collectAsState()
-    val canSend by chatViewModel.canSend.collectAsState()
-    val containsProfanity by chatViewModel.containsProfanity.collectAsState()
-    val pinnedMessage by chatViewModel.pinnedMessage.collectAsState()
+    val authState by authViewModel.authState.collectAsStateWithLifecycle()
+    val messages by chatViewModel.messages.collectAsStateWithLifecycle()
+    val inputText by chatViewModel.inputText.collectAsStateWithLifecycle()
+    val canSend by chatViewModel.canSend.collectAsStateWithLifecycle()
+    val containsProfanity by chatViewModel.containsProfanity.collectAsStateWithLifecycle()
+    val pinnedMessage by chatViewModel.pinnedMessage.collectAsStateWithLifecycle()
 
     LaunchedEffect(messages.lastOrNull()?.id) {
         if (messages.isNotEmpty() && listState.firstVisibleItemIndex == 0) {

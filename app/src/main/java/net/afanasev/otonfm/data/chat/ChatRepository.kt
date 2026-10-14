@@ -16,11 +16,6 @@ import net.afanasev.otonfm.util.log.Logger
 private const val COLLECTION = "messages"
 private const val MESSAGE_LIMIT = 50L
 
-// Hidden messages are filtered client-side because older documents may lack
-// the isHidden field, which an isHidden == false query would skip. Looking at
-// a few recent pins lets a hidden latest pin fall back to the one before it.
-private const val PINNED_LOOKBACK = 5L
-
 class ChatRepository {
 
     private val collection = Firebase.firestore.collection(COLLECTION)
@@ -46,14 +41,21 @@ class ChatRepository {
         awaitClose { registration.remove() }
     }
 
-    // Observed separately from the message list so the pinned message stays
-    // visible after more than MESSAGE_LIMIT newer messages arrive.
-    // Requires a composite index on messages: isPinned ASC, createdAt DESC.
+    /**
+     * Observes the most recently pinned message, independently of [observeMessages],
+     * so it stays available after more than [MESSAGE_LIMIT] newer messages arrive.
+     *
+     * Requires a Firestore composite index on `messages`: `isPinned` ascending,
+     * `createdAt` descending.
+     *
+     * @return a flow emitting the latest pinned message, or `null` when there is none,
+     * when it is hidden, or when the query fails (the error is logged).
+     */
     fun observePinnedMessage(): Flow<MessageModel?> = callbackFlow {
         val registration = collection
             .whereEqualTo("isPinned", true)
             .orderBy("createdAt", Query.Direction.DESCENDING)
-            .limit(PINNED_LOOKBACK)
+            .limit(1)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Logger.logChatError("Pinned message observe error: ${error.message}")
@@ -61,9 +63,11 @@ class ChatRepository {
                     return@addSnapshotListener
                 }
 
-                val pinnedMessage = snapshot?.documents
-                    ?.mapNotNull { doc -> doc.toObject(MessageModel::class.java)?.copy(id = doc.id) }
-                    ?.firstOrNull { !it.isHidden }
+                // isHidden is checked here rather than in the query because older
+                // documents may lack the field, and isHidden == false would skip them.
+                val pinnedMessage = snapshot?.documents?.firstOrNull()
+                    ?.let { doc -> doc.toObject(MessageModel::class.java)?.copy(id = doc.id) }
+                    ?.takeUnless { it.isHidden }
 
                 trySend(pinnedMessage)
             }

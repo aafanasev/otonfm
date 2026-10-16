@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "net.afanasev.otonfm"
-        minSdk = 29
+        minSdk = 26
         targetSdk = 36
         versionCode = 13
         versionName = "1.7.2"

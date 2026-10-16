@@ -19,7 +19,7 @@ crashlytics = "3.0.8"
 credentialManager = "1.6.0"
 googleIdIdentity = "1.2.1"
 sekret = "2.5.0"
-radioPlayer = "v0.2.0"
+radioPlayer = "v0.2.1"
 
 [libraries]
 radioplayer-core = { group = "com.github.aafanasev.radio-player", name = "core", version.ref = "radioPlayer" }

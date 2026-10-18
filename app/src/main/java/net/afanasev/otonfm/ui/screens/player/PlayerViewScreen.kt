@@ -27,6 +27,7 @@ import net.afanasev.otonfm.ui.theme.BACKGROUND_GRADIENTS
 import net.afanasev.otonfm.util.log.Logger
 import net.afanasev.radioplayer.core.player.PlayerViewModel
 import net.afanasev.radioplayer.core.player.ui.Background
+import net.afanasev.radioplayer.core.player.ui.GradientPlaceholder
 import net.afanasev.radioplayer.core.player.ui.LandscapeContent
 import net.afanasev.radioplayer.core.player.ui.PortraitContent
 
@@ -52,8 +53,13 @@ fun PlayerViewScreen(
             Background(
                 artworkUri = artwork,
                 defaultArtworkUri = stringResource(R.string.default_artwork_uri),
-                gradients = BACKGROUND_GRADIENTS.map { it[0] to it[1] },
                 modifier = Modifier.fillMaxSize(),
+                placeholder = {
+                    GradientPlaceholder(
+                        modifier = it,
+                        gradients = BACKGROUND_GRADIENTS.map { colors -> colors[0] to colors[1] },
+                    )
+                },
             )
         }
 

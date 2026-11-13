@@ -11,7 +11,7 @@ import net.afanasev.radioplayer.core.metadata.NowPlayingMetadataProvider
 // SomaFM's Groove Salad: a public stream that carries ICY title metadata, so the default
 // NoOpNowPlayingMetadataProvider still shows a real "now playing" title with zero backend.
 private const val STREAM_URL = "https://ice1.somafm.com/groovesalad-128-mp3"
-private const val DEFAULT_ARTWORK_URI = "https://api.somafm.com/logos/512x512/groovesalad512.png"
+private const val DEFAULT_ARTWORK_URI = "https://somafm.com/logos/400/groovesalad400.png"
 
 class SampleApplication : Application(), RadioPlayerHost {
 

@@ -6,7 +6,7 @@ import com.google.firebase.analytics.analytics
 import com.google.firebase.Firebase
 import net.afanasev.radioplayer.core.analytics.PlayerAnalytics
 import net.afanasev.radioplayer.core.player.PlayerButtonState
-import net.afanasev.radioplayer.core.theme.PlayerTheme
+import net.afanasev.otonfm.data.theme.PlayerTheme
 
 private const val TAG = "OtonFmPlayerAnalytics"
 
@@ -22,7 +22,7 @@ object OtonFmPlayerAnalytics : PlayerAnalytics {
         })
     }
 
-    override fun onThemeSelect(theme: PlayerTheme) {
+    fun onThemeSelect(theme: PlayerTheme) {
         analytics.logEvent("theme_select", Bundle().apply {
             putString("theme", theme.name)
         })

@@ -2,7 +2,6 @@ package net.afanasev.radioplayer.core.analytics
 
 import net.afanasev.radioplayer.core.player.PlayerButtonState
 import net.afanasev.radioplayer.core.player.fsm.ErrorReason
-import net.afanasev.radioplayer.core.theme.PlayerTheme
 
 /**
  * Player-related event/error sink. Implement against your own analytics backend
@@ -14,8 +13,6 @@ import net.afanasev.radioplayer.core.theme.PlayerTheme
 interface PlayerAnalytics {
 
     fun onPlayButtonClick(state: PlayerButtonState)
-
-    fun onThemeSelect(theme: PlayerTheme)
 
     /** A [NowPlayingMetadataProvider] fetch threw. [source] identifies the call, e.g. "artwork", "next_track". */
     fun onMetadataFetchError(source: String, throwable: Throwable)

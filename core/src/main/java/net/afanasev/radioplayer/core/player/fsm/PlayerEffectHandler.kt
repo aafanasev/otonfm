@@ -32,6 +32,7 @@ internal class PlayerEffectHandler(
     private var pendingCommand: ((Player) -> Unit)? = null
 
     private var nextTrackJob: Job? = null
+    private var artworkJob: Job? = null
     private var timeoutJob: Job? = null
     private var retryJob: Job? = null
 
@@ -64,6 +65,21 @@ internal class PlayerEffectHandler(
                         null
                     }
                     send(PlayerEvent.NextTrackLoaded(effect.forTitle, next))
+                }
+            }
+
+            is PlayerEffect.FetchArtwork -> {
+                artworkJob?.cancel()
+                artworkJob = scope.launch {
+                    val uri = try {
+                        metadata.fetchArtworkUri(effect.forTitle)
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        analytics.onMetadataFetchError("artwork", e)
+                        null
+                    }
+                    send(PlayerEvent.ArtworkLoaded(effect.forTitle, uri))
                 }
             }
 

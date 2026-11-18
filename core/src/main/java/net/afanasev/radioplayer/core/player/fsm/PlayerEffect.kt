@@ -1,8 +1,10 @@
 package net.afanasev.radioplayer.core.player.fsm
 
+/**
+ * Player commands ([StartPlayback], [StopPlayback], [StopForRetry]) run on the service's
+ * ExoPlayer; the rest run in the process-wide [RadioPlayer].
+ */
 internal sealed interface PlayerEffect {
-    data object ReleaseController : PlayerEffect
-
     /**
      * stop, setMediaItem, play, prepare, in that order: playWhenReady may be false only while
      * the player is idle, which lets the reducer tell an outside pause from our own start.

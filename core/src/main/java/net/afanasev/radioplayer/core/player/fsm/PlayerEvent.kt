@@ -9,9 +9,11 @@ sealed interface PlayerEvent {
     /** Play button tapped: starts from Idle or Error (retry), stops or cancels otherwise. */
     data object PlayPauseClicked : PlayerEvent
 
-    // controller / service
-    data class ControllerConnected(val snapshot: PlayerSnapshot, val metadata: TrackMetadata) : PlayerEvent
+    // service
+    /** The `MediaController` that starts the service on play failed to connect. */
     data class ControllerFailed(val cause: Throwable) : PlayerEvent
+
+    /** The service and its player are gone, e.g. stopped after the app was swiped away. */
     data object ServiceDestroyed : PlayerEvent
 
     // Player.Listener

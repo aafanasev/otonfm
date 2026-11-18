@@ -9,7 +9,6 @@ enum class PlayerButtonState {
 }
 
 fun Playback.toButtonState(): PlayerButtonState = when (this) {
-    Playback.Disconnected,
     Playback.Connecting,
     Playback.Buffering,
     is Playback.Reconnecting -> PlayerButtonState.LOADING

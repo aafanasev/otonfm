@@ -9,7 +9,6 @@ import net.afanasev.radioplayer.core.player.fsm.AnalyticsEvent.Reconnect
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.CancelConnectTimeout
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.CancelRetry
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.FetchNextTrack
-import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.ReleaseController
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.ScheduleRetry
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.StartConnectTimeout
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.StartPlayback
@@ -17,7 +16,6 @@ import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.StopForRetry
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.StopPlayback
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.TrackAnalytics
 import net.afanasev.radioplayer.core.player.fsm.PlayerEvent.ConnectTimedOut
-import net.afanasev.radioplayer.core.player.fsm.PlayerEvent.ControllerConnected
 import net.afanasev.radioplayer.core.player.fsm.PlayerEvent.ControllerFailed
 import net.afanasev.radioplayer.core.player.fsm.PlayerEvent.MetadataChanged
 import net.afanasev.radioplayer.core.player.fsm.PlayerEvent.NextTrackLoaded
@@ -75,57 +73,18 @@ class PlayerReducerTest {
         assertEquals(Next(from), reduce(from, event))
     }
 
-    // --- Disconnected ---------------------------------------------------------------------
+    // --- Initial state ----------------------------------------------------------------------
 
     @Test
-    fun `Disconnected + ControllerConnected playing goes to Playing and fetches next track`() {
-        val next = reduce(PlayerState(), ControllerConnected(playing, TrackMetadata("Song A", "art://a")))
-        assertEquals(Playback.Playing, next.state.playback)
-        assertEquals(NowPlaying("Song A", "art://a", ""), next.state.nowPlaying)
-        assertEquals(listOf(FetchNextTrack("Song A")), next.effects)
+    fun `starts Idle, so the button shows play before the service exists`() {
+        assertEquals(Playback.Idle, PlayerState().playback)
+        assertEquals(PlayerButtonState.PAUSED, PlayerState().playback.toButtonState())
     }
 
     @Test
-    fun `Disconnected + ControllerConnected not playing goes to Idle`() {
-        val next = reduce(PlayerState(), ControllerConnected(stopped, TrackMetadata(null, null)))
-        assertEquals(PlayerState(Playback.Idle), next.state)
-        assertEquals(emptyList<PlayerEffect>(), next.effects)
-    }
-
-    @Test
-    fun `Disconnected + ControllerFailed goes to Error CONTROLLER`() {
-        val cause = IllegalStateException()
-        val next = reduce(state(Playback.Disconnected), ControllerFailed(cause))
-        assertEquals(Playback.Error(ErrorReason.CONTROLLER), next.state.playback)
-        assertTrue(TrackAnalytics(PlaybackError(ErrorReason.CONTROLLER, cause)) in next.effects)
-    }
-
-    @Test
-    fun `Disconnected + PlayPauseClicked starts, connecting on demand`() {
-        // The button shows LOADING for both Disconnected and connecting, so a tap must work.
-        val next = reduce(state(Playback.Disconnected), PlayPauseClicked)
-        assertEquals(state(Playback.Connecting), next.state)
-        assertEquals(
-            listOf(StartPlayback(URL), StartConnectTimeout(10_000), TrackAnalytics(PlayButtonClick(Playback.Disconnected))),
-            next.effects,
-        )
-    }
-
-    @Test
-    fun `Disconnected ignores idle players`() {
-        assertUnchanged(state(Playback.Disconnected), PlayerChanged(stopped))
-    }
-
-    @Test
-    fun `Disconnected follows a player started with no UI alive`() {
-        // e.g. Android Auto on a fresh process: no ControllerConnected will come on its own.
-        assertEquals(Next(state(Playback.Playing)), reduce(state(Playback.Disconnected), PlayerChanged(playing)))
-        assertEquals(Next(state(Playback.Buffering)), reduce(state(Playback.Disconnected), PlayerChanged(stalled)))
-    }
-
-    @Test
-    fun `network error after a start with no UI alive is retried`() {
-        val buffering = reduce(state(Playback.Disconnected), PlayerChanged(stalled)).state
+    fun `network error after a start from outside is retried`() {
+        // e.g. Android Auto on a fresh process, with no UI alive.
+        val buffering = reduce(state(Playback.Idle), PlayerChanged(stalled)).state
         val next = reduce(buffering, PlayerChanged(snapshot(playbackState = Player.STATE_IDLE, error = networkError)))
         assertEquals(Playback.Reconnecting(1), next.state.playback)
     }
@@ -249,7 +208,7 @@ class PlayerReducerTest {
 
     @Test
     fun `errors outside active states are ignored`() {
-        for (from in listOf(Playback.Disconnected, Playback.Idle, Playback.Error(ErrorReason.SOURCE))) {
+        for (from in listOf(Playback.Idle, Playback.Error(ErrorReason.SOURCE))) {
             assertUnchanged(state(from), PlayerChanged(snapshot(error = networkError)))
         }
     }
@@ -330,7 +289,7 @@ class PlayerReducerTest {
 
     @Test
     fun `MetadataChanged with a new title resets next track and fetches it, in any state`() {
-        for (from in activeStates + Playback.Idle + Playback.Disconnected) {
+        for (from in activeStates + Playback.Idle) {
             val next = reduce(state(from), MetadataChanged(TrackMetadata("Song C", "art://c")))
             assertEquals(PlayerState(from, NowPlaying("Song C", "art://c", "")), next.state)
             assertEquals(listOf(FetchNextTrack("Song C")), next.effects)
@@ -360,31 +319,31 @@ class PlayerReducerTest {
         assertUnchanged(state(Playback.Playing), NextTrackLoaded("Old song", "Song Z"))
     }
 
-    // --- Service / controller lifecycle -----------------------------------------------------
+    // --- Service lifecycle ------------------------------------------------------------------
 
     @Test
-    fun `ServiceDestroyed goes to Disconnected from any state and keeps now playing`() {
+    fun `ServiceDestroyed goes to Idle from any state and keeps now playing`() {
         for (from in activeStates + Playback.Idle + Playback.Error(ErrorReason.SOURCE)) {
             val next = reduce(state(from), ServiceDestroyed)
-            assertEquals(state(Playback.Disconnected), next.state)
-            assertEquals(listOf(CancelConnectTimeout, CancelRetry, ReleaseController), next.effects)
+            assertEquals(state(Playback.Idle), next.state)
+            assertEquals(listOf(CancelConnectTimeout, CancelRetry), next.effects)
         }
     }
 
     @Test
-    fun `ControllerConnected while active only updates now playing`() {
-        val next = reduce(state(Playback.Connecting), ControllerConnected(stopped, TrackMetadata("Song C", null)))
-        assertEquals(Playback.Connecting, next.state.playback)
-        assertEquals("Song C", next.state.nowPlaying.title)
+    fun `ControllerFailed while connecting drops the queued start and goes to Error CONTROLLER`() {
+        val cause = IllegalStateException()
+        val next = reduce(state(Playback.Connecting), ControllerFailed(cause))
+        assertEquals(state(Playback.Error(ErrorReason.CONTROLLER)), next.state)
+        assertEquals(
+            listOf(StopPlayback, CancelConnectTimeout, CancelRetry, TrackAnalytics(PlaybackError(ErrorReason.CONTROLLER, cause))),
+            next.effects,
+        )
     }
 
     @Test
-    fun `ControllerFailed while connecting goes to Error CONTROLLER, otherwise only reports`() {
+    fun `ControllerFailed while not starting only reports`() {
         val cause = IllegalStateException()
-        assertEquals(
-            Playback.Error(ErrorReason.CONTROLLER),
-            reduce(state(Playback.Connecting), ControllerFailed(cause)).state.playback,
-        )
         val idle = reduce(state(Playback.Idle), ControllerFailed(cause))
         assertEquals(state(Playback.Idle), idle.state)
         assertEquals(listOf(TrackAnalytics(PlaybackError(ErrorReason.CONTROLLER, cause))), idle.effects)
@@ -404,7 +363,6 @@ class PlayerReducerTest {
 
     @Test
     fun `button mapping`() {
-        assertEquals(PlayerButtonState.LOADING, Playback.Disconnected.toButtonState())
         assertEquals(PlayerButtonState.LOADING, Playback.Connecting.toButtonState())
         assertEquals(PlayerButtonState.LOADING, Playback.Buffering.toButtonState())
         assertEquals(PlayerButtonState.LOADING, Playback.Reconnecting(1).toButtonState())

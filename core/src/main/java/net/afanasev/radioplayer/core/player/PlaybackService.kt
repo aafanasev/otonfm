@@ -28,7 +28,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import net.afanasev.radioplayer.core.RadioPlayerConfig
 import net.afanasev.radioplayer.core.RadioPlayerHost
-import net.afanasev.radioplayer.core.player.fsm.PlayerEvent
 import net.afanasev.radioplayer.core.player.fsm.RadioPlayer
 
 private const val ROOT_ID = "root"
@@ -37,6 +36,11 @@ private const val STATION_ID = "station"
 /**
  * Configure via [RadioPlayerHost] on your [android.app.Application] and register this service
  * in your manifest (`android:foregroundServiceType="mediaPlayback"`, media3 session action).
+ *
+ * Owns the ExoPlayer and attaches it to the app-scoped [RadioPlayer], which runs its commands
+ * (play, stop, retries) directly on it, so they work with no UI alive. Media3 runs the service
+ * in the foreground while playing and, by default, stops it when the app is swiped away while
+ * not playing.
  */
 class PlaybackService : MediaLibraryService() {
 
@@ -55,7 +59,7 @@ class PlaybackService : MediaLibraryService() {
             if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
                 mediaLibrarySession?.let {
                     if (it.player.isPlaying) {
-                        // pause() too, so playWhenReady is false and onTaskRemoved can stop us.
+                        // pause() too, so the state machine sees a pause from outside.
                         it.player.pause()
                         it.player.stop()
                     }
@@ -119,6 +123,7 @@ class PlaybackService : MediaLibraryService() {
     override fun onCreate() {
         super.onCreate()
         initMediaSession()
+        mediaLibrarySession?.let { radioPlayer.attach(it.player) }
         ContextCompat.registerReceiver(
             this,
             noisyReceiver,
@@ -127,17 +132,9 @@ class PlaybackService : MediaLibraryService() {
         )
     }
 
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        val player = mediaLibrarySession?.player ?: return
-        if (!player.playWhenReady || player.mediaItemCount == 0) {
-            stopSelf()
-        }
-    }
-
     override fun onDestroy() {
         destroyMediaSession()
         unregisterReceiver(noisyReceiver)
-        radioPlayer.send(PlayerEvent.ServiceDestroyed)
         super.onDestroy()
     }
 
@@ -151,9 +148,6 @@ class PlaybackService : MediaLibraryService() {
                 true, /* handleAudioFocus */
             )
             .build()
-
-        // Feeds every playback change, whoever caused it, into the app-scoped state machine.
-        player.addListener(radioPlayer.playerListener)
 
         player.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -199,7 +193,7 @@ class PlaybackService : MediaLibraryService() {
         artworkJob?.cancel()
         serviceScope.cancel()
         mediaLibrarySession?.let {
-            it.player.removeListener(radioPlayer.playerListener)
+            radioPlayer.detach(it.player)
             it.player.release()
             it.release()
             mediaLibrarySession = null

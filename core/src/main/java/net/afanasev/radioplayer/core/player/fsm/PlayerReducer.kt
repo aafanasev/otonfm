@@ -8,7 +8,6 @@ import net.afanasev.radioplayer.core.player.fsm.AnalyticsEvent.Reconnect
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.CancelConnectTimeout
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.CancelRetry
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.FetchNextTrack
-import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.ReleaseController
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.ScheduleRetry
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.StartConnectTimeout
 import net.afanasev.radioplayer.core.player.fsm.PlayerEffect.StartPlayback
@@ -39,24 +38,24 @@ internal fun reduce(state: PlayerState, event: PlayerEvent, policy: PlayerPolicy
     when (event) {
         PlayerEvent.PlayPauseClicked -> onPlayPause(state, policy)
 
-        is PlayerEvent.ControllerConnected -> onControllerConnected(state, event)
-
         is PlayerEvent.ControllerFailed -> {
             val analytics = TrackAnalytics(PlaybackError(ErrorReason.CONTROLLER, event.cause))
             when (state.playback) {
-                // Nothing to show the user while playback was neither wanted nor reachable.
-                Playback.Disconnected, Playback.Connecting, is Playback.Reconnecting -> Next(
+                // The service can't start, so the queued StartPlayback would never run: replace
+                // it with a stop, so a service started later (e.g. by Android Auto) doesn't play.
+                Playback.Connecting, is Playback.Reconnecting -> Next(
                     state.copy(playback = Playback.Error(ErrorReason.CONTROLLER)),
-                    listOf(CancelConnectTimeout, CancelRetry, analytics),
+                    listOf(StopPlayback, CancelConnectTimeout, CancelRetry, analytics),
                 )
 
                 else -> Next(state, listOf(analytics))
             }
         }
 
+        // The player went with the service; the next play starts a new one.
         PlayerEvent.ServiceDestroyed -> Next(
-            state.copy(playback = Playback.Disconnected),
-            listOf(CancelConnectTimeout, CancelRetry, ReleaseController),
+            state.copy(playback = Playback.Idle),
+            listOf(CancelConnectTimeout, CancelRetry),
         )
 
         is PlayerEvent.PlayerChanged -> onPlayerChanged(state, event.snapshot, policy)
@@ -92,9 +91,8 @@ internal fun reduce(state: PlayerState, event: PlayerEvent, policy: PlayerPolicy
 private fun onPlayPause(state: PlayerState, policy: PlayerPolicy): Next {
     val click = TrackAnalytics(PlayButtonClick(state.playback))
     return when (state.playback) {
-        // Starts from Error too (that's the retry), and from Disconnected: the button can't tell
-        // it from loading, and StartPlayback connects a controller on demand.
-        Playback.Disconnected, Playback.Idle, is Playback.Error -> Next(
+        // Starts from Error too (that's the retry).
+        Playback.Idle, is Playback.Error -> Next(
             state.copy(playback = Playback.Connecting),
             listOf(StartPlayback(policy.streamUrl), StartConnectTimeout(policy.connectTimeoutMs), click),
         )
@@ -106,18 +104,6 @@ private fun onPlayPause(state: PlayerState, policy: PlayerPolicy): Next {
 
         Playback.Playing -> Next(state.copy(playback = Playback.Idle), listOf(StopPlayback, click))
     }
-}
-
-private fun onControllerConnected(state: PlayerState, event: PlayerEvent.ControllerConnected): Next {
-    val isPlaying = event.snapshot.isPlaying
-    val playback = when (val p = state.playback) {
-        Playback.Disconnected -> if (isPlaying) Playback.Playing else Playback.Idle
-        Playback.Idle, is Playback.Error -> if (isPlaying) Playback.Playing else p
-        // The service listener is the source of truth while playback is active.
-        else -> p
-    }
-    val (nowPlaying, effects) = applyMetadata(state.nowPlaying, event.metadata)
-    return Next(PlayerState(playback, nowPlaying), effects)
 }
 
 private fun onPlayerChanged(state: PlayerState, s: PlayerSnapshot, policy: PlayerPolicy): Next {
@@ -132,10 +118,8 @@ private fun onPlayerChanged(state: PlayerState, s: PlayerSnapshot, policy: Playe
     val stoppedFromOutside = !s.playWhenReady || s.playbackState == Player.STATE_IDLE
     val pausedFromOutside = { to(Playback.Idle, CancelConnectTimeout, CancelRetry) }
     return when (p) {
-        // Started from outside: notification, Bluetooth, Android Auto. Disconnected too, since
-        // with no UI alive (e.g. Android Auto on a fresh process) nothing else would connect a
-        // controller; becoming active connects one.
-        Playback.Disconnected, Playback.Idle, is Playback.Error -> when {
+        // Started from outside: notification, Bluetooth, Android Auto, possibly with no UI alive.
+        Playback.Idle, is Playback.Error -> when {
             s.isPlaying -> to(Playback.Playing)
             s.playWhenReady && s.playbackState == Player.STATE_BUFFERING -> to(Playback.Buffering)
             else -> Next(state)

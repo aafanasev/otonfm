@@ -5,15 +5,15 @@ package net.afanasev.radioplayer.core.player.fsm
  * independent, so the track info survives pauses and errors.
  */
 data class PlayerState(
-    val playback: Playback = Playback.Disconnected,
+    val playback: Playback = Playback.Idle,
     val nowPlaying: NowPlaying = NowPlaying(),
 )
 
 sealed interface Playback {
-    /** No `MediaController` is connected yet. */
-    data object Disconnected : Playback
-
-    /** Connected but not playing. For live radio, pause and stop mean the same thing. */
+    /**
+     * Not playing, including before the service exists. For live radio, pause and stop mean the
+     * same thing.
+     */
     data object Idle : Playback
 
     /** The user asked to play; waiting for the first audio. */

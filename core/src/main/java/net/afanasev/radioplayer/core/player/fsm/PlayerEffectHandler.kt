@@ -1,61 +1,42 @@
 package net.afanasev.radioplayer.core.player.fsm
 
-import android.content.ComponentName
-import android.content.Context
-import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
-import androidx.media3.session.MediaController
-import androidx.media3.session.SessionToken
-import com.google.common.util.concurrent.FutureCallback
-import com.google.common.util.concurrent.Futures
-import com.google.common.util.concurrent.ListenableFuture
+import androidx.media3.common.Player
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
 import net.afanasev.radioplayer.core.analytics.PlayerAnalytics
 import net.afanasev.radioplayer.core.metadata.NowPlayingMetadataProvider
-import net.afanasev.radioplayer.core.player.PlaybackService
 import net.afanasev.radioplayer.core.player.toButtonState
 
 /** Runs [PlayerEffect]s. Split out from [RadioPlayer] so tests can fake it. */
 internal interface PlayerEffects {
     fun handle(effect: PlayerEffect)
 
-    /**
-     * Whether a `MediaController` should be connected: while the UI observes the state or
-     * playback is active. Otherwise it's released so the service can shut down.
-     */
-    fun setControllerNeeded(needed: Boolean)
+    /** The service's player, which runs the player commands; null while there is no service. */
+    fun setPlayer(player: Player?)
 }
 
 internal class PlayerEffectHandler(
-    private val context: Context,
     private val metadata: NowPlayingMetadataProvider,
     private val analytics: PlayerAnalytics,
     private val scope: CoroutineScope,
     private val send: (PlayerEvent) -> Unit,
 ) : PlayerEffects {
 
-    private var controllerFuture: ListenableFuture<MediaController>? = null
-    private var controllerNeeded = false
+    private var player: Player? = null
 
-    private var commandJob: Job? = null
+    /** The last player command sent before the service was up. A newer one replaces it. */
+    private var pendingCommand: ((Player) -> Unit)? = null
+
     private var nextTrackJob: Job? = null
     private var timeoutJob: Job? = null
     private var retryJob: Job? = null
 
     override fun handle(effect: PlayerEffect) {
         when (effect) {
-            PlayerEffect.ReleaseController -> {
-                releaseController()
-                // The service went away under an observing UI: reconnect, which recreates it.
-                if (controllerNeeded) connectController()
-            }
-
             // Order matters, see PlayerEffect.StartPlayback.
             is PlayerEffect.StartPlayback -> command {
                 it.stop()
@@ -120,77 +101,19 @@ internal class PlayerEffectHandler(
         }
     }
 
-    override fun setControllerNeeded(needed: Boolean) {
-        if (needed == controllerNeeded) return
-        controllerNeeded = needed
-        if (needed) connectController() else releaseController()
+    override fun setPlayer(player: Player?) {
+        this.player = player
+        val pending = pendingCommand ?: return
+        pendingCommand = null
+        if (player != null) pending(player)
     }
 
     /**
-     * Runs [block] once a controller is available, connecting on demand. A newer command
-     * cancels one still waiting for the connection, so a quick play-then-cancel can't play.
+     * Runs [block] on the service's player. Before the service is up (the first play starts it,
+     * see PlayerViewModel) it waits for [setPlayer], so a quick play-then-stop doesn't play.
      */
-    private fun command(block: (MediaController) -> Unit) {
-        val previous = commandJob
-        commandJob = scope.launch {
-            previous?.cancelAndJoin()
-            awaitController()?.let(block)
-        }
-    }
-
-    private suspend fun awaitController(): MediaController? {
-        val future = connectController()
-        return try {
-            future.await()
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            null // reported as ControllerFailed by connectController's callback
-        }
-    }
-
-    private fun connectController(): ListenableFuture<MediaController> {
-        controllerFuture?.let { return it }
-
-        val token = SessionToken(context, ComponentName(context, PlaybackService::class.java))
-        lateinit var future: ListenableFuture<MediaController>
-        future = MediaController.Builder(context, token)
-            .setListener(object : MediaController.Listener {
-                override fun onDisconnected(controller: MediaController) {
-                    if (controllerFuture === future) controllerFuture = null
-                }
-            })
-            .buildAsync()
-        controllerFuture = future
-
-        Futures.addCallback(
-            future,
-            object : FutureCallback<MediaController> {
-                override fun onSuccess(controller: MediaController) {
-                    if (controllerFuture !== future) return
-                    send(
-                        PlayerEvent.ControllerConnected(
-                            snapshot = controller.toSnapshot(),
-                            metadata = controller.mediaMetadata.toTrackMetadata(),
-                        )
-                    )
-                }
-
-                override fun onFailure(t: Throwable) {
-                    if (controllerFuture !== future) return // released on purpose
-                    controllerFuture = null
-                    send(PlayerEvent.ControllerFailed(t))
-                }
-            },
-            ContextCompat.getMainExecutor(context),
-        )
-        return future
-    }
-
-    private fun releaseController() {
-        commandJob?.cancel()
-        commandJob = null
-        controllerFuture?.let(MediaController::releaseFuture)
-        controllerFuture = null
+    private fun command(block: (Player) -> Unit) {
+        val player = player
+        if (player != null) block(player) else pendingCommand = block
     }
 }

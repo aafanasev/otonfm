@@ -20,6 +20,9 @@ import net.afanasev.radioplayer.core.RadioPlayerHost
  *
  * Observe [state] and call [send]; get the instance with [RadioPlayer.get]. Events are
  * reduced one at a time on the main thread (Media3 requires it), which also serialises them.
+ *
+ * It doesn't start the service: [net.afanasev.radioplayer.core.player.PlayerViewModel] does on
+ * the first play, and the service then [attach]es its player.
  */
 class RadioPlayer internal constructor(
     private val policy: PlayerPolicy,
@@ -29,14 +32,12 @@ class RadioPlayer internal constructor(
 
     private val _state = MutableStateFlow(PlayerState())
 
-    /** Collecting this keeps a `MediaController` connected; see [PlayerEffects.setControllerNeeded]. */
     val state: StateFlow<PlayerState> = _state.asStateFlow()
 
     private val events = Channel<PlayerEvent>(Channel.UNLIMITED)
     private val effects = effectsFactory(::send)
 
-    /** Added to the ExoPlayer by [net.afanasev.radioplayer.core.player.PlaybackService]. */
-    internal val playerListener: Player.Listener = object : Player.Listener {
+    private val playerListener: Player.Listener = object : Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) {
             if (events.containsAny(
                     Player.EVENT_PLAY_WHEN_READY_CHANGED,
@@ -63,16 +64,28 @@ class RadioPlayer internal constructor(
                 log(event, before, next)
                 _state.value = next.state
                 next.effects.forEach(effects::handle)
-                updateControllerDemand()
             }
-        }
-        scope.launch {
-            _state.subscriptionCount.collect { updateControllerDemand() }
         }
     }
 
     fun send(event: PlayerEvent) {
         events.trySend(event)
+    }
+
+    /**
+     * Called by [net.afanasev.radioplayer.core.player.PlaybackService] once its player is built:
+     * player commands run on it from now on, and its changes feed the state machine.
+     */
+    internal fun attach(player: Player) {
+        player.addListener(playerListener)
+        effects.setPlayer(player)
+    }
+
+    /** Called by the service before it releases [player]. */
+    internal fun detach(player: Player) {
+        player.removeListener(playerListener)
+        effects.setPlayer(null)
+        send(PlayerEvent.ServiceDestroyed)
     }
 
     /**
@@ -92,10 +105,6 @@ class RadioPlayer internal constructor(
         val nowPlaying = if (next.state.nowPlaying != before.nowPlaying) " ${next.state.nowPlaying}" else ""
         val effects = if (next.effects.isEmpty()) "" else " ${next.effects}"
         Log.d(TAG, "$event: $playback$nowPlaying$effects")
-    }
-
-    private fun updateControllerDemand() {
-        effects.setControllerNeeded(_state.subscriptionCount.value > 0 || _state.value.playback.isActive)
     }
 
     companion object {
@@ -119,7 +128,6 @@ class RadioPlayer internal constructor(
                 scope = scope,
             ) { send ->
                 PlayerEffectHandler(
-                    context = app,
                     metadata = host.nowPlayingMetadataProvider,
                     analytics = host.playerAnalytics,
                     scope = scope,

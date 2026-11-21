@@ -29,7 +29,7 @@ class RadioPlayerTest {
         val effects = FakeEffects()
         val player = player(effects)
 
-        player.send(PlayerEvent.MetadataChanged(TrackMetadata("A", null)))
+        player.send(PlayerEvent.MetadataChanged(TrackMetadata("A")))
         player.send(PlayerEvent.PlayPauseClicked)
         runCurrent()
 

@@ -34,11 +34,11 @@ import net.afanasev.otonfm.ui.screens.contacts.ContactsScreen
 import net.afanasev.otonfm.ui.screens.menu.MenuScreen
 import net.afanasev.otonfm.ui.screens.player.PlayerViewScreen
 import net.afanasev.otonfm.ui.screens.profilesetup.ProfileSetupScreen
+import net.afanasev.otonfm.data.theme.PlayerTheme
+import net.afanasev.otonfm.data.theme.ThemeStore
 import net.afanasev.otonfm.ui.screens.themechooser.ThemeChooserScreen
 import net.afanasev.otonfm.ui.navigation.BottomSheetSceneStrategy
 import net.afanasev.otonfm.ui.theme.OtonFmTheme
-import net.afanasev.radioplayer.core.theme.PlayerTheme
-import net.afanasev.radioplayer.core.theme.ThemeStore
 
 class MainActivity : ComponentActivity() {
 
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
         setupNotifications()
         val dataStore = DataStoreManager(applicationContext)
-        val themeStore = ThemeStore(applicationContext, (application as OtonFmApplication).playerAnalytics)
+        val themeStore = ThemeStore(applicationContext)
 
         enableEdgeToEdge()
         setContent {

@@ -16,9 +16,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://jitpack.io")
     }
 }
 
 rootProject.name = "otonfm"
 include(":app")
+include(":core")
+include(":radioco")
+include(":sample")

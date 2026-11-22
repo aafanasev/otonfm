@@ -81,8 +81,8 @@ dependencies {
 
     implementation(libs.androidx.data.store)
 
-    implementation(libs.radioplayer.core)
-    implementation(libs.radioplayer.radioco)
+    implementation(project(":core"))
+    implementation(project(":radioco"))
 
     implementation(libs.kotlinx.serialization.json)
 

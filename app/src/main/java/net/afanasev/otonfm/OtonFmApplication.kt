@@ -2,11 +2,11 @@ package net.afanasev.otonfm
 
 import android.app.Application
 import net.afanasev.otonfm.util.log.OtonFmPlayerAnalytics
-import net.afanasev.radioplayer.core.RadioPlayerConfig
-import net.afanasev.radioplayer.core.RadioPlayerHost
-import net.afanasev.radioplayer.core.analytics.PlayerAnalytics
-import net.afanasev.radioplayer.core.metadata.NowPlayingMetadataProvider
-import net.afanasev.radioplayer.radioco.RadioCoMetadataProvider
+import net.afanasev.otonfm.core.RadioPlayerConfig
+import net.afanasev.otonfm.core.RadioPlayerHost
+import net.afanasev.otonfm.core.analytics.PlayerAnalytics
+import net.afanasev.otonfm.core.metadata.NowPlayingMetadataProvider
+import net.afanasev.otonfm.radioco.RadioCoMetadataProvider
 
 private const val RADIO_CO_STATION_ID = "s696f24a77"
 

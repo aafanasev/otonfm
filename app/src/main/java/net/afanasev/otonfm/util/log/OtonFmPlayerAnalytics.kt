@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.analytics.analytics
 import com.google.firebase.Firebase
-import net.afanasev.radioplayer.core.analytics.PlayerAnalytics
-import net.afanasev.radioplayer.core.player.PlayerButtonState
+import net.afanasev.otonfm.core.analytics.PlayerAnalytics
+import net.afanasev.otonfm.core.player.PlayerButtonState
 import net.afanasev.otonfm.data.theme.PlayerTheme
 
 private const val TAG = "OtonFmPlayerAnalytics"

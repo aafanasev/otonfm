@@ -25,11 +25,11 @@ import net.afanasev.otonfm.ui.screens.player.components.Logo
 import net.afanasev.otonfm.ui.screens.player.components.MenuButton
 import net.afanasev.otonfm.ui.theme.BACKGROUND_GRADIENTS
 import net.afanasev.otonfm.util.log.Logger
-import net.afanasev.radioplayer.core.player.PlayerViewModel
-import net.afanasev.radioplayer.core.player.ui.Background
-import net.afanasev.radioplayer.core.player.ui.GradientPlaceholder
-import net.afanasev.radioplayer.core.player.ui.LandscapeContent
-import net.afanasev.radioplayer.core.player.ui.PortraitContent
+import net.afanasev.otonfm.core.player.PlayerViewModel
+import net.afanasev.otonfm.core.player.ui.Background
+import net.afanasev.otonfm.core.player.ui.GradientPlaceholder
+import net.afanasev.otonfm.core.player.ui.LandscapeContent
+import net.afanasev.otonfm.core.player.ui.PortraitContent
 
 @Composable
 fun PlayerViewScreen(

@@ -12,7 +12,7 @@
 
 ## Adding a backend for another provider (Shoutcast, Icecast, a custom API, ...)
 
-Add a new module implementing `net.afanasev.radioplayer.core.metadata.NowPlayingMetadataProvider`
+Add a new module implementing `net.afanasev.otonfm.core.metadata.NowPlayingMetadataProvider`
 against your backend, following `:radioco`'s structure:
 
 - `RETRY_MAX_COUNT` / `RETRY_DELAY_MS`-style constants for any polling/retry behavior

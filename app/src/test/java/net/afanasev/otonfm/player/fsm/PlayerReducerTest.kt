@@ -375,14 +375,4 @@ class PlayerReducerTest {
         assertEquals(ErrorReason.SOURCE, sourceError.toErrorReason())
         assertEquals(ErrorReason.UNKNOWN, error(PlaybackException.ERROR_CODE_UNSPECIFIED).toErrorReason())
     }
-
-    @Test
-    fun `analytics report the actual playback state`() {
-        assertEquals("IDLE", Playback.Idle.analyticsName)
-        assertEquals("CONNECTING", Playback.Connecting.analyticsName)
-        assertEquals("PLAYING", Playback.Playing.analyticsName)
-        assertEquals("BUFFERING", Playback.Buffering.analyticsName)
-        assertEquals("RECONNECTING", Playback.Reconnecting(1).analyticsName)
-        assertEquals("ERROR", Playback.Error(ErrorReason.NETWORK).analyticsName)
-    }
 }

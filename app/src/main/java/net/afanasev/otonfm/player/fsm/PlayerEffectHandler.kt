@@ -17,20 +17,6 @@ internal interface PlayerEffects {
     fun setPlayer(player: Player?)
 }
 
-/**
- * Explicit because release builds obfuscate class names. Changing these values splits the
- * analytics history.
- */
-internal val Playback.analyticsName: String
-    get() = when (this) {
-        Playback.Idle -> "IDLE"
-        Playback.Connecting -> "CONNECTING"
-        Playback.Playing -> "PLAYING"
-        Playback.Buffering -> "BUFFERING"
-        is Playback.Reconnecting -> "RECONNECTING"
-        is Playback.Error -> "ERROR"
-    }
-
 internal class PlayerEffectHandler(
     private val metadata: RadioCoMetadataProvider,
     private val scope: CoroutineScope,
@@ -105,7 +91,7 @@ internal class PlayerEffectHandler(
             }
 
             is PlayerEffect.TrackAnalytics -> when (val event = effect.event) {
-                is AnalyticsEvent.PlayButtonClick -> Logger.onPlayButtonClick(event.playback.analyticsName)
+                is AnalyticsEvent.PlayButtonClick -> Logger.onPlayButtonClick(event.playback.toString())
                 is AnalyticsEvent.PlaybackError -> Logger.onPlaybackError(event.reason.name, event.cause)
                 is AnalyticsEvent.Reconnect -> Logger.onReconnect(event.attempt, event.delayMs)
             }

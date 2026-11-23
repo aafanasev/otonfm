@@ -14,7 +14,7 @@ import androidx.navigation3.runtime.NavKey
 import net.afanasev.otonfm.MainRoutes
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.common.log.Logger
-import net.afanasev.otonfm.common.ui.IconTextRowItem
+import net.afanasev.otonfm.common.ui.components.IconTextRowItem
 
 @Composable
 fun MenuScreen(

@@ -31,8 +31,8 @@ import net.afanasev.otonfm.auth.ui.AuthViewModel
 import net.afanasev.otonfm.auth.ui.ProfileSetupScreen
 import net.afanasev.otonfm.chat.ui.ChatScreen
 import net.afanasev.otonfm.chat.ui.ChatViewModel
-import net.afanasev.otonfm.common.designsystem.OtonFmTheme
 import net.afanasev.otonfm.common.navigation.BottomSheetSceneStrategy
+import net.afanasev.otonfm.common.ui.style.OtonFmTheme
 import net.afanasev.otonfm.contacts.ContactsScreen
 import net.afanasev.otonfm.menu.MenuScreen
 import net.afanasev.otonfm.player.ui.PlayerViewScreen

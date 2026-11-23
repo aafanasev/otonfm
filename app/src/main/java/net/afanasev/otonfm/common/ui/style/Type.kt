@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.common.designsystem
+package net.afanasev.otonfm.common.ui.style
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

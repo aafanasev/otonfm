@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.common.ui
+package net.afanasev.otonfm.common.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable

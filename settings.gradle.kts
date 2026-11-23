@@ -21,6 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "otonfm"
 include(":app")
-include(":core")
-include(":radioco")
-include(":sample")

@@ -40,7 +40,7 @@
         </activity>
 
         <service
-            android:name=".services.OtonFmMessagingService"
+            android:name=".notifications.OtonFmMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -48,7 +48,7 @@
         </service>
 
         <service
-            android:name=".core.player.PlaybackService"
+            android:name=".player.service.PlaybackService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback">
             <intent-filter>

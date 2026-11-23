@@ -25,7 +25,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import kotlinx.coroutines.delay
-import net.afanasev.otonfm.common.theme.BACKGROUND_GRADIENTS
+import net.afanasev.otonfm.common.designsystem.BACKGROUND_GRADIENTS
 import kotlin.random.Random
 
 private val Gradients: List<Pair<Color, Color>> = BACKGROUND_GRADIENTS.map { it[0] to it[1] }

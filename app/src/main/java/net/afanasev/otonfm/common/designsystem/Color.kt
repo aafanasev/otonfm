@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.common.theme
+package net.afanasev.otonfm.common.designsystem
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf

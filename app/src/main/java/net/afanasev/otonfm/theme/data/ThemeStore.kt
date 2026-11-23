@@ -17,12 +17,12 @@ private val KEY_THEME = stringPreferencesKey("theme")
 
 class ThemeStore(private val context: Context) {
 
-    val theme: Flow<PlayerTheme> = context.themeDataStore.data.map { prefs ->
-        prefs[KEY_THEME]?.let { name -> runCatching { PlayerTheme.valueOf(name) }.getOrNull() }
-            ?: PlayerTheme.ARTWORK
+    val theme: Flow<ThemeMode> = context.themeDataStore.data.map { prefs ->
+        prefs[KEY_THEME]?.let { name -> runCatching { ThemeMode.valueOf(name) }.getOrNull() }
+            ?: ThemeMode.ARTWORK
     }
 
-    suspend fun saveTheme(theme: PlayerTheme) {
+    suspend fun saveTheme(theme: ThemeMode) {
         context.themeDataStore.edit { prefs -> prefs[KEY_THEME] = theme.name }
         Logger.onThemeSelect(theme.name)
     }

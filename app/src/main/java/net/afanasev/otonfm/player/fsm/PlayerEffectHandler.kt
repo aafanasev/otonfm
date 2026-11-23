@@ -6,7 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.afanasev.otonfm.player.OtonFmPlayerAnalytics
+import net.afanasev.otonfm.common.log.Logger
 import net.afanasev.otonfm.player.data.RadioCoMetadataProvider
 import net.afanasev.otonfm.player.toButtonState
 
@@ -92,9 +92,9 @@ internal class PlayerEffectHandler(
             }
 
             is PlayerEffect.TrackAnalytics -> when (val event = effect.event) {
-                is AnalyticsEvent.PlayButtonClick -> OtonFmPlayerAnalytics.onPlayButtonClick(event.playback.toButtonState())
-                is AnalyticsEvent.PlaybackError -> OtonFmPlayerAnalytics.onPlaybackError(event.reason, event.cause)
-                is AnalyticsEvent.Reconnect -> OtonFmPlayerAnalytics.onReconnect(event.attempt, event.delayMs)
+                is AnalyticsEvent.PlayButtonClick -> Logger.onPlayButtonClick(event.playback.toButtonState().name)
+                is AnalyticsEvent.PlaybackError -> Logger.onPlaybackError(event.reason.name, event.cause)
+                is AnalyticsEvent.Reconnect -> Logger.onReconnect(event.attempt, event.delayMs)
             }
         }
     }

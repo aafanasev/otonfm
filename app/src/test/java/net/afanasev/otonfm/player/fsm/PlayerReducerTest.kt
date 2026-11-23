@@ -377,12 +377,12 @@ class PlayerReducerTest {
     }
 
     @Test
-    fun `play button click analytics keep their reported values`() {
-        assertEquals("LOADING", Playback.Connecting.clickAnalyticsName)
-        assertEquals("LOADING", Playback.Buffering.clickAnalyticsName)
-        assertEquals("LOADING", Playback.Reconnecting(1).clickAnalyticsName)
-        assertEquals("PAUSED", Playback.Idle.clickAnalyticsName)
-        assertEquals("PAUSED", Playback.Error(ErrorReason.NETWORK).clickAnalyticsName)
-        assertEquals("PLAYING", Playback.Playing.clickAnalyticsName)
+    fun `analytics report the actual playback state`() {
+        assertEquals("IDLE", Playback.Idle.analyticsName)
+        assertEquals("CONNECTING", Playback.Connecting.analyticsName)
+        assertEquals("PLAYING", Playback.Playing.analyticsName)
+        assertEquals("BUFFERING", Playback.Buffering.analyticsName)
+        assertEquals("RECONNECTING", Playback.Reconnecting(1).analyticsName)
+        assertEquals("ERROR", Playback.Error(ErrorReason.NETWORK).analyticsName)
     }
 }

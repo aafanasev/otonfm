@@ -60,7 +60,7 @@ object Logger {
 
     //region Player
 
-    /** @param state the player button state when it was clicked */
+    /** @param state the playback state when the button was clicked */
     fun onPlayButtonClick(state: String) {
         analytics.logEvent("play_btn_click", Bundle().apply {
             putString("state", state)

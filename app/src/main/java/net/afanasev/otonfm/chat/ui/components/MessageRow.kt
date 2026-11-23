@@ -39,8 +39,8 @@ import net.afanasev.otonfm.R
 import net.afanasev.otonfm.auth.ui.FlagIcon
 import net.afanasev.otonfm.chat.data.MessageModel
 import net.afanasev.otonfm.chat.data.MessageType
-import net.afanasev.otonfm.common.theme.OtonFmTheme
-import net.afanasev.otonfm.common.theme.UserNameColors
+import net.afanasev.otonfm.common.designsystem.OtonFmTheme
+import net.afanasev.otonfm.common.designsystem.UserNameColors
 import kotlin.math.abs
 
 private val AdminNameColor = Color(0xFFCD0200)

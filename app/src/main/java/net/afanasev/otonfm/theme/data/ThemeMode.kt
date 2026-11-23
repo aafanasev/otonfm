@@ -1,6 +1,6 @@
 package net.afanasev.otonfm.theme.data
 
-enum class PlayerTheme {
+enum class ThemeMode {
     DARK,
     LIGHT,
     SYSTEM,

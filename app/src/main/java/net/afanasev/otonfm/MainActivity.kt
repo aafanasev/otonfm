@@ -31,12 +31,12 @@ import net.afanasev.otonfm.auth.ui.AuthViewModel
 import net.afanasev.otonfm.auth.ui.ProfileSetupScreen
 import net.afanasev.otonfm.chat.ui.ChatScreen
 import net.afanasev.otonfm.chat.ui.ChatViewModel
+import net.afanasev.otonfm.common.designsystem.OtonFmTheme
 import net.afanasev.otonfm.common.navigation.BottomSheetSceneStrategy
-import net.afanasev.otonfm.common.theme.OtonFmTheme
 import net.afanasev.otonfm.contacts.ContactsScreen
 import net.afanasev.otonfm.menu.MenuScreen
 import net.afanasev.otonfm.player.ui.PlayerViewScreen
-import net.afanasev.otonfm.theme.data.PlayerTheme
+import net.afanasev.otonfm.theme.data.ThemeMode
 import net.afanasev.otonfm.theme.data.ThemeStore
 import net.afanasev.otonfm.theme.ui.ThemeChooserScreen
 
@@ -53,12 +53,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val scope = rememberCoroutineScope()
-            val theme by themeStore.theme.collectAsStateWithLifecycle(PlayerTheme.SYSTEM)
+            val theme by themeStore.theme.collectAsStateWithLifecycle(ThemeMode.SYSTEM)
             val isDarkMode = when (theme) {
-                PlayerTheme.ARTWORK -> true
-                PlayerTheme.DARK -> true
-                PlayerTheme.LIGHT -> false
-                PlayerTheme.SYSTEM -> isSystemInDarkTheme()
+                ThemeMode.ARTWORK -> true
+                ThemeMode.DARK -> true
+                ThemeMode.LIGHT -> false
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
             }
 
             OtonFmTheme(isDarkMode) {
@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
                                     onMenuClick = { backStack.add(MainRoutes.Menu) },
                                     onChatClick = { backStack.add(MainRoutes.Chat) },
                                     isDarkMode = isDarkMode,
-                                    useArtworkAsBackground = theme == PlayerTheme.ARTWORK,
+                                    useArtworkAsBackground = theme == ThemeMode.ARTWORK,
                                     adminStatusViewModel = viewModel(),
                                 )
                             }

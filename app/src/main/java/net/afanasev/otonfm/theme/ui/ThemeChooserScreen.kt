@@ -8,16 +8,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.common.ui.TextRowItem
-import net.afanasev.otonfm.theme.data.PlayerTheme
+import net.afanasev.otonfm.theme.data.ThemeMode
 
 @Composable
-fun ThemeChooserScreen(onThemeSelected: (PlayerTheme) -> Unit) {
+fun ThemeChooserScreen(onThemeSelected: (ThemeMode) -> Unit) {
     Column(modifier = Modifier.padding(vertical = 12.dp)) {
         val items = listOf(
-            PlayerTheme.ARTWORK to R.string.theme_artwork,
-            PlayerTheme.DARK to R.string.theme_dark,
-            PlayerTheme.LIGHT to R.string.theme_light,
-            PlayerTheme.SYSTEM to R.string.theme_system,
+            ThemeMode.ARTWORK to R.string.theme_artwork,
+            ThemeMode.DARK to R.string.theme_dark,
+            ThemeMode.LIGHT to R.string.theme_light,
+            ThemeMode.SYSTEM to R.string.theme_system,
         )
 
         items.forEach { (value, stringResId) ->

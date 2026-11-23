@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.chat.data.MessageModel
-import net.afanasev.otonfm.common.theme.OtonFmTheme
+import net.afanasev.otonfm.common.designsystem.OtonFmTheme
 
 @Composable
 fun PinnedMessageBanner(message: MessageModel, modifier: Modifier = Modifier) {

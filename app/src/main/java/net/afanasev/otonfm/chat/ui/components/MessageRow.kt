@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import net.afanasev.otonfm.R
-import net.afanasev.otonfm.auth.ui.FlagIcon
+import net.afanasev.otonfm.common.ui.components.FlagIcon
 import net.afanasev.otonfm.chat.data.MessageModel
 import net.afanasev.otonfm.chat.data.MessageType
 import net.afanasev.otonfm.common.ui.style.OtonFmTheme

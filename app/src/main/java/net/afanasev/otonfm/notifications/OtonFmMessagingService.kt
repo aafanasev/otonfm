@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import net.afanasev.otonfm.MainActivity
 import net.afanasev.otonfm.R
 
 class OtonFmMessagingService : FirebaseMessagingService() {
@@ -28,9 +27,9 @@ class OtonFmMessagingService : FirebaseMessagingService() {
         )
         notificationManager.createNotificationChannel(channel)
 
-        val intent = Intent(this, MainActivity::class.java).apply {
+        val intent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
+        } ?: return
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,

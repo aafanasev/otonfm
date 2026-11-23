@@ -8,7 +8,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.common.log.Logger
 import net.afanasev.otonfm.player.data.RadioCoMetadataProvider
-import net.afanasev.otonfm.player.toButtonState
 
 /** Runs [PlayerEffect]s. Split out from [RadioPlayer] so tests can fake it. */
 internal interface PlayerEffects {

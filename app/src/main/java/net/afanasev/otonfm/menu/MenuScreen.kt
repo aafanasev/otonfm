@@ -10,8 +10,6 @@ import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavKey
-import net.afanasev.otonfm.MainRoutes
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.common.log.Logger
 import net.afanasev.otonfm.common.ui.components.IconTextRowItem
@@ -19,7 +17,9 @@ import net.afanasev.otonfm.common.ui.components.IconTextRowItem
 @Composable
 fun MenuScreen(
     isSignedIn: Boolean,
-    onItemSelected: (NavKey) -> Unit,
+    onThemeClick: () -> Unit,
+    onContactsClick: () -> Unit,
+    onProfileClick: () -> Unit,
     onSignOut: () -> Unit,
 ) {
     Column(modifier = Modifier.padding(vertical = 12.dp)) {
@@ -28,7 +28,7 @@ fun MenuScreen(
             stringResId = R.string.menu_theme,
             onClick = {
                 Logger.onMenuThemeClick()
-                onItemSelected(MainRoutes.ThemeChooser)
+                onThemeClick()
             },
         )
         IconTextRowItem(
@@ -36,14 +36,14 @@ fun MenuScreen(
             stringResId = R.string.menu_contacts,
             onClick = {
                 Logger.onMenuContactsClick()
-                onItemSelected(MainRoutes.Contacts)
+                onContactsClick()
             },
         )
         if (isSignedIn) {
             IconTextRowItem(
                 icon = Icons.Outlined.AccountCircle,
                 stringResId = R.string.profile_setup_title,
-                onClick = { onItemSelected(MainRoutes.ProfileSetup) },
+                onClick = onProfileClick,
             )
             IconTextRowItem(
                 icon = Icons.AutoMirrored.Outlined.Logout,

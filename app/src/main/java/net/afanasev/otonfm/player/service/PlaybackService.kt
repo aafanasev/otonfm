@@ -27,7 +27,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import net.afanasev.otonfm.MainActivity
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.player.fsm.Playback
 import net.afanasev.otonfm.player.fsm.RadioPlayer
@@ -158,7 +157,7 @@ class PlaybackService : MediaLibraryService() {
         val sessionActivity = PendingIntent.getActivity(
             this,
             0,
-            Intent(this, MainActivity::class.java),
+            requireNotNull(packageManager.getLaunchIntentForPackage(packageName)),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 

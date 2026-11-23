@@ -6,7 +6,7 @@ import net.afanasev.otonfm.core.player.fsm.ErrorReason
 /**
  * Player-related event/error sink. Implement against your own analytics backend
  * (Firebase, Amplitude, ...); [NoOpPlayerAnalytics] is the default if you don't need one.
- * Both :core and the :radioco metadata provider report through this interface, so a single
+ * Both the player and the radio.co metadata provider report through this interface, so a single
  * implementation on the host [android.app.Application] captures both playback UI events and
  * metadata-fetch failures.
  */

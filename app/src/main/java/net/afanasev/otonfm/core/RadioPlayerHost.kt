@@ -4,7 +4,7 @@ import net.afanasev.otonfm.core.analytics.PlayerAnalytics
 import net.afanasev.otonfm.core.metadata.NowPlayingMetadataProvider
 
 /**
- * Implemented by the host [android.app.Application] to supply :core's extension points.
+ * Implemented by the host [android.app.Application] to supply the player's extension points.
  * [PlaybackService] and [net.afanasev.otonfm.core.player.PlayerViewModel] read this off
  * `application` at runtime, since Android constructs services/view-models without a way to
  * inject constructor arguments directly.

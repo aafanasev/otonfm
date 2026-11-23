@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "net.afanasev.radioplayer.core"
+    namespace = "net.afanasev.otonfm.core"
     compileSdk = 37
 
     defaultConfig {

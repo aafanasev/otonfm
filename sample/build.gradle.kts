@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "net.afanasev.radioplayer.sample"
+    namespace = "net.afanasev.otonfm.sample"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "net.afanasev.radioplayer.sample"
+        applicationId = "net.afanasev.otonfm.sample"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "net.afanasev.radioplayer.radioco"
+    namespace = "net.afanasev.otonfm.radioco"
     compileSdk = 37
 
     defaultConfig {

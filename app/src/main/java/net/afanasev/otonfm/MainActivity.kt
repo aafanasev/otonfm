@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
@@ -35,7 +36,6 @@ import net.afanasev.otonfm.common.navigation.BottomSheetSceneStrategy
 import net.afanasev.otonfm.common.ui.style.OtonFmTheme
 import net.afanasev.otonfm.contacts.ContactsScreen
 import net.afanasev.otonfm.menu.MenuScreen
-import net.afanasev.otonfm.player.ui.PlayerViewScreen
 import net.afanasev.otonfm.theme.data.ThemeMode
 import net.afanasev.otonfm.theme.data.ThemeStore
 import net.afanasev.otonfm.theme.ui.ThemeChooserScreen
@@ -74,25 +74,29 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         entryProvider = entryProvider {
                             entry<MainRoutes.Player> {
-                                PlayerViewScreen(
-                                    viewModel(),
-                                    onMenuClick = { backStack.add(MainRoutes.Menu) },
-                                    onChatClick = { backStack.add(MainRoutes.Chat) },
+                                MainScreen(
+                                    playerViewModel = viewModel(),
+                                    adminStatusViewModel = viewModel(),
                                     isDarkMode = isDarkMode,
                                     useArtworkAsBackground = theme == ThemeMode.ARTWORK,
-                                    adminStatusViewModel = viewModel(),
+                                    onMenuClick = { backStack.add(MainRoutes.Menu) },
+                                    onChatClick = { backStack.add(MainRoutes.Chat) },
                                 )
                             }
                             entry<MainRoutes.Menu>(
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
                                 val authState by authViewModel.authState.collectAsStateWithLifecycle()
+                                fun replaceMenuWith(route: NavKey) {
+                                    backStack.removeLastOrNull()
+                                    backStack.add(route)
+                                }
+
                                 MenuScreen(
                                     isSignedIn = authState is AuthViewModel.AuthState.Authenticated,
-                                    onItemSelected = { route ->
-                                        backStack.removeLastOrNull()
-                                        backStack.add(route)
-                                    },
+                                    onThemeClick = { replaceMenuWith(MainRoutes.ThemeChooser) },
+                                    onContactsClick = { replaceMenuWith(MainRoutes.Contacts) },
+                                    onProfileClick = { replaceMenuWith(MainRoutes.ProfileSetup) },
                                     onSignOut = {
                                         authViewModel.signOut()
                                         scope.launch { dataStore.saveLastProfileUpdateAt(0L) }
@@ -139,6 +143,7 @@ class MainActivity : ComponentActivity() {
                                 metadata = BottomSheetSceneStrategy.bottomSheet()
                             ) {
                                 val chatViewModel: ChatViewModel = viewModel()
+                                val context = LocalContext.current
 
                                 LaunchedEffect(Unit) {
                                     authViewModel.navigateToProfileSetup.collect {
@@ -146,7 +151,23 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
 
-                                ChatScreen(chatViewModel, authViewModel)
+                                ChatScreen(
+                                    chatViewModel = chatViewModel,
+                                    onSend = {
+                                        when (val state = authViewModel.authState.value) {
+                                            is AuthViewModel.AuthState.Authenticated ->
+                                                chatViewModel.sendMessage(state.uid, state.user)
+
+                                            is AuthViewModel.AuthState.NotAuthenticated ->
+                                                authViewModel.signIn(context)
+
+                                            is AuthViewModel.AuthState.NeedsProfileSetup ->
+                                                authViewModel.requestProfileSetup()
+
+                                            is AuthViewModel.AuthState.Loading -> {}
+                                        }
+                                    },
+                                )
                             }
                         })
                 }

@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import net.afanasev.otonfm.player.PlayerButtonState
+import net.afanasev.otonfm.player.fsm.PlayerButtonState
 
 /**
  * Always clickable: a tap while [PlayerButtonState.LOADING] cancels connecting or reconnecting.

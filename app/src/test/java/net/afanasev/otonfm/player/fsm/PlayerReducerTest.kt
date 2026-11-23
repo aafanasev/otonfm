@@ -2,7 +2,6 @@ package net.afanasev.otonfm.player.fsm
 
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
-import net.afanasev.otonfm.player.PlayerButtonState
 import net.afanasev.otonfm.player.fsm.AnalyticsEvent.PlayButtonClick
 import net.afanasev.otonfm.player.fsm.AnalyticsEvent.PlaybackError
 import net.afanasev.otonfm.player.fsm.AnalyticsEvent.Reconnect
@@ -25,7 +24,6 @@ import net.afanasev.otonfm.player.fsm.PlayerEvent.PlayPauseClicked
 import net.afanasev.otonfm.player.fsm.PlayerEvent.PlayerChanged
 import net.afanasev.otonfm.player.fsm.PlayerEvent.RetryDue
 import net.afanasev.otonfm.player.fsm.PlayerEvent.ServiceDestroyed
-import net.afanasev.otonfm.player.toButtonState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

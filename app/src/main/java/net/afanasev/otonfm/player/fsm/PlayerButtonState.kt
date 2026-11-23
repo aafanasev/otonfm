@@ -1,6 +1,5 @@
-package net.afanasev.otonfm.player
+package net.afanasev.otonfm.player.fsm
 
-import net.afanasev.otonfm.player.fsm.Playback
 
 enum class PlayerButtonState {
     PAUSED,

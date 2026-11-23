@@ -1,4 +1,4 @@
-package net.afanasev.otonfm.auth.ui
+package net.afanasev.otonfm.common.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size

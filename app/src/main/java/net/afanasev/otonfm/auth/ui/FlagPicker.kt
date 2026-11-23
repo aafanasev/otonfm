@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import net.afanasev.otonfm.common.ui.components.FlagIcon
 
 private val FLAGS = listOf(
     "yakutia", // Sakha Republic (Yakutia)

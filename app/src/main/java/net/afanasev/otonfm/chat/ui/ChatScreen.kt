@@ -11,20 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import net.afanasev.otonfm.auth.ui.AuthViewModel
-import net.afanasev.otonfm.auth.ui.AuthViewModel.AuthState
 import net.afanasev.otonfm.chat.ui.components.ChatInputBar
 import net.afanasev.otonfm.chat.ui.components.MessageRow
 import net.afanasev.otonfm.chat.ui.components.PinnedMessageBanner
 
 @Composable
-fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
-    val context = LocalContext.current
+fun ChatScreen(chatViewModel: ChatViewModel, onSend: () -> Unit) {
     val listState = rememberLazyListState()
 
-    val authState by authViewModel.authState.collectAsStateWithLifecycle()
     val messages by chatViewModel.messages.collectAsStateWithLifecycle()
     val inputText by chatViewModel.inputText.collectAsStateWithLifecycle()
     val canSend by chatViewModel.canSend.collectAsStateWithLifecycle()
@@ -60,20 +55,7 @@ fun ChatScreen(chatViewModel: ChatViewModel, authViewModel: AuthViewModel) {
             containsProfanity = containsProfanity,
             canSend = canSend,
             onTextChange = chatViewModel::updateInputText,
-            onSend = {
-                when (val state = authState) {
-                    is AuthState.Authenticated ->
-                        chatViewModel.sendMessage(state.uid, state.user)
-
-                    is AuthState.NotAuthenticated ->
-                        authViewModel.signIn(context)
-
-                    is AuthState.NeedsProfileSetup ->
-                        authViewModel.requestProfileSetup()
-
-                    is AuthState.Loading -> {}
-                }
-            },
+            onSend = onSend,
         )
     }
 }

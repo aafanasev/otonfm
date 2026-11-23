@@ -26,19 +26,19 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
-import net.afanasev.otonfm.data.prefs.DataStoreManager
-import net.afanasev.otonfm.ui.screens.auth.AuthViewModel
-import net.afanasev.otonfm.ui.screens.chat.ChatScreen
-import net.afanasev.otonfm.ui.screens.chat.ChatViewModel
-import net.afanasev.otonfm.ui.screens.contacts.ContactsScreen
-import net.afanasev.otonfm.ui.screens.menu.MenuScreen
-import net.afanasev.otonfm.ui.screens.player.PlayerViewScreen
-import net.afanasev.otonfm.ui.screens.profilesetup.ProfileSetupScreen
-import net.afanasev.otonfm.data.theme.PlayerTheme
-import net.afanasev.otonfm.data.theme.ThemeStore
-import net.afanasev.otonfm.ui.screens.themechooser.ThemeChooserScreen
-import net.afanasev.otonfm.ui.navigation.BottomSheetSceneStrategy
-import net.afanasev.otonfm.ui.theme.OtonFmTheme
+import net.afanasev.otonfm.auth.data.DataStoreManager
+import net.afanasev.otonfm.auth.ui.AuthViewModel
+import net.afanasev.otonfm.auth.ui.ProfileSetupScreen
+import net.afanasev.otonfm.chat.ui.ChatScreen
+import net.afanasev.otonfm.chat.ui.ChatViewModel
+import net.afanasev.otonfm.common.navigation.BottomSheetSceneStrategy
+import net.afanasev.otonfm.common.theme.OtonFmTheme
+import net.afanasev.otonfm.contacts.ContactsScreen
+import net.afanasev.otonfm.menu.MenuScreen
+import net.afanasev.otonfm.player.ui.PlayerViewScreen
+import net.afanasev.otonfm.theme.data.PlayerTheme
+import net.afanasev.otonfm.theme.data.ThemeStore
+import net.afanasev.otonfm.theme.ui.ThemeChooserScreen
 
 class MainActivity : ComponentActivity() {
 

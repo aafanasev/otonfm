@@ -21,6 +21,6 @@
 #-renamesourcefileattribute SourceFile
 
 # Firestore uses reflection for deserialization
--keepclassmembers class net.afanasev.otonfm.data.adminstatus.AdminStatusModel { *; }
--keepclassmembers class net.afanasev.otonfm.data.auth.UserModel { *; }
--keepclassmembers class net.afanasev.otonfm.data.chat.MessageModel { *; }
+-keepclassmembers class net.afanasev.otonfm.adminstatus.data.AdminStatusModel { *; }
+-keepclassmembers class net.afanasev.otonfm.auth.data.UserModel { *; }
+-keepclassmembers class net.afanasev.otonfm.chat.data.MessageModel { *; }

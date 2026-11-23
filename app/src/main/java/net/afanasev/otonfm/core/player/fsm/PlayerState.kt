@@ -41,7 +41,7 @@ val Playback.isActive: Boolean
 
 data class NowPlaying(
     val title: String = "",
-    /** Null means "use [net.afanasev.otonfm.core.RadioPlayerConfig.defaultArtworkUri]". */
+    /** Null means "use the default artwork". */
     val artworkUri: String? = null,
     val nextTrackTitle: String = "",
 )

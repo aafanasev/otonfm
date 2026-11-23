@@ -27,8 +27,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import net.afanasev.otonfm.core.RadioPlayerConfig
-import net.afanasev.otonfm.core.RadioPlayerHost
+import net.afanasev.otonfm.MainActivity
+import net.afanasev.otonfm.R
 import net.afanasev.otonfm.core.player.fsm.Playback
 import net.afanasev.otonfm.core.player.fsm.RadioPlayer
 
@@ -36,9 +36,6 @@ private const val ROOT_ID = "root"
 private const val STATION_ID = "station"
 
 /**
- * Configure via [RadioPlayerHost] on your [android.app.Application] and register this service
- * in your manifest (`android:foregroundServiceType="mediaPlayback"`, media3 session action).
- *
  * Owns the ExoPlayer and attaches it to the app-scoped [RadioPlayer], which runs its commands
  * (play, stop, retries) directly on it, so they work with no UI alive. Media3 runs the service
  * in the foreground while playing and, by default, stops it when the app is swiped away while
@@ -49,8 +46,6 @@ class PlaybackService : MediaLibraryService() {
     private var mediaLibrarySession: MediaLibrarySession? = null
 
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private val host by lazy { application as RadioPlayerHost }
-    private val config: RadioPlayerConfig by lazy { host.radioPlayerConfig }
     private val radioPlayer by lazy { RadioPlayer.get(this) }
 
     private val noisyReceiver = object : BroadcastReceiver() {
@@ -100,14 +95,15 @@ class PlaybackService : MediaLibraryService() {
                     LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
                 )
             }
+            val stationName = getString(R.string.app_name)
             val stationItem = MediaItem.Builder()
                 .setMediaId(STATION_ID)
-                .setUri(config.streamUrl)
+                .setUri(getString(R.string.stream_url))
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle(config.stationName)
-                        .setStation(config.stationName)
-                        .setArtworkUri(config.defaultArtworkUri.toUri())
+                        .setTitle(stationName)
+                        .setStation(stationName)
+                        .setArtworkUri(getString(R.string.default_artwork_uri).toUri())
                         .setIsBrowsable(false)
                         .setIsPlayable(true)
                         .build()
@@ -162,7 +158,7 @@ class PlaybackService : MediaLibraryService() {
         val sessionActivity = PendingIntent.getActivity(
             this,
             0,
-            Intent(this, config.sessionActivityClass),
+            Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
@@ -173,7 +169,7 @@ class PlaybackService : MediaLibraryService() {
 
     /** Replacing the item only when the artwork differs also stops this from looping on itself. */
     private fun showArtwork(player: Player, artworkUri: String?) {
-        val uri = (artworkUri ?: config.defaultArtworkUri).toUri()
+        val uri = (artworkUri ?: getString(R.string.default_artwork_uri)).toUri()
         val currentItem = player.currentMediaItem ?: return
         if (currentItem.mediaMetadata.artworkUri == uri) return
         val updatedMetadata = currentItem.mediaMetadata.buildUpon()

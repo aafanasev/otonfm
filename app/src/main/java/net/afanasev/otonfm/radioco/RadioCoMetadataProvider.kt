@@ -7,37 +7,38 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.json.Json
-import net.afanasev.otonfm.core.analytics.NoOpPlayerAnalytics
-import net.afanasev.otonfm.core.analytics.PlayerAnalytics
-import net.afanasev.otonfm.core.metadata.NowPlayingMetadataProvider
 
 private const val TIMEOUT_MS = 6_000L
 private const val RETRY_MAX_COUNT = 3
 private const val RETRY_DELAY_MS = 2_000L
 
 /**
- * [NowPlayingMetadataProvider] backed by the [radio.co](https://radio.co) public status API.
- * [stationId] is the id from your station's radio.co dashboard URL/embed code (e.g. `s696f24a77`).
+ * Fetches artwork and the next track from the [radio.co](https://radio.co) public status API.
+ * Failures are reported through the callbacks and returned as null.
  */
 class RadioCoMetadataProvider(
-    private val stationId: String,
-    private val analytics: PlayerAnalytics = NoOpPlayerAnalytics,
+    stationId: String,
+    private val onFetchError: (source: String, throwable: Throwable) -> Unit,
+    private val onArtworkMismatch: (attempt: Int, maxAttempts: Int, retryDelayMs: Long) -> Unit,
     private val httpClient: HttpClient = defaultHttpClient(),
-) : NowPlayingMetadataProvider {
+) {
 
     private val statusUrl = "https://public.radio.co/stations/$stationId/status?v="
     private val nextTrackUrl = "https://public.radio.co/stations/$stationId/next?v="
 
-    override suspend fun fetchArtworkUri(expectedTitle: String): String? {
+    /** Returns the artwork for [expectedTitle], or null if unavailable or mismatched. */
+    suspend fun fetchArtworkUri(expectedTitle: String): String? {
         repeat(RETRY_MAX_COUNT) { attemptIdx ->
             loadStatus()?.let {
                 if (it.currentTrack.title == expectedTitle) {
                     return it.currentTrack.artworkUri
                 }
             }
-            analytics.onArtworkMismatch(attemptIdx + 1, RETRY_MAX_COUNT, RETRY_DELAY_MS)
+            onArtworkMismatch(attemptIdx + 1, RETRY_MAX_COUNT, RETRY_DELAY_MS)
             delay(RETRY_DELAY_MS)
         }
 
@@ -48,17 +49,20 @@ class RadioCoMetadataProvider(
         return try {
             httpClient.get(statusUrl + System.currentTimeMillis()).body()
         } catch (e: Exception) {
-            analytics.onMetadataFetchError("status", e)
+            currentCoroutineContext().ensureActive()
+            onFetchError("status", e)
             null
         }
     }
 
-    override suspend fun fetchNextTrack(): String? {
+    /** Returns the title of the next scheduled track, or null if unknown. */
+    suspend fun fetchNextTrack(): String? {
         return try {
             val response: NextTrackModel = httpClient.get(nextTrackUrl + System.currentTimeMillis()).body()
             response.nextTrack.title
         } catch (e: Exception) {
-            analytics.onMetadataFetchError("next_track", e)
+            currentCoroutineContext().ensureActive()
+            onFetchError("next_track", e)
             null
         }
     }

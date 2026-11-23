@@ -24,7 +24,6 @@ import coil3.request.crossfade
 fun Artwork(
     artworkUri: String,
     modifier: Modifier = Modifier,
-    placeholderBackgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) {
     val previewShape = RoundedCornerShape(12.dp)
     Box(
@@ -41,7 +40,7 @@ fun Artwork(
                     ),
             )
             .clip(previewShape)
-            .background(placeholderBackgroundColor),
+            .background(MaterialTheme.colorScheme.surfaceVariant),
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)

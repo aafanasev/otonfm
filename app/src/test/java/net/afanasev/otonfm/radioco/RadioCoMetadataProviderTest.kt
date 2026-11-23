@@ -9,32 +9,32 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
-import net.afanasev.otonfm.core.analytics.PlayerAnalytics
-import net.afanasev.otonfm.core.player.PlayerButtonState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
 private const val STATION_ID = "sTest123"
 
-private class FakePlayerAnalytics : PlayerAnalytics {
+private class Reports {
     val metadataErrors = mutableListOf<Pair<String, Throwable>>()
     val artworkMismatches = mutableListOf<Int>()
-
-    override fun onPlayButtonClick(state: PlayerButtonState) = Unit
-    override fun onMetadataFetchError(source: String, throwable: Throwable) {
-        metadataErrors += source to throwable
-    }
-
-    override fun onArtworkMismatch(attempt: Int, maxAttempts: Int, retryDelayMs: Long) {
-        artworkMismatches += attempt
-    }
 }
 
 private fun clientOf(engine: MockEngine): HttpClient = HttpClient(engine) {
     install(ContentNegotiation) { json() }
 }
+
+private fun providerOf(engine: MockEngine, reports: Reports = Reports()) = RadioCoMetadataProvider(
+    stationId = STATION_ID,
+    onFetchError = { source, throwable -> reports.metadataErrors += source to throwable },
+    onArtworkMismatch = { attempt, _, _ -> reports.artworkMismatches += attempt },
+    httpClient = clientOf(engine),
+)
 
 private fun jsonHeaders() = headersOf(HttpHeaders.ContentType, "application/json")
 
@@ -50,13 +50,13 @@ class RadioCoMetadataProviderTest {
                 headers = jsonHeaders(),
             )
         }
-        val analytics = FakePlayerAnalytics()
-        val provider = RadioCoMetadataProvider(STATION_ID, analytics, clientOf(engine))
+        val reports = Reports()
+        val provider = providerOf(engine, reports)
 
         val artwork = provider.fetchArtworkUri("Now Playing")
 
         assertEquals("https://example.com/art.jpg", artwork)
-        assertEquals(emptyList<Int>(), analytics.artworkMismatches)
+        assertEquals(emptyList<Int>(), reports.artworkMismatches)
     }
 
     @Test
@@ -68,25 +68,25 @@ class RadioCoMetadataProviderTest {
                 headers = jsonHeaders(),
             )
         }
-        val analytics = FakePlayerAnalytics()
-        val provider = RadioCoMetadataProvider(STATION_ID, analytics, clientOf(engine))
+        val reports = Reports()
+        val provider = providerOf(engine, reports)
 
         val artwork = provider.fetchArtworkUri("Expected Track")
 
         assertNull(artwork)
-        assertEquals(listOf(1, 2, 3), analytics.artworkMismatches)
+        assertEquals(listOf(1, 2, 3), reports.artworkMismatches)
     }
 
     @Test
     fun `fetchArtworkUri reports and swallows HTTP errors`() = runTest {
         val engine = MockEngine { respondError(HttpStatusCode.InternalServerError) }
-        val analytics = FakePlayerAnalytics()
-        val provider = RadioCoMetadataProvider(STATION_ID, analytics, clientOf(engine))
+        val reports = Reports()
+        val provider = providerOf(engine, reports)
 
         val artwork = provider.fetchArtworkUri("Any Title")
 
         assertNull(artwork)
-        assertEquals(3, analytics.metadataErrors.count { it.first == "status" })
+        assertEquals(3, reports.metadataErrors.count { it.first == "status" })
     }
 
     @Test
@@ -98,7 +98,7 @@ class RadioCoMetadataProviderTest {
                 headers = jsonHeaders(),
             )
         }
-        val provider = RadioCoMetadataProvider(STATION_ID, FakePlayerAnalytics(), clientOf(engine))
+        val provider = providerOf(engine)
 
         assertEquals("Upcoming Song", provider.fetchNextTrack())
     }
@@ -106,12 +106,47 @@ class RadioCoMetadataProviderTest {
     @Test
     fun `fetchNextTrack reports and swallows errors`() = runTest {
         val engine = MockEngine { respondError(HttpStatusCode.InternalServerError) }
-        val analytics = FakePlayerAnalytics()
-        val provider = RadioCoMetadataProvider(STATION_ID, analytics, clientOf(engine))
+        val reports = Reports()
+        val provider = providerOf(engine, reports)
 
         val nextTrack = provider.fetchNextTrack()
 
         assertNull(nextTrack)
-        assertEquals(1, analytics.metadataErrors.count { it.first == "next_track" })
+        assertEquals(1, reports.metadataErrors.count { it.first == "next_track" })
+    }
+
+    @Test
+    fun `cancelled fetchArtworkUri reports nothing`() = runTest {
+        val started = CompletableDeferred<Unit>()
+        val engine = MockEngine {
+            started.complete(Unit)
+            awaitCancellation()
+        }
+        val reports = Reports()
+        val provider = providerOf(engine, reports)
+
+        val job = launch { provider.fetchArtworkUri("Any Title") }
+        started.await()
+        job.cancelAndJoin()
+
+        assertEquals(emptyList<Pair<String, Throwable>>(), reports.metadataErrors)
+        assertEquals(emptyList<Int>(), reports.artworkMismatches)
+    }
+
+    @Test
+    fun `cancelled fetchNextTrack reports nothing`() = runTest {
+        val started = CompletableDeferred<Unit>()
+        val engine = MockEngine {
+            started.complete(Unit)
+            awaitCancellation()
+        }
+        val reports = Reports()
+        val provider = providerOf(engine, reports)
+
+        val job = launch { provider.fetchNextTrack() }
+        started.await()
+        job.cancelAndJoin()
+
+        assertEquals(emptyList<Pair<String, Throwable>>(), reports.metadataErrors)
     }
 }

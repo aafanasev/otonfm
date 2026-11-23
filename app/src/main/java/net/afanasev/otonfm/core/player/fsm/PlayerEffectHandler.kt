@@ -2,14 +2,13 @@ package net.afanasev.otonfm.core.player.fsm
 
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.afanasev.otonfm.core.analytics.PlayerAnalytics
-import net.afanasev.otonfm.core.metadata.NowPlayingMetadataProvider
 import net.afanasev.otonfm.core.player.toButtonState
+import net.afanasev.otonfm.radioco.RadioCoMetadataProvider
+import net.afanasev.otonfm.util.log.OtonFmPlayerAnalytics
 
 /** Runs [PlayerEffect]s. Split out from [RadioPlayer] so tests can fake it. */
 internal interface PlayerEffects {
@@ -20,8 +19,7 @@ internal interface PlayerEffects {
 }
 
 internal class PlayerEffectHandler(
-    private val metadata: NowPlayingMetadataProvider,
-    private val analytics: PlayerAnalytics,
+    private val metadata: RadioCoMetadataProvider,
     private val scope: CoroutineScope,
     private val send: (PlayerEvent) -> Unit,
 ) : PlayerEffects {
@@ -56,30 +54,14 @@ internal class PlayerEffectHandler(
             is PlayerEffect.FetchNextTrack -> {
                 nextTrackJob?.cancel()
                 nextTrackJob = scope.launch {
-                    val next = try {
-                        metadata.fetchNextTrack()
-                    } catch (e: CancellationException) {
-                        throw e
-                    } catch (e: Exception) {
-                        analytics.onMetadataFetchError("next_track", e)
-                        null
-                    }
-                    send(PlayerEvent.NextTrackLoaded(effect.forTitle, next))
+                    send(PlayerEvent.NextTrackLoaded(effect.forTitle, metadata.fetchNextTrack()))
                 }
             }
 
             is PlayerEffect.FetchArtwork -> {
                 artworkJob?.cancel()
                 artworkJob = scope.launch {
-                    val uri = try {
-                        metadata.fetchArtworkUri(effect.forTitle)
-                    } catch (e: CancellationException) {
-                        throw e
-                    } catch (e: Exception) {
-                        analytics.onMetadataFetchError("artwork", e)
-                        null
-                    }
-                    send(PlayerEvent.ArtworkLoaded(effect.forTitle, uri))
+                    send(PlayerEvent.ArtworkLoaded(effect.forTitle, metadata.fetchArtworkUri(effect.forTitle)))
                 }
             }
 
@@ -110,9 +92,9 @@ internal class PlayerEffectHandler(
             }
 
             is PlayerEffect.TrackAnalytics -> when (val event = effect.event) {
-                is AnalyticsEvent.PlayButtonClick -> analytics.onPlayButtonClick(event.playback.toButtonState())
-                is AnalyticsEvent.PlaybackError -> analytics.onPlaybackError(event.reason, event.cause)
-                is AnalyticsEvent.Reconnect -> analytics.onReconnect(event.attempt, event.delayMs)
+                is AnalyticsEvent.PlayButtonClick -> OtonFmPlayerAnalytics.onPlayButtonClick(event.playback.toButtonState())
+                is AnalyticsEvent.PlaybackError -> OtonFmPlayerAnalytics.onPlaybackError(event.reason, event.cause)
+                is AnalyticsEvent.Reconnect -> OtonFmPlayerAnalytics.onReconnect(event.attempt, event.delayMs)
             }
         }
     }

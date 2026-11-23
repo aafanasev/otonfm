@@ -25,32 +25,27 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import kotlinx.coroutines.delay
+import net.afanasev.otonfm.ui.theme.BACKGROUND_GRADIENTS
 import kotlin.random.Random
 
-private val DefaultGradients: List<Pair<Color, Color>> = listOf(
-    Color(0xFF1F263F) to Color(0xFF394267),
-    Color(0xFF264B99) to Color(0xFF592380),
-)
+private val Gradients: List<Pair<Color, Color>> = BACKGROUND_GRADIENTS.map { it[0] to it[1] }
 
 /**
- * Shows [placeholder] while [artworkUri] is [defaultArtworkUri] (nothing playing yet), then
- * crossfades to a blurred artwork background once real artwork is available. [placeholder]
- * receives [modifier] so it fills the same area as the artwork; it defaults to
- * [GradientPlaceholder] with neutral colors.
+ * Shows an animated gradient while [artworkUri] is [defaultArtworkUri] (nothing playing yet),
+ * then crossfades to a blurred artwork background once real artwork is available.
  */
 @Composable
 fun Background(
     artworkUri: String,
     defaultArtworkUri: String,
     modifier: Modifier = Modifier,
-    placeholder: @Composable (Modifier) -> Unit = { GradientPlaceholder(modifier = it) },
 ) {
     Crossfade(
         targetState = artworkUri == defaultArtworkUri,
         animationSpec = tween(1_000),
     ) { showPlaceholder ->
         if (showPlaceholder) {
-            placeholder(modifier)
+            GradientPlaceholder(modifier)
         } else {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -70,19 +65,15 @@ fun Background(
 }
 
 /**
- * Vertical gradient that starts from a random entry of [gradients] and moves to the next one
- * every 10 seconds. [gradients] defaults to two neutral gradients; pass your own for on-brand
- * placeholder colors.
+ * Vertical gradient that starts from a random entry of [Gradients] and moves to the next one
+ * every 10 seconds.
  */
 @Composable
-fun GradientPlaceholder(
-    modifier: Modifier = Modifier,
-    gradients: List<Pair<Color, Color>> = DefaultGradients,
-) {
-    val size = gradients.size
+private fun GradientPlaceholder(modifier: Modifier) {
+    val size = Gradients.size
     var current by remember { mutableIntStateOf(Random.nextInt(size)) }
-    val topColor = remember { Animatable(gradients[current].first) }
-    val bottomColor = remember { Animatable(gradients[current].second) }
+    val topColor = remember { Animatable(Gradients[current].first) }
+    val bottomColor = remember { Animatable(Gradients[current].second) }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -92,7 +83,7 @@ fun GradientPlaceholder(
     }
 
     LaunchedEffect(current) {
-        val next = gradients[current]
+        val next = Gradients[current]
         topColor.animateTo(next.first, animationSpec = tween(durationMillis = 3_000))
         bottomColor.animateTo(next.second, animationSpec = tween(durationMillis = 3_000))
     }

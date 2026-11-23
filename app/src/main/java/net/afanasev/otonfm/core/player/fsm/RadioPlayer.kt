@@ -1,6 +1,5 @@
 package net.afanasev.otonfm.core.player.fsm
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.media3.common.Player
@@ -12,7 +11,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import net.afanasev.otonfm.core.RadioPlayerHost
+import net.afanasev.otonfm.R
+import net.afanasev.otonfm.radioco.RadioCoMetadataProvider
+import net.afanasev.otonfm.util.log.OtonFmPlayerAnalytics
+
+private const val RADIO_CO_STATION_ID = "s696f24a77"
 
 /**
  * App-scoped player state machine. It outlives any screen, so playback changes made from the
@@ -113,23 +116,24 @@ class RadioPlayer internal constructor(
         @Volatile
         private var instance: RadioPlayer? = null
 
-        /** Returns the app-wide instance, creating it from the [RadioPlayerHost] application. */
+        /** Returns the app-wide instance. */
         fun get(context: Context): RadioPlayer =
             instance ?: synchronized(this) {
-                instance ?: create(context.applicationContext as Application).also { instance = it }
+                instance ?: create(context.applicationContext).also { instance = it }
             }
 
-        private fun create(app: Application): RadioPlayer {
-            val host = app as? RadioPlayerHost
-                ?: error("${app.javaClass.name} must implement ${RadioPlayerHost::class.java.name}")
+        private fun create(context: Context): RadioPlayer {
             val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
             return RadioPlayer(
-                policy = PlayerPolicy(streamUrl = host.radioPlayerConfig.streamUrl),
+                policy = PlayerPolicy(streamUrl = context.getString(R.string.stream_url)),
                 scope = scope,
             ) { send ->
                 PlayerEffectHandler(
-                    metadata = host.nowPlayingMetadataProvider,
-                    analytics = host.playerAnalytics,
+                    metadata = RadioCoMetadataProvider(
+                        stationId = RADIO_CO_STATION_ID,
+                        onFetchError = OtonFmPlayerAnalytics::onMetadataFetchError,
+                        onArtworkMismatch = OtonFmPlayerAnalytics::onArtworkMismatch,
+                    ),
                     scope = scope,
                     send = send,
                 )

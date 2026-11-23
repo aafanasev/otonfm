@@ -21,20 +21,18 @@ import net.afanasev.otonfm.core.player.PlayerButtonState
 
 /**
  * Always clickable: a tap while [PlayerButtonState.LOADING] cancels connecting or reconnecting.
- * The loading state keeps the dimmed [disabledContainerColor] look.
  */
 @Composable
 fun PlayButton(
     buttonState: PlayerButtonState,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.primary,
-    disabledContainerColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
 ) {
+    val primary = MaterialTheme.colorScheme.primary
     IconButton(
         onClick = onClick,
         colors = IconButtonDefaults.iconButtonColors(
-            containerColor = if (buttonState == PlayerButtonState.LOADING) disabledContainerColor else containerColor,
+            containerColor = if (buttonState == PlayerButtonState.LOADING) primary.copy(alpha = 0.5f) else primary,
         ),
         modifier = modifier
             .size(96.dp)

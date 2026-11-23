@@ -23,11 +23,9 @@ import net.afanasev.otonfm.ui.screens.player.components.AdminStatusBar
 import net.afanasev.otonfm.ui.screens.player.components.ChatButton
 import net.afanasev.otonfm.ui.screens.player.components.Logo
 import net.afanasev.otonfm.ui.screens.player.components.MenuButton
-import net.afanasev.otonfm.ui.theme.BACKGROUND_GRADIENTS
 import net.afanasev.otonfm.util.log.Logger
 import net.afanasev.otonfm.core.player.PlayerViewModel
 import net.afanasev.otonfm.core.player.ui.Background
-import net.afanasev.otonfm.core.player.ui.GradientPlaceholder
 import net.afanasev.otonfm.core.player.ui.LandscapeContent
 import net.afanasev.otonfm.core.player.ui.PortraitContent
 
@@ -54,12 +52,6 @@ fun PlayerViewScreen(
                 artworkUri = artwork,
                 defaultArtworkUri = stringResource(R.string.default_artwork_uri),
                 modifier = Modifier.fillMaxSize(),
-                placeholder = {
-                    GradientPlaceholder(
-                        modifier = it,
-                        gradients = BACKGROUND_GRADIENTS.map { colors -> colors[0] to colors[1] },
-                    )
-                },
             )
         }
 

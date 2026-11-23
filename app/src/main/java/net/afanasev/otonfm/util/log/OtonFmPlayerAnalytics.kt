@@ -2,21 +2,20 @@ package net.afanasev.otonfm.util.log
 
 import android.os.Bundle
 import android.util.Log
+import androidx.media3.common.PlaybackException
 import com.google.firebase.analytics.analytics
 import com.google.firebase.Firebase
-import net.afanasev.otonfm.core.analytics.PlayerAnalytics
 import net.afanasev.otonfm.core.player.PlayerButtonState
+import net.afanasev.otonfm.core.player.fsm.ErrorReason
 import net.afanasev.otonfm.data.theme.PlayerTheme
 
 private const val TAG = "OtonFmPlayerAnalytics"
 
-object OtonFmPlayerAnalytics : PlayerAnalytics {
+object OtonFmPlayerAnalytics {
 
-    // Lazy because the Application references this object from its constructor,
-    // before FirebaseInitProvider has initialized the default FirebaseApp.
-    private val analytics by lazy { Firebase.analytics }
+    private val analytics = Firebase.analytics
 
-    override fun onPlayButtonClick(state: PlayerButtonState) {
+    fun onPlayButtonClick(state: PlayerButtonState) {
         analytics.logEvent("play_btn_click", Bundle().apply {
             putString("state", state.name)
         })
@@ -28,7 +27,7 @@ object OtonFmPlayerAnalytics : PlayerAnalytics {
         })
     }
 
-    override fun onMetadataFetchError(source: String, throwable: Throwable) {
+    fun onMetadataFetchError(source: String, throwable: Throwable) {
         Log.e(TAG, "Cannot load $source", throwable)
 
         analytics.logEvent("metadata_fetch_error", Bundle().apply {
@@ -38,13 +37,33 @@ object OtonFmPlayerAnalytics : PlayerAnalytics {
         })
     }
 
-    override fun onArtworkMismatch(attempt: Int, maxAttempts: Int, retryDelayMs: Long) {
+    fun onArtworkMismatch(attempt: Int, maxAttempts: Int, retryDelayMs: Long) {
         Log.w(TAG, "Current track and status mismatch ($attempt of $maxAttempts). Wait $retryDelayMs ms.")
 
         analytics.logEvent("artwork_mismatch", Bundle().apply {
             putInt("attempt", attempt)
             putInt("max_count", maxAttempts)
             putLong("delay", retryDelayMs)
+        })
+    }
+
+    /** [cause] is null when the stream timed out. */
+    fun onPlaybackError(reason: ErrorReason, cause: Throwable?) {
+        Log.e(TAG, "Playback error: $reason", cause)
+
+        analytics.logEvent("playback_error", Bundle().apply {
+            putString("reason", reason.name)
+            val type = (cause as? PlaybackException)?.errorCodeName ?: cause?.javaClass?.simpleName
+            type?.let { putString("type", it) }
+        })
+    }
+
+    fun onReconnect(attempt: Int, delayMs: Long) {
+        Log.w(TAG, "Stream failed, reconnect attempt $attempt in $delayMs ms.")
+
+        analytics.logEvent("playback_reconnect", Bundle().apply {
+            putInt("attempt", attempt)
+            putLong("delay", delayMs)
         })
     }
 }

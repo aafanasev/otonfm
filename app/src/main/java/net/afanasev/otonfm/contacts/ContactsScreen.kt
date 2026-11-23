@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.common.log.Logger
-import net.afanasev.otonfm.common.ui.TextRowItem
+import net.afanasev.otonfm.common.ui.components.TextRowItem
 
 @Composable
 fun ContactsScreen() {

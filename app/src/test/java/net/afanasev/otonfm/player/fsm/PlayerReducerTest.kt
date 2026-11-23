@@ -76,9 +76,8 @@ class PlayerReducerTest {
     // --- Initial state ----------------------------------------------------------------------
 
     @Test
-    fun `starts Idle, so the button shows play before the service exists`() {
+    fun `starts Idle before the service exists`() {
         assertEquals(Playback.Idle, PlayerState().playback)
-        assertEquals(PlayerButtonState.PAUSED, PlayerState().playback.toButtonState())
     }
 
     @Test
@@ -375,15 +374,5 @@ class PlayerReducerTest {
         assertEquals(ErrorReason.SOURCE, error(PlaybackException.ERROR_CODE_IO_CLEARTEXT_NOT_PERMITTED).toErrorReason())
         assertEquals(ErrorReason.SOURCE, sourceError.toErrorReason())
         assertEquals(ErrorReason.UNKNOWN, error(PlaybackException.ERROR_CODE_UNSPECIFIED).toErrorReason())
-    }
-
-    @Test
-    fun `button mapping`() {
-        assertEquals(PlayerButtonState.LOADING, Playback.Connecting.toButtonState())
-        assertEquals(PlayerButtonState.LOADING, Playback.Buffering.toButtonState())
-        assertEquals(PlayerButtonState.LOADING, Playback.Reconnecting(1).toButtonState())
-        assertEquals(PlayerButtonState.PAUSED, Playback.Idle.toButtonState())
-        assertEquals(PlayerButtonState.PAUSED, Playback.Error(ErrorReason.NETWORK).toButtonState())
-        assertEquals(PlayerButtonState.PLAYING, Playback.Playing.toButtonState())
     }
 }

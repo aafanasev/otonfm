@@ -91,7 +91,7 @@ internal class PlayerEffectHandler(
             }
 
             is PlayerEffect.TrackAnalytics -> when (val event = effect.event) {
-                is AnalyticsEvent.PlayButtonClick -> Logger.onPlayButtonClick(event.playback.toButtonState().name)
+                is AnalyticsEvent.PlayButtonClick -> Logger.onPlayButtonClick(event.playback.toString())
                 is AnalyticsEvent.PlaybackError -> Logger.onPlaybackError(event.reason.name, event.cause)
                 is AnalyticsEvent.Reconnect -> Logger.onReconnect(event.attempt, event.delayMs)
             }

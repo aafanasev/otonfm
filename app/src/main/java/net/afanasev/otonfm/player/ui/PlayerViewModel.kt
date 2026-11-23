@@ -15,12 +15,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import net.afanasev.otonfm.R
-import net.afanasev.otonfm.player.fsm.PlayerButtonState
 import net.afanasev.otonfm.player.fsm.PlayerEvent
 import net.afanasev.otonfm.player.fsm.PlayerState
 import net.afanasev.otonfm.player.fsm.RadioPlayer
-import net.afanasev.otonfm.player.fsm.toButtonState
 import net.afanasev.otonfm.player.service.PlaybackService
+import net.afanasev.otonfm.player.ui.components.PlayerButtonState
+import net.afanasev.otonfm.player.ui.components.toButtonState
 
 /**
  * Adapts the app-scoped [RadioPlayer] state machine to UI flows. All playback logic lives in

@@ -17,7 +17,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import net.afanasev.otonfm.player.fsm.PlayerButtonState
+import net.afanasev.otonfm.player.fsm.Playback
+
+enum class PlayerButtonState {
+    PAUSED,
+    LOADING,
+    PLAYING,
+}
+
+/**
+ * Call this before the state reaches Compose, as PlayerViewModel does: a `StateFlow` of the result
+ * drops equal values, so moving between playback states that look the same doesn't recompose.
+ */
+fun Playback.toButtonState(): PlayerButtonState = when (this) {
+    Playback.Connecting,
+    Playback.Buffering,
+    is Playback.Reconnecting -> PlayerButtonState.LOADING
+
+    Playback.Idle,
+    is Playback.Error -> PlayerButtonState.PAUSED
+
+    Playback.Playing -> PlayerButtonState.PLAYING
+}
 
 /**
  * Always clickable: a tap while [PlayerButtonState.LOADING] cancels connecting or reconnecting.

@@ -76,9 +76,8 @@ class PlayerReducerTest {
     // --- Initial state ----------------------------------------------------------------------
 
     @Test
-    fun `starts Idle, so the button shows play before the service exists`() {
+    fun `starts Idle before the service exists`() {
         assertEquals(Playback.Idle, PlayerState().playback)
-        assertEquals(PlayerButtonState.PAUSED, PlayerState().playback.toButtonState())
     }
 
     @Test
@@ -378,12 +377,12 @@ class PlayerReducerTest {
     }
 
     @Test
-    fun `button mapping`() {
-        assertEquals(PlayerButtonState.LOADING, Playback.Connecting.toButtonState())
-        assertEquals(PlayerButtonState.LOADING, Playback.Buffering.toButtonState())
-        assertEquals(PlayerButtonState.LOADING, Playback.Reconnecting(1).toButtonState())
-        assertEquals(PlayerButtonState.PAUSED, Playback.Idle.toButtonState())
-        assertEquals(PlayerButtonState.PAUSED, Playback.Error(ErrorReason.NETWORK).toButtonState())
-        assertEquals(PlayerButtonState.PLAYING, Playback.Playing.toButtonState())
+    fun `play button click analytics keep their reported values`() {
+        assertEquals("LOADING", Playback.Connecting.clickAnalyticsName)
+        assertEquals("LOADING", Playback.Buffering.clickAnalyticsName)
+        assertEquals("LOADING", Playback.Reconnecting(1).clickAnalyticsName)
+        assertEquals("PAUSED", Playback.Idle.clickAnalyticsName)
+        assertEquals("PAUSED", Playback.Error(ErrorReason.NETWORK).clickAnalyticsName)
+        assertEquals("PLAYING", Playback.Playing.clickAnalyticsName)
     }
 }

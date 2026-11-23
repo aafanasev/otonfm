@@ -17,6 +17,19 @@ internal interface PlayerEffects {
     fun setPlayer(player: Player?)
 }
 
+/** Reported on play button clicks. Changing these values splits the analytics history. */
+internal val Playback.clickAnalyticsName: String
+    get() = when (this) {
+        Playback.Connecting,
+        Playback.Buffering,
+        is Playback.Reconnecting -> "LOADING"
+
+        Playback.Idle,
+        is Playback.Error -> "PAUSED"
+
+        Playback.Playing -> "PLAYING"
+    }
+
 internal class PlayerEffectHandler(
     private val metadata: RadioCoMetadataProvider,
     private val scope: CoroutineScope,
@@ -91,7 +104,7 @@ internal class PlayerEffectHandler(
             }
 
             is PlayerEffect.TrackAnalytics -> when (val event = effect.event) {
-                is AnalyticsEvent.PlayButtonClick -> Logger.onPlayButtonClick(event.playback.toButtonState().name)
+                is AnalyticsEvent.PlayButtonClick -> Logger.onPlayButtonClick(event.playback.clickAnalyticsName)
                 is AnalyticsEvent.PlaybackError -> Logger.onPlaybackError(event.reason.name, event.cause)
                 is AnalyticsEvent.Reconnect -> Logger.onReconnect(event.attempt, event.delayMs)
             }

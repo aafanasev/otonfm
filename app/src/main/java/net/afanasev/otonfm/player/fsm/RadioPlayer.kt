@@ -134,6 +134,7 @@ class RadioPlayer internal constructor(
                         onFetchError = Logger::onMetadataFetchError,
                         onArtworkMismatch = Logger::onArtworkMismatch,
                     ),
+                    stationName = context.getString(R.string.app_name),
                     scope = scope,
                     send = send,
                 )

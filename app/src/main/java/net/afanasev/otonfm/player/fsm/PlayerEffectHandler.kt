@@ -1,6 +1,7 @@
 package net.afanasev.otonfm.player.fsm
 
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -19,6 +20,7 @@ internal interface PlayerEffects {
 
 internal class PlayerEffectHandler(
     private val metadata: RadioCoMetadataProvider,
+    private val stationName: String,
     private val scope: CoroutineScope,
     private val send: (PlayerEvent) -> Unit,
 ) : PlayerEffects {
@@ -38,7 +40,13 @@ internal class PlayerEffectHandler(
             // Order matters, see PlayerEffect.StartPlayback.
             is PlayerEffect.StartPlayback -> command {
                 it.stop()
-                it.setMediaItem(MediaItem.fromUri(effect.streamUrl))
+                it.setMediaItem(
+                    MediaItem.Builder()
+                        .setUri(effect.streamUrl)
+                        // No title: item metadata overrides the stream's, which has the track name.
+                        .setMediaMetadata(MediaMetadata.Builder().setArtist(stationName).build())
+                        .build()
+                )
                 it.play()
                 it.prepare()
             }

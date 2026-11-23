@@ -101,6 +101,7 @@ class PlaybackService : MediaLibraryService() {
                 .setMediaMetadata(
                     MediaMetadata.Builder()
                         .setTitle(stationName)
+                        .setArtist(stationName)
                         .setStation(stationName)
                         .setArtworkUri(getString(R.string.default_artwork_uri).toUri())
                         .setIsBrowsable(false)

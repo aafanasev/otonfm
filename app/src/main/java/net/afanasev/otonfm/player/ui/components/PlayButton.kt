@@ -9,7 +9,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -49,12 +48,9 @@ fun PlayButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val primary = MaterialTheme.colorScheme.primary
     IconButton(
         onClick = onClick,
-        colors = IconButtonDefaults.iconButtonColors(
-            containerColor = if (buttonState == PlayerButtonState.LOADING) primary.copy(alpha = 0.5f) else primary,
-        ),
+        colors = IconButtonDefaults.iconButtonColors(containerColor = Color(0xFFCD0200)),
         modifier = modifier
             .size(96.dp)
             .shadow(

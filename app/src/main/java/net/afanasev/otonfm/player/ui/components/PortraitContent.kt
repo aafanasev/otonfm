@@ -17,6 +17,7 @@ fun PortraitContent(
     nextTrackTitle: String,
     buttonState: PlayerButtonState,
     artworkUri: String,
+    isDefaultArtwork: Boolean,
     onPlayClick: () -> Unit,
     modifier: Modifier = Modifier,
     logo: @Composable () -> Unit = {},
@@ -31,6 +32,7 @@ fun PortraitContent(
         Spacer(modifier = Modifier.height(24.dp))
         Artwork(
             artworkUri = artworkUri,
+            isDefaultArtwork = isDefaultArtwork,
             modifier = Modifier.fillMaxWidth(0.9f),
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -60,6 +62,7 @@ private fun PortraitContentPreview() {
         nextTrackTitle = "Next: Portishead — Glory Box",
         buttonState = PlayerButtonState.PLAYING,
         artworkUri = "",
+        isDefaultArtwork = false,
         onPlayClick = {},
     )
 }
@@ -72,6 +75,7 @@ private fun PortraitContentPreviewLoading() {
         nextTrackTitle = "",
         buttonState = PlayerButtonState.LOADING,
         artworkUri = "",
+        isDefaultArtwork = false,
         onPlayClick = {},
     )
 }

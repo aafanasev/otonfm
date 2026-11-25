@@ -31,17 +31,17 @@ import kotlin.random.Random
 private val Gradients: List<Pair<Color, Color>> = BACKGROUND_GRADIENTS.map { it[0] to it[1] }
 
 /**
- * Shows an animated gradient while [artworkUri] is [defaultArtworkUri] (nothing playing yet),
- * then crossfades to a blurred artwork background once real artwork is available.
+ * Shows an animated gradient while [isDefaultArtwork], then crossfades to a blurred
+ * [artworkUri] background once real artwork is available.
  */
 @Composable
 fun Background(
     artworkUri: String,
-    defaultArtworkUri: String,
+    isDefaultArtwork: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Crossfade(
-        targetState = artworkUri == defaultArtworkUri,
+        targetState = isDefaultArtwork,
         animationSpec = tween(1_000),
     ) { showPlaceholder ->
         if (showPlaceholder) {

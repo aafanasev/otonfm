@@ -1,5 +1,7 @@
 package net.afanasev.otonfm.player.ui.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,12 +23,22 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 
+/** How long things fade when switching between the default and real artwork. */
+internal const val DEFAULT_ARTWORK_FADE_MS = 500
+
 @Composable
 fun Artwork(
     artworkUri: String,
     modifier: Modifier = Modifier,
+    isDefaultArtwork: Boolean = false,
 ) {
     val previewShape = RoundedCornerShape(12.dp)
+    // The default artwork is translucent, so the box's shadow and background would show through
+    // it. Both fade out while it shows, and come back for real artwork.
+    val frameAlpha by animateFloatAsState(
+        targetValue = if (isDefaultArtwork) 0f else 1f,
+        animationSpec = tween(DEFAULT_ARTWORK_FADE_MS),
+    )
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -33,14 +46,14 @@ fun Artwork(
                 Modifier
                     .aspectRatio(1f)
                     .shadow(
-                        elevation = 6.dp,
+                        elevation = 6.dp * frameAlpha,
                         shape = previewShape,
                         ambientColor = Color.DarkGray,
                         spotColor = Color.DarkGray,
                     ),
             )
             .clip(previewShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = frameAlpha)),
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)

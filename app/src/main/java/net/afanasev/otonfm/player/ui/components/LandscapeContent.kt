@@ -21,6 +21,7 @@ fun LandscapeContent(
     nextTrackTitle: String,
     buttonState: PlayerButtonState,
     artworkUri: String,
+    isDefaultArtwork: Boolean,
     onPlayClick: () -> Unit,
     modifier: Modifier = Modifier,
     logo: @Composable () -> Unit = {},
@@ -39,6 +40,7 @@ fun LandscapeContent(
         ) {
             Artwork(
                 artworkUri = artworkUri,
+                isDefaultArtwork = isDefaultArtwork,
                 modifier = Modifier.fillMaxHeight(0.8f),
             )
         }
@@ -76,6 +78,7 @@ private fun LandscapeContentPreview() {
         nextTrackTitle = "Next: Portishead — Glory Box",
         buttonState = PlayerButtonState.PLAYING,
         artworkUri = "",
+        isDefaultArtwork = false,
         onPlayClick = {},
     )
 }
@@ -88,6 +91,7 @@ private fun LandscapeContentPreviewLoading() {
         nextTrackTitle = "",
         buttonState = PlayerButtonState.LOADING,
         artworkUri = "",
+        isDefaultArtwork = false,
         onPlayClick = {},
     )
 }

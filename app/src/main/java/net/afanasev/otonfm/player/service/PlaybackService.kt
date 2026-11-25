@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.R
+import net.afanasev.otonfm.player.data.defaultArtworkUri
 import net.afanasev.otonfm.player.fsm.Playback
 import net.afanasev.otonfm.player.fsm.RadioPlayer
 
@@ -103,7 +104,7 @@ class PlaybackService : MediaLibraryService() {
                         .setTitle(stationName)
                         .setArtist(stationName)
                         .setStation(stationName)
-                        .setArtworkUri(getString(R.string.default_artwork_uri).toUri())
+                        .setArtworkUri(defaultArtworkUri().toUri())
                         .setIsBrowsable(false)
                         .setIsPlayable(true)
                         .build()
@@ -169,7 +170,7 @@ class PlaybackService : MediaLibraryService() {
 
     /** Replacing the item only when the artwork differs also stops this from looping on itself. */
     private fun showArtwork(player: Player, artworkUri: String?) {
-        val uri = (artworkUri ?: getString(R.string.default_artwork_uri)).toUri()
+        val uri = (artworkUri ?: defaultArtworkUri()).toUri()
         val currentItem = player.currentMediaItem ?: return
         if (currentItem.mediaMetadata.artworkUri == uri) return
         val updatedMetadata = currentItem.mediaMetadata.buildUpon()

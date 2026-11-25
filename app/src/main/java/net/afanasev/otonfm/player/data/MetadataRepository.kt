@@ -17,11 +17,13 @@ private const val RETRY_MAX_COUNT = 3
 private const val RETRY_DELAY_MS = 2_000L
 
 /**
- * Fetches artwork and the next track from the [radio.co](https://radio.co) public status API.
- * Failures are reported through the callbacks and returned as null.
+ * Station metadata: the fixed [stationName], plus artwork and the next track fetched from the
+ * [radio.co](https://radio.co) public status API. Fetch failures are reported through the
+ * callbacks and returned as null.
  */
-class RadioCoMetadataProvider(
+class MetadataRepository(
     stationId: String,
+    val stationName: String,
     private val onFetchError: (source: String, throwable: Throwable) -> Unit,
     private val onArtworkMismatch: (attempt: Int, maxAttempts: Int, retryDelayMs: Long) -> Unit,
     private val httpClient: HttpClient = defaultHttpClient(),

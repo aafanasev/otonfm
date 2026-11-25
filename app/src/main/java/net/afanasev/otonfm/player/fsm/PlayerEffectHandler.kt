@@ -8,7 +8,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.common.log.Logger
-import net.afanasev.otonfm.player.data.RadioCoMetadataProvider
+import net.afanasev.otonfm.player.data.MetadataRepository
 
 /** Runs [PlayerEffect]s. Split out from [RadioPlayer] so tests can fake it. */
 internal interface PlayerEffects {
@@ -19,8 +19,7 @@ internal interface PlayerEffects {
 }
 
 internal class PlayerEffectHandler(
-    private val metadata: RadioCoMetadataProvider,
-    private val stationName: String,
+    private val metadata: MetadataRepository,
     private val scope: CoroutineScope,
     private val send: (PlayerEvent) -> Unit,
 ) : PlayerEffects {
@@ -43,8 +42,7 @@ internal class PlayerEffectHandler(
                 it.setMediaItem(
                     MediaItem.Builder()
                         .setUri(effect.streamUrl)
-                        // No title: item metadata overrides the stream's, which has the track name.
-                        .setMediaMetadata(MediaMetadata.Builder().setArtist(stationName).build())
+                        .setMediaMetadata(MediaMetadata.Builder().setArtist(metadata.stationName).build())
                         .build()
                 )
                 it.play()

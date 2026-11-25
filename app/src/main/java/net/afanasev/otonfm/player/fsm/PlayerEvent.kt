@@ -44,7 +44,7 @@ data class PlayerSnapshot(
 
 /**
  * What the stream itself reports. Artwork isn't part of it: it comes from the
- * [net.afanasev.otonfm.player.data.RadioCoMetadataProvider] via [PlayerEvent.ArtworkLoaded].
+ * [net.afanasev.otonfm.player.data.MetadataRepository] via [PlayerEvent.ArtworkLoaded].
  */
 data class TrackMetadata(val title: String?)
 

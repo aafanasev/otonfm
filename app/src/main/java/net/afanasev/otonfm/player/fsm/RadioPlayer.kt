@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.common.log.Logger
-import net.afanasev.otonfm.player.data.RadioCoMetadataProvider
+import net.afanasev.otonfm.player.data.MetadataRepository
 
 private const val RADIO_CO_STATION_ID = "s696f24a77"
 
@@ -129,8 +129,9 @@ class RadioPlayer internal constructor(
                 scope = scope,
             ) { send ->
                 PlayerEffectHandler(
-                    metadata = RadioCoMetadataProvider(
+                    metadata = MetadataRepository(
                         stationId = RADIO_CO_STATION_ID,
+                        stationName = context.getString(R.string.app_name),
                         onFetchError = Logger::onMetadataFetchError,
                         onArtworkMismatch = Logger::onArtworkMismatch,
                     ),

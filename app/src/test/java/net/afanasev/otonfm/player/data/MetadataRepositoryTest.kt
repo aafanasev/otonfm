@@ -29,8 +29,9 @@ private fun clientOf(engine: MockEngine): HttpClient = HttpClient(engine) {
     install(ContentNegotiation) { json() }
 }
 
-private fun providerOf(engine: MockEngine, reports: Reports = Reports()) = RadioCoMetadataProvider(
+private fun repositoryOf(engine: MockEngine, reports: Reports = Reports()) = MetadataRepository(
     stationId = STATION_ID,
+    stationName = "Test FM",
     onFetchError = { source, throwable -> reports.metadataErrors += source to throwable },
     onArtworkMismatch = { attempt, _, _ -> reports.artworkMismatches += attempt },
     httpClient = clientOf(engine),
@@ -38,7 +39,7 @@ private fun providerOf(engine: MockEngine, reports: Reports = Reports()) = Radio
 
 private fun jsonHeaders() = headersOf(HttpHeaders.ContentType, "application/json")
 
-class RadioCoMetadataProviderTest {
+class MetadataRepositoryTest {
 
     @Test
     fun `fetchArtworkUri returns artwork when title matches`() = runTest {
@@ -51,9 +52,9 @@ class RadioCoMetadataProviderTest {
             )
         }
         val reports = Reports()
-        val provider = providerOf(engine, reports)
+        val repository = repositoryOf(engine, reports)
 
-        val artwork = provider.fetchArtworkUri("Now Playing")
+        val artwork = repository.fetchArtworkUri("Now Playing")
 
         assertEquals("https://example.com/art.jpg", artwork)
         assertEquals(emptyList<Int>(), reports.artworkMismatches)
@@ -69,9 +70,9 @@ class RadioCoMetadataProviderTest {
             )
         }
         val reports = Reports()
-        val provider = providerOf(engine, reports)
+        val repository = repositoryOf(engine, reports)
 
-        val artwork = provider.fetchArtworkUri("Expected Track")
+        val artwork = repository.fetchArtworkUri("Expected Track")
 
         assertNull(artwork)
         assertEquals(listOf(1, 2, 3), reports.artworkMismatches)
@@ -81,9 +82,9 @@ class RadioCoMetadataProviderTest {
     fun `fetchArtworkUri reports and swallows HTTP errors`() = runTest {
         val engine = MockEngine { respondError(HttpStatusCode.InternalServerError) }
         val reports = Reports()
-        val provider = providerOf(engine, reports)
+        val repository = repositoryOf(engine, reports)
 
-        val artwork = provider.fetchArtworkUri("Any Title")
+        val artwork = repository.fetchArtworkUri("Any Title")
 
         assertNull(artwork)
         assertEquals(3, reports.metadataErrors.count { it.first == "status" })
@@ -98,18 +99,18 @@ class RadioCoMetadataProviderTest {
                 headers = jsonHeaders(),
             )
         }
-        val provider = providerOf(engine)
+        val repository = repositoryOf(engine)
 
-        assertEquals("Upcoming Song", provider.fetchNextTrack())
+        assertEquals("Upcoming Song", repository.fetchNextTrack())
     }
 
     @Test
     fun `fetchNextTrack reports and swallows errors`() = runTest {
         val engine = MockEngine { respondError(HttpStatusCode.InternalServerError) }
         val reports = Reports()
-        val provider = providerOf(engine, reports)
+        val repository = repositoryOf(engine, reports)
 
-        val nextTrack = provider.fetchNextTrack()
+        val nextTrack = repository.fetchNextTrack()
 
         assertNull(nextTrack)
         assertEquals(1, reports.metadataErrors.count { it.first == "next_track" })
@@ -123,9 +124,9 @@ class RadioCoMetadataProviderTest {
             awaitCancellation()
         }
         val reports = Reports()
-        val provider = providerOf(engine, reports)
+        val repository = repositoryOf(engine, reports)
 
-        val job = launch { provider.fetchArtworkUri("Any Title") }
+        val job = launch { repository.fetchArtworkUri("Any Title") }
         started.await()
         job.cancelAndJoin()
 
@@ -141,9 +142,9 @@ class RadioCoMetadataProviderTest {
             awaitCancellation()
         }
         val reports = Reports()
-        val provider = providerOf(engine, reports)
+        val repository = repositoryOf(engine, reports)
 
-        val job = launch { provider.fetchNextTrack() }
+        val job = launch { repository.fetchNextTrack() }
         started.await()
         job.cancelAndJoin()
 

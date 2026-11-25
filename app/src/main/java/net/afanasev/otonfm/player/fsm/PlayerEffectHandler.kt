@@ -1,13 +1,14 @@
 package net.afanasev.otonfm.player.fsm
 
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.afanasev.otonfm.common.log.Logger
-import net.afanasev.otonfm.player.data.RadioCoMetadataProvider
+import net.afanasev.otonfm.player.data.MetadataRepository
 
 /** Runs [PlayerEffect]s. Split out from [RadioPlayer] so tests can fake it. */
 internal interface PlayerEffects {
@@ -18,7 +19,7 @@ internal interface PlayerEffects {
 }
 
 internal class PlayerEffectHandler(
-    private val metadata: RadioCoMetadataProvider,
+    private val metadata: MetadataRepository,
     private val scope: CoroutineScope,
     private val send: (PlayerEvent) -> Unit,
 ) : PlayerEffects {
@@ -38,7 +39,12 @@ internal class PlayerEffectHandler(
             // Order matters, see PlayerEffect.StartPlayback.
             is PlayerEffect.StartPlayback -> command {
                 it.stop()
-                it.setMediaItem(MediaItem.fromUri(effect.streamUrl))
+                it.setMediaItem(
+                    MediaItem.Builder()
+                        .setUri(effect.streamUrl)
+                        .setMediaMetadata(MediaMetadata.Builder().setArtist(metadata.stationName).build())
+                        .build()
+                )
                 it.play()
                 it.prepare()
             }

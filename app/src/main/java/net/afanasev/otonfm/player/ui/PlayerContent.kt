@@ -49,14 +49,16 @@ fun PlayerContent(
     val title by viewModel.title.collectAsStateWithLifecycle()
     val nextTrackTitle by viewModel.nextTrackTitle.collectAsStateWithLifecycle()
     val buttonState by viewModel.buttonState.collectAsStateWithLifecycle()
-    val configuration = LocalConfiguration.current
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     val nextTrackPrefix = stringResource(R.string.player_next_track_prefix)
 
-    // The default artwork is the logo itself, so the header logo hides while it shows. It keeps
-    // its space, so the artwork doesn't jump when real artwork arrives. It rises into place while
-    // fading in, and sinks back the same way when the artwork falls back to the default. The
-    // exit easing mirrors the enter easing, so hiding plays the showing motion in reverse.
-    val showLogo = artwork != DEFAULT_ARTWORK_URI
+    // The default artwork is the logo itself, so in portrait, where the header logo sits right
+    // above it, the header logo hides while it shows. It keeps its space, so the artwork doesn't
+    // jump when real artwork arrives. It rises into place while fading in, and sinks back the same
+    // way when the artwork falls back to the default. The exit easing mirrors the enter easing,
+    // so hiding plays the showing motion in reverse. In landscape the two sit side by side, so the
+    // header logo always shows.
+    val showLogo = isLandscape || artwork != DEFAULT_ARTWORK_URI
     val logoProgress by animateFloatAsState(
         targetValue = if (showLogo) 1f else 0f,
         animationSpec = tween(
@@ -76,7 +78,7 @@ fun PlayerContent(
         )
     }
 
-    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    if (isLandscape) {
         LandscapeContent(
             title = title,
             nextTrackTitle = nextTrackTitle,

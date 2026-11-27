@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.player.ui.components.Background
 import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_FADE_MS
+import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.player.ui.components.LandscapeContent
 import net.afanasev.otonfm.player.ui.components.Logo
 import net.afanasev.otonfm.player.ui.components.PortraitContent
@@ -25,11 +26,9 @@ fun PlayerBackground(
     modifier: Modifier = Modifier,
 ) {
     val artwork by viewModel.artworkUri.collectAsStateWithLifecycle()
-    val isDefaultArtwork by viewModel.isDefaultArtwork.collectAsStateWithLifecycle()
 
     Background(
         artworkUri = artwork,
-        isDefaultArtwork = isDefaultArtwork,
         modifier = modifier,
     )
 }
@@ -41,7 +40,6 @@ fun PlayerContent(
     modifier: Modifier = Modifier,
 ) {
     val artwork by viewModel.artworkUri.collectAsStateWithLifecycle()
-    val isDefaultArtwork by viewModel.isDefaultArtwork.collectAsStateWithLifecycle()
     val title by viewModel.title.collectAsStateWithLifecycle()
     val nextTrackTitle by viewModel.nextTrackTitle.collectAsStateWithLifecycle()
     val buttonState by viewModel.buttonState.collectAsStateWithLifecycle()
@@ -51,7 +49,7 @@ fun PlayerContent(
     // The default artwork is the logo itself, so the header logo fades out while it shows. It
     // keeps its space, so the artwork doesn't jump when real artwork arrives.
     val logoAlpha by animateFloatAsState(
-        targetValue = if (isDefaultArtwork) 0f else 1f,
+        targetValue = if (artwork == DEFAULT_ARTWORK_URI) 0f else 1f,
         animationSpec = tween(DEFAULT_ARTWORK_FADE_MS),
     )
     val logo: @Composable () -> Unit = {
@@ -69,7 +67,6 @@ fun PlayerContent(
             nextTrackTitle = nextTrackTitle,
             buttonState = buttonState,
             artworkUri = artwork,
-            isDefaultArtwork = isDefaultArtwork,
             onPlayClick = viewModel::playPause,
             logo = logo,
             nextTrackPrefix = nextTrackPrefix,
@@ -81,7 +78,6 @@ fun PlayerContent(
             nextTrackTitle = nextTrackTitle,
             buttonState = buttonState,
             artworkUri = artwork,
-            isDefaultArtwork = isDefaultArtwork,
             onPlayClick = viewModel::playPause,
             logo = logo,
             nextTrackPrefix = nextTrackPrefix,

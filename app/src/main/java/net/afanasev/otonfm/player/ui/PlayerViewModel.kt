@@ -14,11 +14,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import net.afanasev.otonfm.R
 import net.afanasev.otonfm.player.fsm.PlayerEvent
 import net.afanasev.otonfm.player.fsm.PlayerState
 import net.afanasev.otonfm.player.fsm.RadioPlayer
 import net.afanasev.otonfm.player.service.PlaybackService
+import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.player.ui.components.PlayerButtonState
 import net.afanasev.otonfm.player.ui.components.toButtonState
 
@@ -35,14 +35,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val player = RadioPlayer.get(application)
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
-    // Coil loads only the resource id form of android.resource URIs, not /drawable/<name>.
-    private val defaultArtworkUri =
-        "android.resource://${application.packageName}/${R.drawable.default_artwork}"
-
-    val artworkUri: StateFlow<String> = derive { it.nowPlaying.artworkUri ?: defaultArtworkUri }
-
-    /** True while [artworkUri] is the app's own default, shown when there's no artwork. */
-    val isDefaultArtwork: StateFlow<Boolean> = derive { it.nowPlaying.artworkUri == null }
+    val artworkUri: StateFlow<String> = derive { it.nowPlaying.artworkUri ?: DEFAULT_ARTWORK_URI }
 
     val title: StateFlow<String> = derive { it.nowPlaying.title }
 

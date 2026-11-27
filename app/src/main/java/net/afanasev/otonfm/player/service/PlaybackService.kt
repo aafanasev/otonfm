@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.player.fsm.Playback
 import net.afanasev.otonfm.player.fsm.RadioPlayer
+import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_URI
 
 private const val ROOT_ID = "root"
 private const val STATION_ID = "station"
@@ -46,9 +47,6 @@ class PlaybackService : MediaLibraryService() {
 
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val radioPlayer by lazy { RadioPlayer.get(this) }
-    private val defaultArtworkUri by lazy {
-        "android.resource://$packageName/${R.drawable.default_artwork}".toUri()
-    }
 
     private val noisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -106,7 +104,7 @@ class PlaybackService : MediaLibraryService() {
                         .setTitle(stationName)
                         .setArtist(stationName)
                         .setStation(stationName)
-                        .setArtworkUri(defaultArtworkUri)
+                        .setArtworkUri(DEFAULT_ARTWORK_URI.toUri())
                         .setIsBrowsable(false)
                         .setIsPlayable(true)
                         .build()
@@ -172,7 +170,7 @@ class PlaybackService : MediaLibraryService() {
 
     /** Replacing the item only when the artwork differs also stops this from looping on itself. */
     private fun showArtwork(player: Player, artworkUri: String?) {
-        val uri = artworkUri?.toUri() ?: defaultArtworkUri
+        val uri = (artworkUri ?: DEFAULT_ARTWORK_URI).toUri()
         val currentItem = player.currentMediaItem ?: return
         if (currentItem.mediaMetadata.artworkUri == uri) return
         val updatedMetadata = currentItem.mediaMetadata.buildUpon()

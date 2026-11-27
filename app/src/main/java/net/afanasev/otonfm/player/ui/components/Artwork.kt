@@ -22,6 +22,15 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import net.afanasev.otonfm.BuildConfig
+import net.afanasev.otonfm.R
+
+/**
+ * Shown while there's no artwork. Built in code rather than in strings.xml, because Coil loads
+ * only the resource id form of android.resource URIs, not /drawable/<name>.
+ */
+val DEFAULT_ARTWORK_URI =
+    "android.resource://${BuildConfig.APPLICATION_ID}/${R.drawable.default_artwork}"
 
 /** How long things fade when switching between the default and real artwork. */
 internal const val DEFAULT_ARTWORK_FADE_MS = 500
@@ -30,13 +39,12 @@ internal const val DEFAULT_ARTWORK_FADE_MS = 500
 fun Artwork(
     artworkUri: String,
     modifier: Modifier = Modifier,
-    isDefaultArtwork: Boolean = false,
 ) {
     val previewShape = RoundedCornerShape(12.dp)
     // The default artwork is translucent, so the box's shadow and background would show through
     // it. Both fade out while it shows, and come back for real artwork.
     val frameAlpha by animateFloatAsState(
-        targetValue = if (isDefaultArtwork) 0f else 1f,
+        targetValue = if (artworkUri == DEFAULT_ARTWORK_URI) 0f else 1f,
         animationSpec = tween(DEFAULT_ARTWORK_FADE_MS),
     )
     Box(

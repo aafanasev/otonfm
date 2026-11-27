@@ -80,14 +80,15 @@ private fun TopBar(
     ) {
         Spacer(modifier = Modifier.size(48.dp))
 
-        val status = adminStatus
-        if (status != null && status.isActive) {
-            AdminStatusBar(
-                adminStatus = status,
-                modifier = Modifier.weight(1f),
-            )
-        } else {
-            Spacer(modifier = Modifier.weight(1f))
+        // The pill is as wide as its text, centered; a long message fills the space and scrolls.
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.Center,
+        ) {
+            val status = adminStatus
+            if (status != null && status.isActive) {
+                AdminStatusBar(adminStatus = status)
+            }
         }
 
         MenuButton(

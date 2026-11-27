@@ -1,6 +1,11 @@
 package net.afanasev.otonfm.player.ui.components
 
+import androidx.compose.animation.core.EaseInOutSine
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +41,14 @@ val DEFAULT_ARTWORK_URI =
 /** How long things fade when switching between the default and real artwork. */
 internal const val DEFAULT_ARTWORK_FADE_MS = 500
 
+/** How far the artwork drifts above and below its place, and how long one way takes. */
+private val FLOAT_HEIGHT = 6.dp
+private const val FLOAT_PERIOD_MS = 4_000
+
+/** How far the artwork tilts each way, and how long one way takes. */
+private const val TILT_DEGREES = 1.5f
+private const val TILT_PERIOD_MS = 5_500
+
 @Composable
 fun Artwork(
     artworkUri: String,
@@ -47,12 +61,38 @@ fun Artwork(
         targetValue = if (artworkUri == DEFAULT_ARTWORK_URI) 0f else 1f,
         animationSpec = tween(DEFAULT_ARTWORK_FADE_MS),
     )
+    // Drifts slowly up and down and tilts a little, like a cloud. The two motions have different
+    // periods, so together they never settle into an obvious loop. Read only in graphicsLayer, so
+    // the drift redraws a layer without recomposing.
+    val drift = rememberInfiniteTransition(label = "artworkDrift")
+    val lift by drift.animateFloat(
+        initialValue = -1f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(FLOAT_PERIOD_MS, easing = EaseInOutSine),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "lift",
+    )
+    val tilt by drift.animateFloat(
+        initialValue = -1f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(TILT_PERIOD_MS, easing = EaseInOutSine),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "tilt",
+    )
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .then(
                 Modifier
                     .aspectRatio(1f)
+                    .graphicsLayer {
+                        translationY = lift * FLOAT_HEIGHT.toPx()
+                        rotationZ = tilt * TILT_DEGREES
+                    }
                     .shadow(
                         elevation = 6.dp * frameAlpha,
                         shape = previewShape,

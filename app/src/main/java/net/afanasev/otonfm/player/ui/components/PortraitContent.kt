@@ -16,12 +16,11 @@ fun PortraitContent(
     title: String,
     nextTrackTitle: String,
     buttonState: PlayerButtonState,
-    artworkUri: String,
+    artworkUri: String?,
     onPlayClick: () -> Unit,
     modifier: Modifier = Modifier,
     logo: @Composable () -> Unit = {},
     nextTrackPrefix: String = "Next",
-    onArtworkLoadFailed: (uri: String) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
@@ -33,7 +32,6 @@ fun PortraitContent(
         Artwork(
             artworkUri = artworkUri,
             modifier = Modifier.fillMaxWidth(0.9f),
-            onLoadFailed = onArtworkLoadFailed,
         )
         Spacer(modifier = Modifier.height(24.dp))
         Title(
@@ -61,7 +59,7 @@ private fun PortraitContentPreview() {
         title = "Massive Attack — Teardrop",
         nextTrackTitle = "Next: Portishead — Glory Box",
         buttonState = PlayerButtonState.PLAYING,
-        artworkUri = "",
+        artworkUri = null,
         onPlayClick = {},
     )
 }
@@ -73,7 +71,7 @@ private fun PortraitContentPreviewLoading() {
         title = "",
         nextTrackTitle = "",
         buttonState = PlayerButtonState.LOADING,
-        artworkUri = "",
+        artworkUri = null,
         onPlayClick = {},
     )
 }

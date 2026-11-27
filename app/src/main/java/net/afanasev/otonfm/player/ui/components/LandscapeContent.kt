@@ -20,12 +20,11 @@ fun LandscapeContent(
     title: String,
     nextTrackTitle: String,
     buttonState: PlayerButtonState,
-    artworkUri: String,
+    artworkUri: String?,
     onPlayClick: () -> Unit,
     modifier: Modifier = Modifier,
     logo: @Composable () -> Unit = {},
     nextTrackPrefix: String = "Next",
-    onArtworkLoadFailed: (uri: String) -> Unit = {},
 ) {
     Row(
         modifier = modifier,
@@ -41,7 +40,6 @@ fun LandscapeContent(
             Artwork(
                 artworkUri = artworkUri,
                 modifier = Modifier.fillMaxHeight(0.8f),
-                onLoadFailed = onArtworkLoadFailed,
             )
         }
         Column(
@@ -77,7 +75,7 @@ private fun LandscapeContentPreview() {
         title = "Massive Attack — Teardrop",
         nextTrackTitle = "Next: Portishead — Glory Box",
         buttonState = PlayerButtonState.PLAYING,
-        artworkUri = "",
+        artworkUri = null,
         onPlayClick = {},
     )
 }
@@ -89,7 +87,7 @@ private fun LandscapeContentPreviewLoading() {
         title = "",
         nextTrackTitle = "",
         buttonState = PlayerButtonState.LOADING,
-        artworkUri = "",
+        artworkUri = null,
         onPlayClick = {},
     )
 }

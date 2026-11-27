@@ -18,7 +18,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.player.ui.components.Background
 import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_FADE_MS
-import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.player.ui.components.LandscapeContent
 import net.afanasev.otonfm.player.ui.components.Logo
 import net.afanasev.otonfm.player.ui.components.PortraitContent
@@ -58,7 +57,7 @@ fun PlayerContent(
     // way when the artwork falls back to the default. The exit easing mirrors the enter easing,
     // so hiding plays the showing motion in reverse. In landscape the two sit side by side, so the
     // header logo always shows.
-    val showLogo = isLandscape || artwork != DEFAULT_ARTWORK_URI
+    val showLogo = isLandscape || artwork != null
     val logoProgress by animateFloatAsState(
         targetValue = if (showLogo) 1f else 0f,
         animationSpec = tween(
@@ -87,7 +86,6 @@ fun PlayerContent(
             onPlayClick = viewModel::playPause,
             logo = logo,
             nextTrackPrefix = nextTrackPrefix,
-            onArtworkLoadFailed = viewModel::onArtworkLoadFailed,
             modifier = modifier.fillMaxHeight(),
         )
     } else {
@@ -99,7 +97,6 @@ fun PlayerContent(
             onPlayClick = viewModel::playPause,
             logo = logo,
             nextTrackPrefix = nextTrackPrefix,
-            onArtworkLoadFailed = viewModel::onArtworkLoadFailed,
             modifier = modifier.fillMaxWidth(),
         )
     }

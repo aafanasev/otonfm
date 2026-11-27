@@ -27,13 +27,21 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import net.afanasev.otonfm.BuildConfig
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.player.fsm.Playback
 import net.afanasev.otonfm.player.fsm.RadioPlayer
-import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_URI
 
 private const val ROOT_ID = "root"
 private const val STATION_ID = "station"
+
+/**
+ * The notification and Android Auto artwork while there's no artwork. Media3 loads artwork itself
+ * from a URI, so the app's screens don't use this; they show the drawable directly. Built from
+ * the resource id, as the bundled artwork has always been loaded.
+ */
+private val DEFAULT_ARTWORK_URI =
+    "android.resource://${BuildConfig.APPLICATION_ID}/${R.drawable.default_artwork}"
 
 /**
  * Owns the ExoPlayer and attaches it to the app-scoped [RadioPlayer], which runs its commands

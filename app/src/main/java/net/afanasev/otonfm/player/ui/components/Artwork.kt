@@ -16,6 +16,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,20 +26,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import net.afanasev.otonfm.BuildConfig
 import net.afanasev.otonfm.R
-
-/**
- * Shown while there's no artwork. Built in code rather than in strings.xml, because Coil loads
- * only the resource id form of android.resource URIs, not /drawable/<name>.
- */
-val DEFAULT_ARTWORK_URI =
-    "android.resource://${BuildConfig.APPLICATION_ID}/${R.drawable.default_artwork}"
 
 /** How long things fade when switching between the default and real artwork. */
 internal const val DEFAULT_ARTWORK_FADE_MS = 500
@@ -51,15 +47,16 @@ private const val TILT_PERIOD_MS = 5_500
 
 @Composable
 fun Artwork(
-    artworkUri: String,
+    artworkUri: String?,
     modifier: Modifier = Modifier,
-    onLoadFailed: (uri: String) -> Unit = {},
 ) {
     val previewShape = RoundedCornerShape(12.dp)
-    // The default artwork is translucent, so the box's shadow and background would show through
-    // it. Both fade out while it shows, and come back for real artwork.
+    // Coil shows the default artwork both when there's no artwork and when it fails to download.
+    // The default is translucent, so the box's shadow and background would show through it. Both
+    // fade out while it shows, and come back for real artwork.
+    var loadFailed by remember(artworkUri) { mutableStateOf(false) }
     val frameAlpha by animateFloatAsState(
-        targetValue = if (artworkUri == DEFAULT_ARTWORK_URI) 0f else 1f,
+        targetValue = if (artworkUri == null || loadFailed) 0f else 1f,
         animationSpec = tween(DEFAULT_ARTWORK_FADE_MS),
     )
     // Drifts slowly up and down and tilts a little, like a cloud. The two motions have different
@@ -104,14 +101,16 @@ fun Artwork(
             .clip(previewShape)
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = frameAlpha)),
     ) {
+        val defaultArtwork = painterResource(R.drawable.default_artwork)
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(artworkUri)
                 .crossfade(true)
                 .build(),
             contentDescription = "Preview",
-            // Reports the request's own URI, not artworkUri, which may have moved on since.
-            onError = { error -> (error.result.request.data as? String)?.let(onLoadFailed) },
+            error = defaultArtwork,
+            fallback = defaultArtwork,
+            onError = { loadFailed = true },
             modifier = Modifier.fillMaxSize(),
         )
     }
@@ -121,7 +120,7 @@ fun Artwork(
 @Composable
 private fun ArtworkNoImagePreview() {
     Artwork(
-        artworkUri = "",
+        artworkUri = null,
         modifier = Modifier.width(60.dp),
     )
 }

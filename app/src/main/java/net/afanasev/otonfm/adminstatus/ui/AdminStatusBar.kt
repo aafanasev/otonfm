@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Campaign
@@ -39,13 +40,15 @@ fun AdminStatusBar(
     modifier: Modifier = Modifier,
 ) {
     var showFullText by remember { mutableStateOf(false) }
+    // A short message still reads as a banner, not a button.
+    val pillModifier = modifier.widthIn(min = 160.dp)
 
     if (adminStatus.isUrgent) {
         Pill(
             onClick = { showFullText = true },
             containerColor = BrandRed,
             contentColor = Color.White,
-            modifier = modifier,
+            modifier = pillModifier,
         ) {
             Icon(
                 imageVector = Icons.Filled.Campaign,
@@ -56,7 +59,7 @@ fun AdminStatusBar(
             MarqueeText(text = adminStatus.text)
         }
     } else {
-        Pill(onClick = { showFullText = true }, modifier = modifier) {
+        Pill(onClick = { showFullText = true }, modifier = pillModifier) {
             MarqueeText(text = adminStatus.text)
         }
     }

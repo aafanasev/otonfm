@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -29,7 +31,8 @@ fun NextTrack(
         AnnotatedString("")
     } else {
         buildAnnotatedString {
-            withStyle(labelStyle) { append(prefix.uppercase()) }
+            // The prefix is translated, so uppercase it by the app's language rules.
+            withStyle(labelStyle) { append(prefix.toUpperCase(Locale.current)) }
             append("  ")
             append(text)
         }

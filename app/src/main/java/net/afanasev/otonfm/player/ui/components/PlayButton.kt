@@ -1,5 +1,6 @@
 package net.afanasev.otonfm.player.ui.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -10,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -39,6 +41,11 @@ fun Playback.toButtonState(): PlayerButtonState = when (this) {
     Playback.Playing -> PlayerButtonState.PLAYING
 }
 
+private val ButtonRed = Color(0xFFCD0200)
+
+/** Darker while loading, so it reads as busy, though it stays clickable. */
+private val ButtonRedLoading = Color(0xFF660200)
+
 /**
  * Always clickable: a tap while [PlayerButtonState.LOADING] cancels connecting or reconnecting.
  */
@@ -48,9 +55,13 @@ fun PlayButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val containerColor by animateColorAsState(
+        targetValue = if (buttonState == PlayerButtonState.LOADING) ButtonRedLoading else ButtonRed,
+        label = "playButtonColor",
+    )
     IconButton(
         onClick = onClick,
-        colors = IconButtonDefaults.iconButtonColors(containerColor = Color(0xFFCD0200)),
+        colors = IconButtonDefaults.iconButtonColors(containerColor = containerColor),
         modifier = modifier
             .size(96.dp)
             .shadow(

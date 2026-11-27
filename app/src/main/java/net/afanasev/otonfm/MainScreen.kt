@@ -52,7 +52,6 @@ fun MainScreen(
             )
 
             ChatButton(
-                isDarkMode = isDarkMode,
                 onClick = {
                     Logger.onChatButtonClick()
                     onChatClick()
@@ -85,7 +84,6 @@ private fun TopBar(
         if (status != null && status.isActive) {
             AdminStatusBar(
                 adminStatus = status,
-                isDarkMode = isDarkMode,
                 modifier = Modifier.weight(1f),
             )
         } else {

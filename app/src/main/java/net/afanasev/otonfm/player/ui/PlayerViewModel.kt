@@ -19,7 +19,9 @@ import net.afanasev.otonfm.player.fsm.PlayerState
 import net.afanasev.otonfm.player.fsm.RadioPlayer
 import net.afanasev.otonfm.player.service.PlaybackService
 import net.afanasev.otonfm.player.ui.components.PlayerButtonState
+import net.afanasev.otonfm.player.ui.components.TrackTitle
 import net.afanasev.otonfm.player.ui.components.toButtonState
+import net.afanasev.otonfm.player.ui.components.toTrackTitle
 
 /**
  * Adapts the app-scoped [RadioPlayer] state machine to UI flows. All playback logic lives in
@@ -37,7 +39,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     /** Null while there's no artwork; the default shows then. */
     val artworkUri: StateFlow<String?> = derive { it.nowPlaying.artworkUri }
 
-    val title: StateFlow<String> = derive { it.nowPlaying.title }
+    val title: StateFlow<TrackTitle> = derive { it.nowPlaying.title.toTrackTitle() }
 
     val nextTrackTitle: StateFlow<String> = derive { it.nowPlaying.nextTrackTitle }
 

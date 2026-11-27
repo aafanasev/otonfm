@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun LandscapeContent(
-    title: String,
+    title: TrackTitle,
     nextTrackTitle: String,
     buttonState: PlayerButtonState,
     artworkUri: String?,
@@ -50,10 +50,10 @@ fun LandscapeContent(
             logo()
             Spacer(modifier = Modifier.height(18.dp))
             Title(
-                text = title,
+                title = title,
                 modifier = Modifier.fillMaxWidth(0.9f),
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             NextTrack(
                 text = nextTrackTitle,
                 modifier = Modifier.fillMaxWidth(0.9f),
@@ -72,8 +72,8 @@ fun LandscapeContent(
 @Composable
 private fun LandscapeContentPreview() {
     LandscapeContent(
-        title = "Massive Attack — Teardrop",
-        nextTrackTitle = "Next: Portishead — Glory Box",
+        title = TrackTitle(song = "Teardrop", artist = "Massive Attack"),
+        nextTrackTitle = "Portishead - Glory Box",
         buttonState = PlayerButtonState.PLAYING,
         artworkUri = null,
         onPlayClick = {},
@@ -84,7 +84,7 @@ private fun LandscapeContentPreview() {
 @Composable
 private fun LandscapeContentPreviewLoading() {
     LandscapeContent(
-        title = "",
+        title = TrackTitle(song = ""),
         nextTrackTitle = "",
         buttonState = PlayerButtonState.LOADING,
         artworkUri = null,

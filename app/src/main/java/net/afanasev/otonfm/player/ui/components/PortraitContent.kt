@@ -16,7 +16,7 @@ fun PortraitContent(
     title: String,
     nextTrackTitle: String,
     buttonState: PlayerButtonState,
-    artworkUri: String,
+    artworkUri: String?,
     onPlayClick: () -> Unit,
     modifier: Modifier = Modifier,
     logo: @Composable () -> Unit = {},
@@ -59,7 +59,7 @@ private fun PortraitContentPreview() {
         title = "Massive Attack — Teardrop",
         nextTrackTitle = "Next: Portishead — Glory Box",
         buttonState = PlayerButtonState.PLAYING,
-        artworkUri = "",
+        artworkUri = null,
         onPlayClick = {},
     )
 }
@@ -71,7 +71,7 @@ private fun PortraitContentPreviewLoading() {
         title = "",
         nextTrackTitle = "",
         buttonState = PlayerButtonState.LOADING,
-        artworkUri = "",
+        artworkUri = null,
         onPlayClick = {},
     )
 }

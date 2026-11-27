@@ -18,7 +18,6 @@ import net.afanasev.otonfm.player.fsm.PlayerEvent
 import net.afanasev.otonfm.player.fsm.PlayerState
 import net.afanasev.otonfm.player.fsm.RadioPlayer
 import net.afanasev.otonfm.player.service.PlaybackService
-import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.player.ui.components.PlayerButtonState
 import net.afanasev.otonfm.player.ui.components.toButtonState
 
@@ -35,7 +34,8 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val player = RadioPlayer.get(application)
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
-    val artworkUri: StateFlow<String> = derive { it.nowPlaying.artworkUri ?: DEFAULT_ARTWORK_URI }
+    /** Null while there's no artwork; the default shows then. */
+    val artworkUri: StateFlow<String?> = derive { it.nowPlaying.artworkUri }
 
     val title: StateFlow<String> = derive { it.nowPlaying.title }
 

@@ -20,7 +20,7 @@ fun LandscapeContent(
     title: String,
     nextTrackTitle: String,
     buttonState: PlayerButtonState,
-    artworkUri: String,
+    artworkUri: String?,
     onPlayClick: () -> Unit,
     modifier: Modifier = Modifier,
     logo: @Composable () -> Unit = {},
@@ -75,7 +75,7 @@ private fun LandscapeContentPreview() {
         title = "Massive Attack — Teardrop",
         nextTrackTitle = "Next: Portishead — Glory Box",
         buttonState = PlayerButtonState.PLAYING,
-        artworkUri = "",
+        artworkUri = null,
         onPlayClick = {},
     )
 }
@@ -87,7 +87,7 @@ private fun LandscapeContentPreviewLoading() {
         title = "",
         nextTrackTitle = "",
         buttonState = PlayerButtonState.LOADING,
-        artworkUri = "",
+        artworkUri = null,
         onPlayClick = {},
     )
 }

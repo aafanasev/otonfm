@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     testOptions {
         // PlaybackException reads SystemClock in its constructor; let reducer tests build one.

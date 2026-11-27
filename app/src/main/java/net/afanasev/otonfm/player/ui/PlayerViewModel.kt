@@ -14,11 +14,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import net.afanasev.otonfm.R
 import net.afanasev.otonfm.player.fsm.PlayerEvent
 import net.afanasev.otonfm.player.fsm.PlayerState
 import net.afanasev.otonfm.player.fsm.RadioPlayer
 import net.afanasev.otonfm.player.service.PlaybackService
+import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.player.ui.components.PlayerButtonState
 import net.afanasev.otonfm.player.ui.components.toButtonState
 
@@ -35,9 +35,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val player = RadioPlayer.get(application)
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
-    private val defaultArtworkUri = application.getString(R.string.default_artwork_uri)
-
-    val artworkUri: StateFlow<String> = derive { it.nowPlaying.artworkUri ?: defaultArtworkUri }
+    val artworkUri: StateFlow<String> = derive { it.nowPlaying.artworkUri ?: DEFAULT_ARTWORK_URI }
 
     val title: StateFlow<String> = derive { it.nowPlaying.title }
 

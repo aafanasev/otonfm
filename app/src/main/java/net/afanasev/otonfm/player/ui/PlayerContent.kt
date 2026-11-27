@@ -1,16 +1,21 @@
 package net.afanasev.otonfm.player.ui
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.afanasev.otonfm.R
 import net.afanasev.otonfm.player.ui.components.Background
+import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_FADE_MS
+import net.afanasev.otonfm.player.ui.components.DEFAULT_ARTWORK_URI
 import net.afanasev.otonfm.player.ui.components.LandscapeContent
 import net.afanasev.otonfm.player.ui.components.Logo
 import net.afanasev.otonfm.player.ui.components.PortraitContent
@@ -24,7 +29,6 @@ fun PlayerBackground(
 
     Background(
         artworkUri = artwork,
-        defaultArtworkUri = stringResource(R.string.default_artwork_uri),
         modifier = modifier,
     )
 }
@@ -42,10 +46,18 @@ fun PlayerContent(
     val configuration = LocalConfiguration.current
     val nextTrackPrefix = stringResource(R.string.player_next_track_prefix)
 
+    // The default artwork is the logo itself, so the header logo fades out while it shows. It
+    // keeps its space, so the artwork doesn't jump when real artwork arrives.
+    val logoAlpha by animateFloatAsState(
+        targetValue = if (artwork == DEFAULT_ARTWORK_URI) 0f else 1f,
+        animationSpec = tween(DEFAULT_ARTWORK_FADE_MS),
+    )
     val logo: @Composable () -> Unit = {
         Logo(
             isDarkMode = isDarkMode,
-            modifier = Modifier.fillMaxWidth(0.6f),
+            modifier = Modifier
+                .fillMaxWidth(0.6f)
+                .graphicsLayer { alpha = logoAlpha },
         )
     }
 

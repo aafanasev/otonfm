@@ -53,6 +53,7 @@ private const val TILT_PERIOD_MS = 5_500
 fun Artwork(
     artworkUri: String,
     modifier: Modifier = Modifier,
+    onLoadFailed: (uri: String) -> Unit = {},
 ) {
     val previewShape = RoundedCornerShape(12.dp)
     // The default artwork is translucent, so the box's shadow and background would show through
@@ -109,6 +110,8 @@ fun Artwork(
                 .crossfade(true)
                 .build(),
             contentDescription = "Preview",
+            // Reports the request's own URI, not artworkUri, which may have moved on since.
+            onError = { error -> (error.result.request.data as? String)?.let(onLoadFailed) },
             modifier = Modifier.fillMaxSize(),
         )
     }

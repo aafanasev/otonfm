@@ -85,6 +85,7 @@ fun PlayerContent(
             onPlayClick = viewModel::playPause,
             logo = logo,
             nextTrackPrefix = nextTrackPrefix,
+            onArtworkLoadFailed = viewModel::onArtworkLoadFailed,
             modifier = modifier.fillMaxHeight(),
         )
     } else {
@@ -96,6 +97,7 @@ fun PlayerContent(
             onPlayClick = viewModel::playPause,
             logo = logo,
             nextTrackPrefix = nextTrackPrefix,
+            onArtworkLoadFailed = viewModel::onArtworkLoadFailed,
             modifier = modifier.fillMaxWidth(),
         )
     }

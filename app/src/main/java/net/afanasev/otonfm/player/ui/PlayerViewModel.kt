@@ -10,8 +10,10 @@ import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import net.afanasev.otonfm.player.fsm.PlayerEvent
@@ -35,7 +37,17 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val player = RadioPlayer.get(application)
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
-    val artworkUri: StateFlow<String> = derive { it.nowPlaying.artworkUri ?: DEFAULT_ARTWORK_URI }
+    /** The last artwork that failed to download; it shows as the default instead. */
+    private val failedArtworkUri = MutableStateFlow<String?>(null)
+
+    val artworkUri: StateFlow<String> = player.state
+        .map { it.nowPlaying.artworkUri }
+        .combine(failedArtworkUri, ::artworkOrDefault)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            artworkOrDefault(player.state.value.nowPlaying.artworkUri, failedArtworkUri.value),
+        )
 
     val title: StateFlow<String> = derive { it.nowPlaying.title }
 
@@ -46,6 +58,14 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     fun playPause() {
         connectService()
         player.send(PlayerEvent.PlayPauseClicked)
+    }
+
+    /**
+     * Shows the default artwork in place of [uri], everywhere it's used. Only the last failure is
+     * remembered, so the same artwork is tried again after the track moves on to another one.
+     */
+    fun onArtworkLoadFailed(uri: String) {
+        failedArtworkUri.value = uri
     }
 
     override fun onCleared() {
@@ -91,3 +111,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             .map(transform)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), transform(player.state.value))
 }
+
+private fun artworkOrDefault(uri: String?, failedUri: String?): String =
+    if (uri == null || uri == failedUri) DEFAULT_ARTWORK_URI else uri

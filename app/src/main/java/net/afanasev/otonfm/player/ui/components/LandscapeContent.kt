@@ -25,6 +25,7 @@ fun LandscapeContent(
     modifier: Modifier = Modifier,
     logo: @Composable () -> Unit = {},
     nextTrackPrefix: String = "Next",
+    onArtworkLoadFailed: (uri: String) -> Unit = {},
 ) {
     Row(
         modifier = modifier,
@@ -40,6 +41,7 @@ fun LandscapeContent(
             Artwork(
                 artworkUri = artworkUri,
                 modifier = Modifier.fillMaxHeight(0.8f),
+                onLoadFailed = onArtworkLoadFailed,
             )
         }
         Column(

@@ -21,6 +21,7 @@ fun PortraitContent(
     modifier: Modifier = Modifier,
     logo: @Composable () -> Unit = {},
     nextTrackPrefix: String = "Next",
+    onArtworkLoadFailed: (uri: String) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
@@ -32,6 +33,7 @@ fun PortraitContent(
         Artwork(
             artworkUri = artworkUri,
             modifier = Modifier.fillMaxWidth(0.9f),
+            onLoadFailed = onArtworkLoadFailed,
         )
         Spacer(modifier = Modifier.height(24.dp))
         Title(

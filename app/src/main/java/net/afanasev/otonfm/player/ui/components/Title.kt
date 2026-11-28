@@ -15,20 +15,23 @@ import androidx.compose.ui.unit.dp
 import net.afanasev.otonfm.common.ui.components.MarqueeText
 
 /** A stream title split for display. [artist] is empty when the title isn't "Artist - Song". */
-data class TrackTitle(val song: String, val artist: String = "")
+data class TrackTitle(val song: String, val artist: String = "") {
 
-private val ARTIST_SEPARATOR = Regex("""\s[-–—]\s""")
+    companion object {
+        private val ARTIST_SEPARATOR = Regex("""\s[-–—]\s""")
 
-/**
- * Splits "Artist - Song" at the first dash with spaces around it, so dashes inside a song name
- * (like "Ырыа-тойук") stay. Anything else is all song.
- */
-fun String.toTrackTitle(): TrackTitle {
-    val separator = ARTIST_SEPARATOR.find(this) ?: return TrackTitle(song = trim())
-    val artist = substring(0, separator.range.first).trim()
-    val song = substring(separator.range.last + 1).trim()
-    if (artist.isEmpty() || song.isEmpty()) return TrackTitle(song = trim())
-    return TrackTitle(song = song, artist = artist)
+        /**
+         * Splits "Artist - Song" at the first dash with spaces around it, so dashes inside a song
+         * name (like "Ырыа-тойук") stay. Anything else is all song.
+         */
+        fun parse(title: String): TrackTitle {
+            val separator = ARTIST_SEPARATOR.find(title) ?: return TrackTitle(song = title.trim())
+            val artist = title.substring(0, separator.range.first).trim()
+            val song = title.substring(separator.range.last + 1).trim()
+            if (artist.isEmpty() || song.isEmpty()) return TrackTitle(song = title.trim())
+            return TrackTitle(song = song, artist = artist)
+        }
+    }
 }
 
 /**
@@ -61,7 +64,7 @@ fun Title(
 @Composable
 private fun TitlePreview() {
     Title(
-        title = "Дайаана - Үрдүккэ көттөрбүн".toTrackTitle(),
+        title = TrackTitle.parse("Дайаана - Үрдүккэ көттөрбүн"),
         modifier = Modifier.width(240.dp),
     )
 }

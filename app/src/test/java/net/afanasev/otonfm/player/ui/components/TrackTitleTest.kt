@@ -9,7 +9,7 @@ class TrackTitleTest {
     fun `splits artist and song`() {
         assertEquals(
             TrackTitle(song = "Үрдүккэ көттөрбүн", artist = "Дайаана"),
-            "Дайаана - Үрдүккэ көттөрбүн".toTrackTitle(),
+            TrackTitle.parse("Дайаана - Үрдүккэ көттөрбүн"),
         )
     }
 
@@ -17,7 +17,7 @@ class TrackTitleTest {
     fun `splits at the first separator only`() {
         assertEquals(
             TrackTitle(song = "Born Again - Remix", artist = "LISA"),
-            "LISA - Born Again - Remix".toTrackTitle(),
+            TrackTitle.parse("LISA - Born Again - Remix"),
         )
     }
 
@@ -25,26 +25,26 @@ class TrackTitleTest {
     fun `keeps dashes without spaces inside the song`() {
         assertEquals(
             TrackTitle(song = "Ырыа-тойук ~", artist = "OTON FM"),
-            "OTON FM - Ырыа-тойук ~".toTrackTitle(),
+            TrackTitle.parse("OTON FM - Ырыа-тойук ~"),
         )
     }
 
     @Test
     fun `accepts en and em dashes`() {
-        assertEquals(TrackTitle(song = "Teardrop", artist = "Massive Attack"), "Massive Attack – Teardrop".toTrackTitle())
-        assertEquals(TrackTitle(song = "Teardrop", artist = "Massive Attack"), "Massive Attack — Teardrop".toTrackTitle())
+        assertEquals(TrackTitle(song = "Teardrop", artist = "Massive Attack"), TrackTitle.parse("Massive Attack – Teardrop"))
+        assertEquals(TrackTitle(song = "Teardrop", artist = "Massive Attack"), TrackTitle.parse("Massive Attack — Teardrop"))
     }
 
     @Test
     fun `title without a separator is all song`() {
-        assertEquals(TrackTitle(song = "Сахалыы mix"), "Сахалыы mix".toTrackTitle())
-        assertEquals(TrackTitle(song = "Ырыа-тойук"), "Ырыа-тойук".toTrackTitle())
-        assertEquals(TrackTitle(song = ""), "".toTrackTitle())
+        assertEquals(TrackTitle(song = "Сахалыы mix"), TrackTitle.parse("Сахалыы mix"))
+        assertEquals(TrackTitle(song = "Ырыа-тойук"), TrackTitle.parse("Ырыа-тойук"))
+        assertEquals(TrackTitle(song = ""), TrackTitle.parse(""))
     }
 
     @Test
     fun `missing artist or song keeps the whole title`() {
-        assertEquals(TrackTitle(song = "- Teardrop"), " - Teardrop".toTrackTitle())
-        assertEquals(TrackTitle(song = "Massive Attack -"), "Massive Attack - ".toTrackTitle())
+        assertEquals(TrackTitle(song = "- Teardrop"), TrackTitle.parse(" - Teardrop"))
+        assertEquals(TrackTitle(song = "Massive Attack -"), TrackTitle.parse("Massive Attack - "))
     }
 }

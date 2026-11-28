@@ -32,11 +32,11 @@ adb shell setprop log.tag.RadioPlayer DEBUG
 Top-level packages are independent features. Keep dependencies pointing this way:
 
 ```
-          MainActivity + MainScreen + MainRoutes
-                          │
-  adminstatus  menu  player  chat ─▶ auth  theme  contacts
-                          │
-                       common
+                 MainActivity + MainScreen + MainRoutes
+                                 │
+  adminstatus  menu  player  chat ─▶ auth  theme  contacts  notifications
+                                 │
+                              common
 ```
 
 - Features must not import each other. The only exception is `chat` → `auth.data`, for `UserModel` and the `users` collection.
@@ -59,6 +59,14 @@ PlayerViewModel, PlaybackService ──▶ RadioPlayer ──▶ reduce() ──
 - `PlaybackService` owns the ExoPlayer and attaches it to `RadioPlayer`. `PlayerViewModel` starts the service lazily on the first play, and player commands issued before then wait in `PlayerEffectHandler`.
 - The order of calls in `StartPlayback`, `StopPlayback`, and `StopForRetry` is deliberate. The reducer relies on `playWhenReady` to tell its own actions from an outside pause, so read the comments in `PlayerEffect.kt` before changing them.
 - `PlayerButtonState` is a UI simplification of `Playback` and lives in `PlayButton.kt`. The FSM must not depend on it. Keep the mapping in `PlayerViewModel`, because its `StateFlow` drops equal values and prevents needless recomposition.
+- The stream's media item sets only the artist (the station name), never a title. Media3 gives media item metadata priority over stream metadata, so a fixed title would stop the track name from updating.
+
+### Artwork
+
+- The screens pass `null` when there's no artwork. Coil's `fallback` and `error` images show the bundled `default_artwork` drawable, for both missing and failed artwork.
+- Only Media3 (the notification, lock screen, and Android Auto) needs the default as a URI, so `DEFAULT_ARTWORK_URI` lives in `PlaybackService`. Media3 loads artwork itself and doesn't get Coil's fallback for failed downloads.
+- The default artwork is a PNG, not the vector logo, because Media3 needs a bitmap it can decode.
+- Build resource URIs from the resource id (`android.resource://<applicationId>/<resId>`). Coil 3 can't load the `.../drawable/<name>` form.
 
 ### Firebase
 
@@ -72,6 +80,23 @@ PlayerViewModel, PlaybackService ──▶ RadioPlayer ──▶ reduce() ──
 
 All analytics events go through `common/log/Logger`. Release builds obfuscate class names, so never log `::class.simpleName`. The `state` value of `play_btn_click` is `Playback.toString()`, so renaming a `Playback` state or its fields changes reported analytics values.
 
+## UI
+
+- Shared components such as `Pill` and `MarqueeText` live in `common/ui/components`. Reuse them instead of building another capsule or scrolling text.
+- Use theme colors and `MaterialTheme.typography` styles, not hard-coded colors or `sp` sizes. Screens change only the font weight of a style.
+- The app font is Montserrat (`common/ui/style/Type.kt`). A replacement font must cover the Sakha letters ҕ ҥ һ ө ү ӈ, as well as Russian.
+
 ## Strings
 
-The default locale is Russian (`res/values`), and English is in `res/values-en`. Add user-facing strings to both.
+The default locale (`res/values`) is a mix of Russian and Sakha, and English is in `res/values-en`. Add user-facing strings to both.
+
+Uppercase translated text with the app's locale (`toUpperCase(Locale.current)`), not with locale-free uppercasing.
+
+## Code style
+
+Don't add extension functions to global types such as `String`, `Int`, or `List`; they show up in autocomplete everywhere. Put the logic on the app's own type instead, such as a companion factory `TrackTitle.parse(title)` rather than `String.toTrackTitle()`. Extensions on the app's own types, like `Playback.toButtonState()`, are fine.
+
+## Commits and pull requests
+
+- Each commit should compile on its own.
+- A PR description includes a test plan that separates the automated checks run from the device checks, and leaves unchecked anything not yet tested.

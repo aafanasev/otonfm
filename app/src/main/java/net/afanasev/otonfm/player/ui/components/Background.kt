@@ -31,6 +31,16 @@ import kotlin.random.Random
 private val Gradients: List<Pair<Color, Color>> = BACKGROUND_GRADIENTS.map { it[0] to it[1] }
 
 /**
+ * Darkens the lower part of the artwork background, where the title, next track and chat button
+ * sit, so white text stays readable over light artwork. The artwork itself is at the top.
+ */
+private val ReadabilityScrim = Brush.verticalGradient(
+    0f to Color.Transparent,
+    0.45f to Color.Black.copy(alpha = 0.1f),
+    1f to Color.Black.copy(alpha = 0.55f),
+)
+
+/**
  * Shows an animated gradient while [artworkUri] is null, then crossfades to a blurred artwork
  * background once real artwork is available.
  */
@@ -46,19 +56,28 @@ fun Background(
         if (showPlaceholder) {
             GradientPlaceholder(modifier)
         } else {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(artworkUri)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(
-                    Color.Black.copy(alpha = 0.3f),
-                    BlendMode.Darken,
-                ),
-                modifier = modifier.blur(20.dp),
-            )
+            Box(modifier = modifier) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(artworkUri)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    colorFilter = ColorFilter.tint(
+                        Color.Black.copy(alpha = 0.3f),
+                        BlendMode.Darken,
+                    ),
+                    modifier = Modifier
+                        .matchParentSize()
+                        .blur(20.dp),
+                )
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(ReadabilityScrim),
+                )
+            }
         }
     }
 }

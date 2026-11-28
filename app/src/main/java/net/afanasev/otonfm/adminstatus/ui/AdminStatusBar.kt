@@ -1,103 +1,109 @@
 package net.afanasev.otonfm.adminstatus.ui
 
-import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import net.afanasev.otonfm.adminstatus.data.AdminStatusModel
+import net.afanasev.otonfm.common.ui.components.MarqueeText
+import net.afanasev.otonfm.common.ui.components.Pill
+import net.afanasev.otonfm.common.ui.style.BrandRed
+import net.afanasev.otonfm.common.ui.style.OtonFmTheme
 
+/**
+ * The admin's message as one scrolling line; a tap opens it in full in a bottom sheet. An urgent
+ * message turns the whole pill red.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminStatusBar(
     adminStatus: AdminStatusModel,
-    isDarkMode: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    val contentColor = if (isDarkMode) Color.White else Color.Black
-    val backgroundColor =
-        if (isDarkMode) Color.Black.copy(alpha = 0.6f) else Color.White.copy(alpha = 0.6f)
+    var showFullText by remember { mutableStateOf(false) }
+    // A short message still reads as a banner, not a button.
+    val pillModifier = modifier.widthIn(min = 160.dp)
 
-    Row(
-        modifier = modifier
-            .clip(CircleShape)
-            .background(backgroundColor)
-            .clickable {
-                Toast.makeText(context, adminStatus.text, Toast.LENGTH_LONG).show()
-            }
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        if (adminStatus.isUrgent) {
+    if (adminStatus.isUrgent) {
+        Pill(
+            onClick = { showFullText = true },
+            containerColor = BrandRed,
+            contentColor = Color.White,
+            modifier = pillModifier,
+        ) {
             Icon(
                 imageVector = Icons.Filled.Campaign,
                 contentDescription = "Urgent",
-                tint = Color(0xFFCD0200),
                 modifier = Modifier.size(16.dp),
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(6.dp))
+            MarqueeText(text = adminStatus.text)
         }
+    } else {
+        Pill(onClick = { showFullText = true }, modifier = pillModifier) {
+            MarqueeText(text = adminStatus.text)
+        }
+    }
 
-        Text(
-            text = adminStatus.text,
-            color = contentColor,
-            fontSize = 13.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
-        )
+    if (showFullText) {
+        ModalBottomSheet(onDismissRequest = { showFullText = false }) {
+            SelectionContainer {
+                Text(
+                    text = adminStatus.text,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
+                )
+            }
+        }
     }
 }
 
 @Preview
 @Composable
-fun AdminStatusBarPreviewLight() {
-    AdminStatusBar(
-        adminStatus = AdminStatusModel(text = "Welcome to Oton FM! Enjoy the music."),
-        isDarkMode = false,
-    )
+private fun AdminStatusBarPreviewLight() {
+    OtonFmTheme(isDarkMode = false) {
+        AdminStatusBar(adminStatus = AdminStatusModel(text = "Welcome to Oton FM! Enjoy the music."))
+    }
 }
 
 @Preview(backgroundColor = 0xFF000000, showBackground = true)
 @Composable
-fun AdminStatusBarPreviewDark() {
-    AdminStatusBar(
-        adminStatus = AdminStatusModel(text = "Welcome to Oton FM! Enjoy the music."),
-        isDarkMode = true,
-    )
+private fun AdminStatusBarPreviewDark() {
+    OtonFmTheme(isDarkMode = true) {
+        AdminStatusBar(adminStatus = AdminStatusModel(text = "Иһиллибэт буоллаҕына VPN холбооҥ!"))
+    }
 }
 
 @Preview
 @Composable
-fun AdminStatusBarPreviewUrgent() {
-    AdminStatusBar(
-        adminStatus = AdminStatusModel(
-            text = "Scheduled maintenance tonight at 23:00 UTC",
-            type = "urgent"
-        ),
-        isDarkMode = false,
-    )
+private fun AdminStatusBarPreviewUrgent() {
+    OtonFmTheme(isDarkMode = true) {
+        AdminStatusBar(
+            adminStatus = AdminStatusModel(
+                text = "Scheduled maintenance tonight at 23:00 UTC",
+                type = "urgent",
+            ),
+        )
+    }
 }

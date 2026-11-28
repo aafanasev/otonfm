@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PortraitContent(
-    title: String,
+    title: TrackTitle,
     nextTrackTitle: String,
     buttonState: PlayerButtonState,
     artworkUri: String?,
@@ -35,10 +35,10 @@ fun PortraitContent(
         )
         Spacer(modifier = Modifier.height(24.dp))
         Title(
-            text = title,
+            title = title,
             modifier = Modifier.fillMaxWidth(0.9f),
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         NextTrack(
             text = nextTrackTitle,
             modifier = Modifier.fillMaxWidth(0.9f),
@@ -56,8 +56,8 @@ fun PortraitContent(
 @Composable
 private fun PortraitContentPreview() {
     PortraitContent(
-        title = "Massive Attack — Teardrop",
-        nextTrackTitle = "Next: Portishead — Glory Box",
+        title = TrackTitle(song = "Teardrop", artist = "Massive Attack"),
+        nextTrackTitle = "Portishead - Glory Box",
         buttonState = PlayerButtonState.PLAYING,
         artworkUri = null,
         onPlayClick = {},
@@ -68,7 +68,7 @@ private fun PortraitContentPreview() {
 @Composable
 private fun PortraitContentPreviewLoading() {
     PortraitContent(
-        title = "",
+        title = TrackTitle(song = ""),
         nextTrackTitle = "",
         buttonState = PlayerButtonState.LOADING,
         artworkUri = null,

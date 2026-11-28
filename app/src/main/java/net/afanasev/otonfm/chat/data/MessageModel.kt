@@ -1,8 +1,10 @@
 package net.afanasev.otonfm.chat.data
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.IgnoreExtraProperties
 import net.afanasev.sekret.Secret
 
+@IgnoreExtraProperties
 data class MessageModel(
     var id: String = "",
     var type: String = MessageType.USER_MESSAGE.value,
@@ -17,7 +19,6 @@ data class MessageModel(
     @JvmField var isHidden: Boolean = false,
     @JvmField var isPinned: Boolean = false,
     @JvmField var isUrgent: Boolean = false,
-    var platform: String = "",
     var createdAt: Timestamp? = null,
 )
 
